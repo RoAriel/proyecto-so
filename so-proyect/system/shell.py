@@ -22,18 +22,18 @@ class Shell:
                 user=User(userName,password,isAdmin)
                 self.usuarios.append(user)
             else:
-                raise systemExceptions.NotPermissionsException()
+                raise exceptions.NotPermissionsException()
         else:
-            raise systemExceptions.UserDoesNotExistException()
+            raise exceptions.UserDoesNotExistException()
 
     def logIn(self,userName,password):
         if(self.existUser(userName)):
             if(self.isPassword(userName, password)):
                 self.current=self.getUser(userName)
             else:
-                raise systemExceptions.IncorrectPassword()
+                raise exceptions.IncorrectPassword()
         else:
-            raise systemExceptions.UserDoesNotExistException()
+            raise exceptions.UserDoesNotExistException()
 
     def isPassword(self,userName,password):
         for user in self.usuarios:
@@ -57,21 +57,21 @@ class Shell:
             if(self.existUser(userName)):
                 self.getUser(userName).isAdmin=True
         else:
-            raise systemExceptions.NotPermissionsException()
+            raise exceptions.NotPermissionsException()
 
     def removeUser(self,userName):
         if(self.current.isAdmin):
             if(self.existUser(userName)):
                 self.usuarios.remove(self.getUser(userName))
         else:
-            raise systemExceptions.NotPermissionsException()
+            raise exceptions.NotPermissionsException()
 
 
     def changePassword(self,newPassword,oldPassword):
         if(oldPassword==self.current.password):
             self.current.password=newPassword
         else:
-            raise systemExceptions.IncorrectPassword()
+            raise exceptions.IncorrectPassword()
 
 
 
