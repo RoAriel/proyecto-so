@@ -22,4 +22,7 @@ class NotPermissionsException(Exception):
     def __init__(self):
         Exception.__init__(self)
         
-
+class IncorrectPassword(Exception):
+    
+    def __init__(self):
+        Exception.__init__(self)

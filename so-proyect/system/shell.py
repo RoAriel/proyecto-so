@@ -4,7 +4,7 @@ Created on 08/04/2013
 @author: Di Meglio
 '''
 
-import exceptions
+import exceptions  
 
 class Shell:
     def __init__(self,admin,password):
@@ -21,21 +21,19 @@ class Shell:
             if(self.current.isAdmin):
                 user=User(userName,password,isAdmin)
                 self.usuarios.append(user)
-                print "El usuario se agrego correctamente"
             else:
-                print "No tines permisos para agregar nuevo usuario"
+                raise systemExceptions.NotPermissionsException()
         else:
-            print "El usuario ya existe hdp"
+            raise systemExceptions.UserDoesNotExistException()
 
     def logIn(self,userName,password):
         if(self.existUser(userName)):
             if(self.isPassword(userName, password)):
                 self.current=self.getUser(userName)
-                print "Te has logeado correctamente"
             else:
-                print "Password incorrecta"
+                raise systemExceptions.IncorrectPassword()
         else:
-            print "El usuario no existe"
+            raise systemExceptions.UserDoesNotExistException()
 
     def isPassword(self,userName,password):
         for user in self.usuarios:
@@ -46,8 +44,6 @@ class Shell:
         res=False
         for user in self.usuarios:
             res= res | (user.userName==userName)
-            if(res):
-             #   raise UserDoesNotExistException()
         return res
 
     def getUser(self,userName):
@@ -61,34 +57,29 @@ class Shell:
             if(self.existUser(userName)):
                 self.getUser(userName).isAdmin=True
         else:
-           # raise NotPermissionsException()
+            raise systemExceptions.NotPermissionsException()
 
     def removeUser(self,userName):
         if(self.current.isAdmin):
             if(self.existUser(userName)):
                 self.usuarios.remove(self.getUser(userName))
-                print "El usuario fue eliminado correctamente"
         else:
-           # raise NotPemisionsException()
+            raise systemExceptions.NotPermissionsException()
 
 
     def changePassword(self,newPassword,oldPassword):
         if(oldPassword==self.current.password):
             self.current.password=newPassword
-            print "Cambio de contrasenia correctamente"
         else:
-            print "Constrasenia incorrecta"
+            raise systemExceptions.IncorrectPassword()
 
 
 
 
 class User:
     def __init__(self,user,password,isAdmin):
-      self.userName=user
-      self.password=password
-      self.isAdmin=isAdmin
+        self.userName=user
+        self.password=password
+        self.isAdmin=isAdmin
 
 
-
-
-raise UserDoesNotExistException(Exception)

@@ -3,59 +3,67 @@ Created on 08/04/2013
 
 @author: Di Meglio
 '''
-
+import hardware
 
 class Program:
 
-      def __init__(self,insts,mem):
-          self.instructions=insts
-          self.memoria=mem;
+    def __init__(self,insts,memory):
+        self.instructions=insts
+        self.memory=memory;
 
-      def run(self):
-          for x in self.instructions:
-               x.execute(self.memoria)
-
-
-      def add(self,inst):
-          self.instructions.append(inst)
+    def run(self):
+        for x in self.instructions:
+            x.execute(self.memory)
 
 
-
-
-class Suma:
-
-
-     def __init__(self,op1,op2,dest):
-         self.op1=op1
-         self.op2=op2
-         self.dest=dest
-
-
-     def execute(self,memoria):
-        memoria[self.dest]=memoria[self.op1]+memoria[self.op2]
+    def add(self,inst):
+        self.instructions.append(inst)
 
 
 
-class Resta():
-     def __init__(self,op1,op2,dest):
-         self.op1=op1
-         self.op2=op2
-         self.dest=dest
+class Instruction():
+    
+    def execute(self,memory):
+        pass
 
 
-     def execute(self,memoria):
-        memoria[self.dest]=memoria[self.op1]-memoria[self.op2]
+
+class Suma(Instruction):
+
+
+    def __init__(self,op1,op2,dest):
+        self.op1=op1
+        self.op2=op2
+        self.dest=dest
+
+
+    def execute(self,memory):
+        res=memory.getData(self.op1) + memory.getData(self.op2)
+        memory.setData(self.dest,res)
+
+
+
+class Resta(Instruction):
+    def __init__(self,op1,op2,dest):
+        self.op1=op1
+        self.op2=op2
+        self.dest=dest
+
+
+    def execute(self,memory):
+        res=memory.getData(self.op1) - memory.getData(self.op2)
+        memory.setData(self.dest,res)
 
 
                             
 
-#class ConstextoDeEjecucion:
 
 
 
 
+#Example
 
-memoria=[1212,2334,3423,1232,1232,1456,7867,8909]
+memory=hardware.Memory()
 
 
 instA=Suma(1,2,3)
@@ -63,16 +71,12 @@ instB=Resta(3,4,2)
 instC=Resta(5,6,1)
 
 lista =[]
-program=Program(lista,memoria)
+program=Program(lista,memory)
 program.add(instA)
 program.add(instB)
 program.add(instC)
 
 guardarMetodo=program.run
 guardarMetodo()
-print memoria
-
-
-
-
+print memory.rows
 
