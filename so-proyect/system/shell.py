@@ -9,22 +9,24 @@ import exceptions
 class Shell:
     def __init__(self,admin,password):
         adm=User(admin,password,True)
-        self.usuarios=[]
-        self.usuarios.append(adm)
+        self.users=[]
+        self.users.append(adm)
         self.current=adm
 
     def whoIAm(self):
         return self.current.userName
 
     def addUser(self,userName,password,isAdmin):
-        if(not self.existUser(userName)):
-            if(self.current.isAdmin):
-                user=User(userName,password,isAdmin)
-                self.usuarios.append(user)
+        if(self.current.isAdmin):
+            if(not self.existUser(userName)):
+                user=User(userName,password,isAdmin);
+                self.users.append(user)
             else:
-                raise exceptions.NotPermissionsException()
+                raise exceptions.UserAlreadyExistsException()
         else:
-            raise exceptions.UserDoesNotExistException()
+            
+            raise exceptions.NotPermissionsException()
+
 
     def logIn(self,userName,password):
         if(self.existUser(userName)):
@@ -36,18 +38,18 @@ class Shell:
             raise exceptions.UserDoesNotExistException()
 
     def isPassword(self,userName,password):
-        for user in self.usuarios:
+        for user in self.users:
             if(user.userName==userName):
                 return user.password==password
 
     def existUser(self,userName):
         res=False
-        for user in self.usuarios:
+        for user in self.users:
             res= res | (user.userName==userName)
         return res
 
     def getUser(self,userName):
-        for user in self.usuarios:
+        for user in self.users:
             if( user.userName==userName):
                 return user
 
