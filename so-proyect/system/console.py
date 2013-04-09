@@ -6,19 +6,23 @@ Created on 08/04/2013
 from shell import Shell
 import exceptions
 
-        
+nombre = raw_input('')
+
+
 class Conole():
     def __init__(self,comands):
         self.comands=comands
+        
         
     def help(self):
         for comand in self.comands:
             print comand.name,comand.desription
             
-    def searchComand(self,shell,inPut):
+    def searchComandAndExecute(self,shell,inPut):
         res=inPut.split()
         for comand in self.comands:
             if(comand.name==res[0]):
+                comand.execute(shell,inPut)
                      
             
 class addUser():
