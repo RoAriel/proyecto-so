@@ -1,10 +1,10 @@
 '''
 Created on 08/04/2013
 
-@author: Jose
+@author: Di Meglio
 '''
 import sys
-import exceptions
+import exceptions as e
 from shell import Shell
 
 
@@ -35,6 +35,7 @@ class Help():
         self.description=''
         
     def execute(self,shell,inPut,console):
+        print '>*****All Comands****'
         for comand in console.comands:
             print '>*',comand.name,'-->',comand.description
              
@@ -48,24 +49,28 @@ class AddUser():
         res=inPut.split()
         if(len(res)==4):
             isAdmin=False
-            if(res[2]=='s'):
+            if(res[3]=='s'):
                 isAdmin=True
-            try:
-                shell.addUser(res[1],res[2],isAdmin)
-            except exceptions.UserAlreadyExistsException:
-                print "El usuario ya existe"
-            except  exceptions.NotPermissionsException:
-                print "El usuario fue agregado correctamente"
+                try:
+                    shell.addUser(res[1],res[2],isAdmin)
+                except e.UserAlreadyExistsException:
+                    print ">User Already Exists"
+                except  e.NotPermissionsException:
+                    print ">Not Permissions"
+            else:
+                if res[3]!='n' :
+                    print ">Error",res[3] ,' s/n'
     
 class ShowUsers():
     def __init__(self):
         self.name='showUsers'
-        self.description='<UserName> <Password> <isAdmin s/n>'
+        self.description='show All Users'
         
     def execute(self,shell,inPut,console):
+        print '>*****All Users****'
         for user in shell.users:
-            print user.userName
-      
+            print '> ',user.userName
+          
   
   
 class Exit():
@@ -76,26 +81,11 @@ class Exit():
     def execute(self,shell,inPut,console):
         console.running=False
     
-class LogIn():
-    
-    def __init__(self):
-        self.name='logIn'
-        self.description='<UserName> <Password>'
-    
-    def execute(self,shell,inPut,console):
-        res=inPut.split()
-        if(len(res)==3):
-            try:
-                shell.logIn(res[1],res[2])
-            except exceptions.UserDoesNotExistException:
-                print "El usuario no existe"
-            except  exceptions.IncorrectPassword:
-                print "password incorrect"
         
     
     
             
-     
+    
 shell=Shell(sys.argv[1],sys.argv[2]);
 lisComand=[AddUser(),Help(),Exit(),ShowUsers()] 
 console=Console(shell,lisComand) 
