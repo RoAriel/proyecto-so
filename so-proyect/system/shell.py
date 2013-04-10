@@ -83,5 +83,3 @@ class User:
         self.userName=user
         self.password=password
         self.isAdmin=isAdmin
-
-
