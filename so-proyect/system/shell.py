@@ -74,6 +74,9 @@ class Shell:
             self.current.password=newPassword
         else:
             raise exceptions.IncorrectPassword()
+    
+    def logOut(self):
+        del self.current
 
 
 

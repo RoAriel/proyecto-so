@@ -71,10 +71,26 @@ class ShowUsers():
 class Exit():
     def __init__(self):
         self.name='exit'
-        self.description='<UserName> <Password> <isAdmin s/n>'
+        self.description='end of shell'
         
     def execute(self,shell,inPut,console):
         console.running=False
+    
+class LogIn():
+    
+    def __init__(self):
+        self.name='logIn'
+        self.description='<UserName> <Password>'
+    
+    def execute(self,shell,inPut,console):
+        res=inPut.split()
+        if(len(res)==3):
+            try:
+                shell.logIn(res[1],res[2])
+            except exceptions.UserDoesNotExistException:
+                print "El usuario no existe"
+            except  exceptions.IncorrectPassword:
+                print "password incorrect"
         
     
     
