@@ -17,6 +17,7 @@ class Shell:
         return self.current.userName
 
     def addUser(self,userName,password,isAdmin):
+        self.checkUser()
         if(self.current.isAdmin):
             if(not self.existUser(userName)):
                 user=User(userName,password,isAdmin);
@@ -49,12 +50,14 @@ class Shell:
         return res
 
     def getUser(self,userName):
+        self.checkUser()
         for user in self.users:
             if( user.userName==userName):
                 return user
 
 
     def setAdmin(self,userName):
+        self.checkUser()
         if(self.current.isAdmin):
             if(self.existUser(userName)):
                 self.getUser(userName).isAdmin=True
@@ -62,6 +65,7 @@ class Shell:
             raise exceptions.NotPermissionsException()
 
     def removeUser(self,userName):
+        self.checkUser()
         if(self.current.isAdmin):
             if(self.existUser(userName)):
                 self.usuarios.remove(self.getUser(userName))
@@ -69,7 +73,8 @@ class Shell:
             raise exceptions.NotPermissionsException()
 
 
-    def changePassword(self,newPassword,oldPassword):
+    def changePassword(self,oldPassword,newPassword):
+        self.checkUser()
         if(oldPassword==self.current.password):
             self.current.password=newPassword
         else:
@@ -77,7 +82,11 @@ class Shell:
     
     def logOut(self):
         del self.current
-
+        
+    def checkUser(self):
+        if(self.current==None):
+            raise exceptions.NoUserLogin()
+        
 
 
 

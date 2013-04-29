@@ -51,15 +51,17 @@ class AddUser():
             isAdmin=False
             if(res[3]=='s'):
                 isAdmin=True
-                try:
-                    shell.addUser(res[1],res[2],isAdmin)
-                except e.UserAlreadyExistsException:
-                    print ">User Already Exists"
-                except  e.NotPermissionsException:
-                    print ">Not Permissions"
             else:
                 if res[3]!='n' :
                     print ">Error",res[3] ,' s/n'
+                    return
+            try:
+                shell.addUser(res[1],res[2],isAdmin)
+            except e.UserAlreadyExistsException:
+                print ">User Already Exists"
+            except  e.NotPermissionsException:
+                print ">Not Permissions"
+                
     
 class ShowUsers():
     def __init__(self):
@@ -81,13 +83,63 @@ class Exit():
     def execute(self,shell,inPut,console):
         console.running=False
     
+class LogIn():
+    
+    def __init__(self):
+        self.name='logIn'
+        self.description='Login user'
         
+    def execute(self,shell,inPut,console):
+        res=inPut.split()
+        try:
+            shell.logIn(res[1],res[2])
+        except e.UserDoesNotExistException:
+            print "User does not exist"
+            
+class LogOut():
+    
+    def __init__(self):
+        self.name='logOut'
+        self.description='Logout user current'
+        
+    def execute(self,shell,inPut,console):
+        res=inPut.split()
+        shell.logOut()      
+       
+class ChangePassword():  
+    
+    def __init__(self):
+        self.name='changePassword'
+        self.description='Change password of the user current'
+        
+    def execute(self,shell,inPut,console):
+        res=inPut.split()
+        try:
+            shell.changePassword(res[1],res[2])
+        except e.IncorrectPassword:
+            print "password incorrect" 
+    
+    
+class RemoveUser():  
+    
+    def __init__(self):
+        self.name='removeUser'
+        self.description='Change password of the user current'
+        
+    def execute(self,shell,inPut,console):
+        res=inPut.split()
+        try:
+            shell.removeUser(res[1])
+        except e.UserDoesNotExistException:
+            print "user does not exist" 
+        except e.NotPermissionsException:
+            print "not permissions"
     
     
             
     
 shell=Shell(sys.argv[1],sys.argv[2]);
-lisComand=[AddUser(),Help(),Exit(),ShowUsers()] 
+lisComand=[AddUser(),Help(),Exit(),ShowUsers(),LogIn(),ChangePassword(),RemoveUser()] 
 console=Console(shell,lisComand) 
 console.run()        
          

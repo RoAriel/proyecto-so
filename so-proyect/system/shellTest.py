@@ -40,7 +40,12 @@ class Test(unittest.TestCase):
         except exceptions.UserAlreadyExistsException:
             pass
         
+    def testAddUserNotExists(self):
+        self.shell.addUser("userName", "password", False)
+        self.assertEquals(len(self.shell.users),1)
+        self.assertEquals(self.shell.users[1].userName,"userName")
         
+               
         
 
 
