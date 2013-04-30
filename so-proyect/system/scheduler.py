@@ -110,5 +110,5 @@ print queue.isEmpty()
 while(not queue.isEmpty()):
     p= queue.get()
 
-    print p.name
+    print p.priority
         
