@@ -50,41 +50,61 @@ class FCFS(policy):
         return len(self.processes)==0
     
 
-
-class RoundRobin(FCFS):
+class SJF(policy):
     
     def __init__(self):
+        self.processes=[]
+    
+    def add(self,process):
+        self.processes.append(process)
+                
+    def get(self):
+        processMax=self.processes[0]
+        for p in self.processes:
+            if(p.priority>processMax.priority):
+                processMax=p
+        self.processes.remove(processMax)
+        return processMax
+        
+    def isEmpty(self):
+        return len(self.processes)==0      
+    
+
+
+class RoundRobin(policy):
+    
+    def __init__(self,policy):
         self.processes=[]
         self.quamtum=random(5,20)
     
     
     def add(self,process):
-        self.add(process)   
+        pass  
                 
         
     def get(self):
-        process=self.get()
-        if(not process.time-self.quamtum<=0):
-            self.add(process)
-        return process
+        pass
         
     def isEmpty(self):
-        return len(self.processes)==0
+        pass 
 
 
 
 class Process():
     
-    def __init__(self,name,time):
+    def __init__(self,name,time,priority):
         self.name=name
         self.time=time
+        self.priority=priority
     
-queue =FCFS()
-queue.add(Process(1,1))
-queue.add(Process(2,2))
-queue.add(Process(3,3))
-queue.add(Process(4,4))
-queue.add(Process(5,5))
+queue =SJF()
+queue.add(Process(1,1,1))
+queue.add(Process(2,2,3))
+queue.add(Process(3,3,6))
+queue.add(Process(4,4,2))
+queue.add(Process(5,5,4))
+
+print queue.isEmpty()
 
 
 while(not queue.isEmpty()):
