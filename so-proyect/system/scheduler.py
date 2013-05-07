@@ -5,6 +5,8 @@ Created on 29/04/2013
 '''
 
 import random
+import queues as q
+
 
 class Scheduler():
     
@@ -20,7 +22,7 @@ class Scheduler():
 
 
 
-class policy():
+class Policy():
     
     def add(self,process):
         pass
@@ -32,83 +34,79 @@ class policy():
         pass
 
 
-class FCFS(policy):
+class FCFS(Policy):
     
     def __init__(self):
-        self.processes=[]
+        self.processes=q.Queue()
     
     
     def add(self,process):
-        self.processes.append(process)
+        self.processes.add(process)
         
     def get(self):
-        process=self.processes[0]
-        self.processes.remove(process)
-        return process
+        return self.processes.get()
+        
         
     def isEmpty(self):
-        return len(self.processes)==0
+        return self.processes.isEmpty()
     
 
-class SJF(policy):
+class SJF(Policy):
     
     def __init__(self):
-        self.processes=[]
+        self.processes=q.PriorityQueue(lambda pa,pb: pa.priority-pb.priority)
     
     def add(self,process):
-        self.processes.append(process)
+        self.processes.add(process)
                 
     def get(self):
-        processMax=self.processes[0]
-        for p in self.processes:
-            if(p.priority>processMax.priority):
-                processMax=p
-        self.processes.remove(processMax)
-        return processMax
+        return self.processes.get()
         
     def isEmpty(self):
-        return len(self.processes)==0      
+        return self.processes.isEmpty()    
     
 
 
-class RoundRobin(policy):
+class RoundRobin(Policy):
     
-    def __init__(self,policy):
-        self.processes=[]
+    def __init__(self,queue):
+        self.processes=queue
         self.quamtum=random(5,20)
     
-    
     def add(self,process):
-        pass  
-                
-        
+        self.processes.add(process)
+    
     def get(self):
-        pass
+        self.processes.get()
         
     def isEmpty(self):
-        pass 
+        return self.processes.isEmpty()
+    
+    
 
 
 
 class Process():
     
-    def __init__(self,name,time,priority):
-        self.name=name
-        self.time=time
+    def __init__(self,pid,priority):
+        self.pid=pid
         self.priority=priority
+
+pa=Process(1,1)
+pb=Process(2,5)
+pc=Process(3,3)
+pd=Process(3,9)
+pe=Process(3,3)
+
+s=SJF()
+s.add(pa)
+s.add(pb)
+s.add(pc)
+s.add(pd)
+s.add(pe)
+
+while not s.isEmpty():
+    print s.get().priority
+
     
-queue =SJF()
-queue.add(Process(1,1,1))
-queue.add(Process(2,2,3))
-queue.add(Process(3,3,6))
-queue.add(Process(4,4,2))
-queue.add(Process(5,5,4))
 
-print queue.isEmpty()
-
-
-while(not queue.isEmpty()):
-    p= queue.get()
-
-    print p.priority
-        
