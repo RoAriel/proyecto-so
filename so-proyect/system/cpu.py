@@ -8,9 +8,11 @@ import scheduler
 
 class CPU():
     
-    def __init__(self,scheduler):
-        self.scheduler=scheduler
+    def __init__(self,kernel):
+        self.kernel=kernel
         
-    def run(self):
-        while(True):
-            process=self.scheduler.get()
+
+        
+    def click(self):
+        process=self.kernel.getPorcess()
+        process.getInstruction().execute()

@@ -92,6 +92,8 @@ class Process():
         self.pid=pid
         self.priority=priority
 
+
+#prueba de pq
 pa=Process(1,1)
 pb=Process(2,5)
 pc=Process(3,3)
