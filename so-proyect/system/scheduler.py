@@ -69,9 +69,13 @@ class SJF(Policy):
 
 class RoundRobin(Policy):
     
-    def __init__(self,queue):
-        self.processes=queue
+    def __init__(self,isPriority):
+        
         self.quamtum=random(5,20)
+        if(isPriority):
+            self.processes=q.Queue()
+        else:
+            self.processes=q.PriorityQueue(lambda pa,pb: pa.priority-pb.priority)
     
     def add(self,process):
         self.processes.add(process)
@@ -99,6 +103,7 @@ pb=Process(2,5)
 pc=Process(3,3)
 pd=Process(3,9)
 pe=Process(3,3)
+pe=Process(3,0)
 
 s=SJF()
 s.add(pa)
