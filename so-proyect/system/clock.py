@@ -15,7 +15,7 @@ class Clock(t.thread):
     def run(self):
         while(True):
             time.sleep(1)
-            self.timer.click()
+            self.timer.click(self.cpu)
             
             
 class TimerQuantum():
