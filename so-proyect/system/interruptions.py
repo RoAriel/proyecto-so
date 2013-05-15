@@ -1,4 +1,5 @@
 '''
+
 Created on 15/05/2013
 
 @author: Di Meglio
@@ -20,7 +21,7 @@ class ManagerInterruptions():
         self.mode.setModeKernel()
         self.scheduler.add(self.cpu.pcb)
         self.cpu.setProcess(self.scheduler.get())
-
+        self.mode.setModeUser()
 
 class Interruption():
     timeOut='timeOut'
