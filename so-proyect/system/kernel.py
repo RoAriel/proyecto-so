@@ -25,8 +25,10 @@ class Mode():
     def setModeUser(self):
         self.mode=True
         
-    def setMdeKernel(self):
+    def setModeKernel(self):
         self.mode=False
         
-    def isMOdeUser(self):
+    def isModeUser(self):
         return self.mode
+    
+    
