@@ -6,7 +6,7 @@ Created on 29/04/2013
 
 import random
 import queues as q
-
+import clock
 
 class Scheduler():
     
@@ -19,7 +19,8 @@ class Scheduler():
     def add(self,process):
         self.policy.add(process)
 
-
+    def getTimer(self):
+        return self.policy.getTimer()
 
 
 class Policy():
@@ -32,6 +33,9 @@ class Policy():
     
     def isEmpty(self):
         pass
+    
+    def getTimer(self):
+        return clock.Timer()
 
 
 class FCFS(Policy):
@@ -86,7 +90,8 @@ class RoundRobin(Policy):
     def isEmpty(self):
         return self.processes.isEmpty()
     
-    
+    def getTimer(self):
+        return clock.TimerQuantum()
 
 
 

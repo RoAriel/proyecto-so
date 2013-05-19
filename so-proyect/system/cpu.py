@@ -5,6 +5,8 @@ Created on 29/04/2013
 '''
 
 import scheduler
+from interruptions  import Interruption 
+from process import State
 
 class CPU():
     
@@ -21,9 +23,10 @@ class CPU():
     def click(self):
         
         if( self.mode.isModeUser()): 
-            self.pcd.setState('Running')
+            self.pcd.setState(State.running)
             pc=self.pcb.getPC()+self.pcd.getDirIni()
             self.pcd.addPc()
             instruction=self.memory.get(pc) 
             instruction.execute(self.managerIntrruptions)
-        
+        elif( self.pcb is  None):
+            self.managerInterruptions.throwInterruption(Interruption.timeOut)
