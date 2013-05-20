@@ -18,9 +18,13 @@ class Clock(t.thread):
         while(True):
             time.sleep(1)
             self.timer.click(self.cpu,self.managerInterruption)
+ 
+class Timer():
+        
+    def click(self,cpu):
+        cpu.click()           
             
-            
-class TimerQuantum():
+class TimerQuantum(Timer):
     
     def _init_(self,quantum):
         self.quantum=quantum
@@ -28,7 +32,7 @@ class TimerQuantum():
         
     def click(self,cpu,managerInterruption):
         if(self.quantum>self.currentTime):
-            cpu.click()
+            super.click(cpu)
             self.currentTime+=1
         else:
             self.currentTime=0
@@ -36,8 +40,5 @@ class TimerQuantum():
         
         
         
-class Timer():
-        
-    def click(self,cpu):
-        cpu.click()
+
     
