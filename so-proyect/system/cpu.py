@@ -22,11 +22,12 @@ class CPU():
         
     def click(self):
         
-        if( self.mode.isModeUser()): 
+        if( self.mode.isModeUser() & self.pcb is not None): 
             self.pcd.setState(State.running)
             pc=self.pcb.getPC()+self.pcd.getDirIni()
             self.pcd.addPc()
             instruction=self.memory.get(pc) 
             instruction.execute(self.managerIntrruptions)
-        elif( self.pcb is  None):
-            self.managerInterruptions.throwInterruption(Interruption.timeOut)
+    
+            
+            
