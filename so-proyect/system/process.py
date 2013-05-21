@@ -9,7 +9,7 @@ class Program():
         self.myProcess = processCounter
 
 # el pcb va a parar a la tabla de PCB'S  en el kernel
-# cuando termina el proceso guado al ese proceso en PCB'S en DeadTable 
+# cuando termina el proceso guardo al ese proceso en PCB'S en DeadTable 
 
 class PCB():
     def __init__(self, pc, stack, pid):
