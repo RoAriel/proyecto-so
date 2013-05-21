@@ -27,7 +27,7 @@ class IO(Instruction,t.Thread):
         
         
 class Finalize(Instruction):
-    
+
     def execute(self,managerInterruptions,pcb):
         pcb.sate=State.finished
         managerInterruptions.throwInterruption(Interruption.pcbFinalize)

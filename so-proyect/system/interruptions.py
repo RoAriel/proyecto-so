@@ -28,6 +28,7 @@ class ManagerInterruptions():
         
     def IO(self):
         pcb=self.cpu.pcb
+        pcb.setState(State.wait)
         self.queueWait.add(pcb)
         self.timeOut()
         
@@ -48,3 +49,15 @@ EJEMPLO DE USO
 MI= ManagerInterruption(scheduler(),cpu(),mode())
 MI.throwInterruption(Interruption.timeOut)
 """
+
+class Prueba():
+    
+    def otro(self):
+        print 'dddd'
+    
+    @classmethod
+    def metodo(self):
+        self.otro()
+        
+Prueba.metodo()
+        
