@@ -30,4 +30,4 @@ class Finalize(Instruction):
     
     def execute(self,managerInterruptions,pcb):
         pcb.sate=State.finished
-        managerInterruptions.throwInterruption(Interruption.timeOut)
+        managerInterruptions.throwInterruption(Interruption.pcbFinalize)

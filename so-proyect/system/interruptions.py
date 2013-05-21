@@ -4,6 +4,7 @@ Created on 15/05/2013
 
 @author: Di Meglio
 '''
+from process import State
 
 class ManagerInterruptions():
     
@@ -13,7 +14,8 @@ class ManagerInterruptions():
         self.cpu=cpu
         self=mode=mode
         self.queueWait=queueWait
-        self.mapInterruption={'timeOut':self.timeOut,"IO":self.IO}
+        self.mapInterruption={Interruption.timeOut:self.timeOut,Interruption.IO:self.IO,
+                              Interruption.pcbFinalize:self.pcbFinalize}
         
     def throwInterruption(self,interruption):
         self.mapInterruption[interruption]()
@@ -29,11 +31,17 @@ class ManagerInterruptions():
         self.queueWait.add(pcb)
         self.timeOut()
         
+    def pcbFinalize(self):
+        self.mode.setModeKernel()
+        self.cpu.pcb.setSate(State.finished)
+        self.cpu.setProcess(self.scheduler.get())
+        self.mode.setModeUser()
+         
 
 class Interruption():
     timeOut='timeOut'
     IO='IO'
-    
+    pcbFinalize="pcbFinalize"
     
 """
 EJEMPLO DE USO

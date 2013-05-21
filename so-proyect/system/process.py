@@ -25,3 +25,4 @@ class State():
     wait="Wait"
     finished="Finished"
     ready="Ready"
+    

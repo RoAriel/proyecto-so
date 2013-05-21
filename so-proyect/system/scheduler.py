@@ -7,6 +7,7 @@ Created on 29/04/2013
 import random
 import queues as q
 import clock
+from interruptions  import Interruption 
 
 class Scheduler():
     
@@ -57,14 +58,21 @@ class FCFS(Policy):
 
 class SJF(Policy):
     
-    def __init__(self):
+    def __init__(self,managerInterruption):
         self.processes=q.PriorityQueue(lambda pa,pb: pa.priority-pb.priority)
+        self.running=None
+        self.managerInterruption=managerInterruption
     
     def add(self,process):
-        self.processes.add(process)
+        if(self.running is None |  process.priority>self.running.priority):
+            self.processes.add(process)
+        else:
+            self.processes.add(process)
+            self.managerInterruption.throwInterruption(Interruption.timeOut)
                 
     def get(self):
-        return self.processes.get()
+        self.running=self.processes.get()
+        return self.running
         
     def isEmpty(self):
         return self.processes.isEmpty()    
