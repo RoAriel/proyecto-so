@@ -17,10 +17,10 @@ class ManagerInterruptions():
     cpu=None
     mode=None
     scheduler=None
-    mapInterruption={Interruption.timeOut:ManagerInterruptions.timeOut,
-                              Interruption.IO:ManagerInterruptions.IO,
+    mapInterruption={"""Interruption.timeOut: ManagerInterruptions.timeOut,
+                              Interruption.IO: ManagerInterruptions.IO,
                               Interruption.pcbFinalize:ManagerInterruptions.pcbFinalize,
-                              Interruption.expropiation:ManagerInterruptions.expropiation}
+                              Interruption.expropiation:ManagerInterruptions.expropiation"""}
     
     @classmethod  
     def config(self,scheduler,mode,cpu):

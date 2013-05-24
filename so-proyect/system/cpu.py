@@ -10,9 +10,11 @@ from process import State
 
 class CPU():
     
+    
     def __init__(self,memory,mode):
         self.memory=memory
         self.mode=mode
+        self.pcb=None
     
 
     def setProcess(self,pcb):
@@ -20,12 +22,12 @@ class CPU():
         
     def click(self):
         
-        if( self.mode.isModeUser() & self.pcb is not None): 
-            self.pcd.setState(State.running)
-            pc=self.pcb.getPC()+self.pcd.getDirIni()
-            self.pcd.addPc()
-            instruction=self.memory.get(pc) 
-            instruction.execute()
+        if( self.mode.isModeUser() & (self.pcb is not None)): 
+            self.pcb.state=State.running
+            pc=self.pcb.pc+self.pcb.initialDirection
+            self.pcb.addPc()
+            instruction=self.memory.getData(pc) 
+            instruction.execute(self.pcb)
     
             
             

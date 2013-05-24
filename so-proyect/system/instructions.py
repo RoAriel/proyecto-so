@@ -10,6 +10,7 @@ import random
 import time
 from process import State
 
+
 class Instruction():
     
     def execute(self,managerInterruptions,pcb):

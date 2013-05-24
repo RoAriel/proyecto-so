@@ -8,17 +8,17 @@ import time
 from interruptions  import Interruption 
 import interruptions as i
 
-class Clock(t.thread):
+class Clock(t.Thread):
     
-    def _init_(self,cpu,timer,managerInterruption):
+    def _init_(self,cpu,timer):
         self.cpu=cpu;
         self.timer=timer
-        self.managerInterruption=managerInterruption
     
     def run(self):
         while(True):
             time.sleep(1)
-            self.timer.click(self.cpu,self.managerInterruption)
+            self.timer.click(self.cpu)
+            print 'tiempo de cpu'
  
 class Timer():
         
@@ -31,7 +31,7 @@ class TimerQuantum(Timer):
         self.quantum=quantum
         self.currentTime=0
         
-    def click(self,cpu,managerInterruption):
+    def click(self,cpu):
         if(self.quantum>self.currentTime):
             super.click(cpu)
             self.currentTime+=1

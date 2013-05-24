@@ -59,9 +59,8 @@ class FCFS(Policy):
 
 class SJF(Policy):
     
-    def __init__(self,managerInterruption,isExpropriation):
+    def __init__(self,isExpropriation):
         self.running=None
-        self.managerInterruption=managerInterruption
         self.isExpropriation=isExpropriation
         self.processes=q.PriorityQueue(lambda pa,pb: pa.priority-pb.priority)
     
@@ -100,7 +99,7 @@ class RoundRobin(Policy):
     
     def __init__(self,isPriority):
         
-        self.quamtum=random(5,20)
+        self.quamtum=random.randrange(5, 20)
         if(isPriority):
             self.processes=q.Queue()
         else:
@@ -130,23 +129,6 @@ class Process():
 
 
 
-#prueba de pq
-pa=Process(1,1)
-pb=Process(2,5)
-pc=Process(3,3)
-pd=Process(3,9)
-pe=Process(3,3)
-pe=Process(3,0)
-
-s=SJF()
-s.add(pa)
-s.add(pb)
-s.add(pc)
-s.add(pd)
-s.add(pe)
-
-while not s.isEmpty():
-    print s.get().priority
 
     
 

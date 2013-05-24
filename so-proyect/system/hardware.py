@@ -8,7 +8,7 @@ import random
 
 class Memory():
     def __init__(self,size=256):
-        self.rows=[];
+        self.rows=range(size);
         self.size=size
             
     def getData(self,position):
@@ -17,7 +17,6 @@ class Memory():
     def setData(self,position,data):
         self.rows[position]=data
             
-a = Memory()
-print a
+
 
 
