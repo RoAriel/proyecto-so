@@ -27,13 +27,13 @@ class Timer():
             
 class TimerQuantum(Timer):
     
-    def _init_(self,quantum):
+    def __init__(self,quantum):
         self.quantum=quantum
         self.currentTime=0
         
     def click(self,cpu):
         if(self.quantum>self.currentTime):
-            super.click(cpu)
+            super().click(cpu)
             self.currentTime+=1
         else:
             self.currentTime=0

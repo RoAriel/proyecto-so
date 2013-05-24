@@ -15,12 +15,13 @@ import time
 memory=hardware.Memory()
 mode=kernel.Mode()
 
-kernel=kernel.Kernel(cpu.CPU(memory,mode),memory,scheduler.FCFS(),'disk',mode)
+kernel=kernel.Kernel(cpu.CPU(memory,mode),memory,scheduler.SJF(True),'disk',mode)
 kernel.start()
 
 time.sleep(5)
 kernel.memory.setData(0,i.Finalize())
-kernel.addPcb(process.PCB(0, 0, 0,0))
+kernel.addPcb(process.PCB(0, 0, 0,0,1))
+
 
 time.sleep(5)
 

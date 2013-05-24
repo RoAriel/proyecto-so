@@ -9,6 +9,7 @@ import queues as q
 import clock
 from interruptions  import Interruption 
 import interruptions as i
+import random
 
 class Scheduler():
     
@@ -117,7 +118,7 @@ class RoundRobin(Policy):
         return self.processes.isEmpty()
     
     def getTimer(self):
-        return clock.TimerQuantum()
+        return clock.TimerQuantum(random.randrange(1, 3))
 
 
 
