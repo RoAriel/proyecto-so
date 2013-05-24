@@ -18,7 +18,7 @@ class Kernel():
         self.clock=c.Clock(None)
         self.clock.cpu=self.cpu
         self.clock.timer=self.scheduler.getTimer()
-        #i.ManagerInterruptions.config(self.scheduler,self.mode.self.cpu)
+        i.ManagerInterruptions.config(self.scheduler,self.mode,self.cpu)
     
         
     def executeProgram(self,nameProgram):

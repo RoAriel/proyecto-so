@@ -17,16 +17,17 @@ class ManagerInterruptions():
     cpu=None
     mode=None
     scheduler=None
-    mapInterruption={"""Interruption.timeOut: ManagerInterruptions.timeOut,
-                              Interruption.IO: ManagerInterruptions.IO,
-                              Interruption.pcbFinalize:ManagerInterruptions.pcbFinalize,
-                              Interruption.expropiation:ManagerInterruptions.expropiation"""}
+    mapInterruption=None
     
     @classmethod  
     def config(self,scheduler,mode,cpu):
         ManagerInterruptions.mode=mode
         ManagerInterruptions.scheduler=scheduler  
         ManagerInterruptions.cpu=cpu  
+        ManagerInterruptions.mapInterruption={Interruption.timeOut: ManagerInterruptions.timeOut,
+                              Interruption.IO: ManagerInterruptions.IO,
+                              Interruption.pcbFinalize:ManagerInterruptions.pcbFinalize,
+                              Interruption.expropiation:ManagerInterruptions.expropiation}
         
     @classmethod      
     def throwInterruption(self,interruption):
@@ -49,7 +50,7 @@ class ManagerInterruptions():
     @classmethod     
     def pcbFinalize(self):
         ManagerInterruptions.mode.setModeKernel()
-        ManagerInterruptions.cpu.pcb.setSate(State.finished)
+        ManagerInterruptions.cpu.pcb.state=State.finished
         ManagerInterruptions.cpu.setProcess(ManagerInterruptions.scheduler.get())
         ManagerInterruptions.mode.setModeUser()
     

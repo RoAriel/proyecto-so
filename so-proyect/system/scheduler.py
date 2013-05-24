@@ -16,6 +16,8 @@ class Scheduler():
         self.policy=policy
         
     def get(self):
+        if(self.policy.isEmpty()):
+            return None
         return self.policy.get()
     
     def add(self,process):
