@@ -5,6 +5,7 @@ Created on 19/05/2013
 '''
 import threading  as t
 from interruptions  import Interruption 
+import interruptions as i
 import random
 import time
 from process import State
@@ -17,9 +18,9 @@ class Instruction():
     
 class IO(Instruction,t.Thread):
     
-    def execute(self,managerInterruptions,pcb):
+    def execute(self,pcb):
         pcb.sate=State.wait
-        managerInterruptions.throwInterruption(Interruption.IO)
+        i.ManagerInterruptions.throwInterruption(Interruption.IO)
         self.run()
         
     def run(self):
@@ -28,6 +29,6 @@ class IO(Instruction,t.Thread):
         
 class Finalize(Instruction):
 
-    def execute(self,managerInterruptions,pcb):
+    def execute(self,pcb):
         pcb.sate=State.finished
-        managerInterruptions.throwInterruption(Interruption.pcbFinalize)
+        i.ManagerInterruptions.throwInterruption(Interruption.pcbFinalize)

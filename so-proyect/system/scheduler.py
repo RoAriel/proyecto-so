@@ -8,6 +8,7 @@ import random
 import queues as q
 import clock
 from interruptions  import Interruption 
+import interruptions as i
 
 class Scheduler():
     
@@ -58,21 +59,37 @@ class FCFS(Policy):
 
 class SJF(Policy):
     
-    def __init__(self,managerInterruption):
-        self.processes=q.PriorityQueue(lambda pa,pb: pa.priority-pb.priority)
+    def __init__(self,managerInterruption,isExpropriation):
         self.running=None
         self.managerInterruption=managerInterruption
+        self.isExpropriation=isExpropriation
+        self.processes=q.PriorityQueue(lambda pa,pb: pa.priority-pb.priority)
     
     def add(self,process):
-        if(self.running is None |  process.priority>self.running.priority):
+        #si no es expropiativo simplemente lo agrega a la cola de espera
+        #caso contrario le indica a la managerInterruption cual es el proceso
+        #que va a expropiar y lanza la interrupcino de expropiacion
+        if(not self.isExpropriation):
             self.processes.add(process)
         else:
-            self.processes.add(process)
-            self.managerInterruption.throwInterruption(Interruption.timeOut)
+            i.ManagerInterruptions.pcbExpropiation=process
+            i.ManagerInterruptions.throwInterruption(Interruption.expropiation)
+            
+    def doOld(self):
+        processes=q.PriorityQueue(lambda pa,pb: pa.priority-pb.priority)
+        while not self.isEmpty():
+            p=processes.get()
+            p.priority+=2
+            processes.add(p)
+        
+        self.processes=processes
+            
+            
                 
     def get(self):
-        self.running=self.processes.get()
-        return self.running
+        running=self.processes.get()
+        self.doOld()
+        return running
         
     def isEmpty(self):
         return self.processes.isEmpty()    
@@ -108,6 +125,9 @@ class Process():
     def __init__(self,pid,priority):
         self.pid=pid
         self.priority=priority
+
+
+
 
 
 #prueba de pq

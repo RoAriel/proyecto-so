@@ -5,6 +5,7 @@ Created on 13/05/2013
 '''
 import scheduler as s
 import clock 
+import interruptions as i
 
 class Kernel():
     
@@ -16,6 +17,7 @@ class Kernel():
         self.disk=disk
         self.mode=mode
         self.clock=clock(self.scheduler.getTimer())
+        i.ManagerInterruptions.config(self.scheduler,self.mode.self.cpu)
         
     def executeProgram(self,nameProgram):
         pass

@@ -10,9 +10,7 @@ from process import State
 
 class CPU():
     
-    def __init__(self,managerIntrruptions,memory,mode):
-        self.managerIntrruptions=managerIntrruptions
-        self.pcb=None
+    def __init__(self,memory,mode):
         self.memory=memory
         self.mode=mode
     
@@ -27,7 +25,7 @@ class CPU():
             pc=self.pcb.getPC()+self.pcd.getDirIni()
             self.pcd.addPc()
             instruction=self.memory.get(pc) 
-            instruction.execute(self.managerIntrruptions)
+            instruction.execute()
     
             
             

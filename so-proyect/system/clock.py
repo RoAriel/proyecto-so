@@ -6,6 +6,7 @@ Created on 13/05/2013
 import threading  as t
 import time
 from interruptions  import Interruption 
+import interruptions as i
 
 class Clock(t.thread):
     
@@ -36,7 +37,7 @@ class TimerQuantum(Timer):
             self.currentTime+=1
         else:
             self.currentTime=0
-            managerInterruption.throwInterruption(Interruption.timeOut)
+            i.ManagerInterruptions.throwInterruption(Interruption.timeOut)
         
         
         
