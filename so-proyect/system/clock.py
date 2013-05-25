@@ -11,6 +11,7 @@ import interruptions as i
 class Clock(t.Thread):
     
     def _init_(self,cpu,timer):
+        t.Thread.__init__(self)
         self.cpu=cpu;
         self.timer=timer
     
@@ -23,7 +24,10 @@ class Clock(t.Thread):
 class Timer():
         
     def click(self,cpu):
-        cpu.click()           
+        cpu.click()  
+        
+    def resetQuantum(self):
+        pass        
             
 class TimerQuantum(Timer):
     
@@ -33,11 +37,14 @@ class TimerQuantum(Timer):
         
     def click(self,cpu):
         if(self.quantum>self.currentTime):
-            super().click(cpu)
+            Timer.click(self,cpu)
             self.currentTime+=1
         else:
-            self.currentTime=0
+            self.resetQuantum()
             i.ManagerInterruptions.throwInterruption(Interruption.timeOut)
+            
+    def resetQuantum(self):
+        self.currentTime=0
         
         
         

@@ -21,13 +21,13 @@ class CPU():
         self.pcb=pcb
         
     def click(self):
-        
+       
         if( self.mode.isModeUser() & (self.pcb is not None)): 
             self.pcb.state=State.running
             pc=self.pcb.pc+self.pcb.initialDirection
             self.pcb.addPc()
             instruction=self.memory.getData(pc) 
             instruction.execute(self.pcb)
-    
+
             
             

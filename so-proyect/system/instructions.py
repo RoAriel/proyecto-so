@@ -22,7 +22,7 @@ class IO(Instruction,t.Thread):
     def execute(self,pcb):
         pcb.sate=State.wait
         i.ManagerInterruptions.throwInterruption(Interruption.IO)
-        self.run()
+#         self.run()
         
     def run(self):
         time.sleep(random.random(4,10))
@@ -33,3 +33,9 @@ class Finalize(Instruction):
     def execute(self,pcb):
         pcb.sate=State.finished
         i.ManagerInterruptions.throwInterruption(Interruption.pcbFinalize)
+        
+        
+class Cpu(Instruction):
+
+    def execute(self,pcb):
+        pass

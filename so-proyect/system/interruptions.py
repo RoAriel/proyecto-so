@@ -14,13 +14,15 @@ class ManagerInterruptions():
     #es el pcb que debe expropiar la cpu
     pcbExpropiation=None
     
+    timer=None
     cpu=None
     mode=None
     scheduler=None
     mapInterruption=None
     
     @classmethod  
-    def config(self,scheduler,mode,cpu):
+    def config(self,scheduler,mode,cpu,timer):
+        ManagerInterruptions.timer=timer
         ManagerInterruptions.mode=mode
         ManagerInterruptions.scheduler=scheduler  
         ManagerInterruptions.cpu=cpu  
@@ -43,9 +45,10 @@ class ManagerInterruptions():
     @classmethod     
     def IO(self):
         pcb=self.cpu.pcb
-        pcb.setState(State.wait)
-        ManagerInterruptions.queueWait.add(pcb)
+        pcb.state=State.wait
+#         ManagerInterruptions.queueWait.add(pcb)
         ManagerInterruptions.timeOut()
+        ManagerInterruptions.timer.resetQuantum()
     
     @classmethod     
     def pcbFinalize(self):

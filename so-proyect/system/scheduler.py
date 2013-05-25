@@ -80,7 +80,7 @@ class SJF(Policy):
     def doOld(self):
         processes=q.PriorityQueue(lambda pa,pb: pa.priority-pb.priority)
         while not self.isEmpty():
-            p=processes.get()
+            p=self.processes.get()
             p.priority+=2
             processes.add(p)
         
@@ -102,31 +102,23 @@ class RoundRobin(Policy):
     
     def __init__(self,isPriority):
         
-        self.quamtum=random.randrange(5, 20)
+        self.quamtum=random.randrange(1, 5)
         if(isPriority):
-            self.processes=q.Queue()
-        else:
             self.processes=q.PriorityQueue(lambda pa,pb: pa.priority-pb.priority)
+        else:
+            self.processes=q.Queue()
     
     def add(self,process):
         self.processes.add(process)
     
     def get(self):
-        self.processes.get()
+        return self.processes.get()
         
     def isEmpty(self):
         return self.processes.isEmpty()
     
     def getTimer(self):
-        return clock.TimerQuantum(random.randrange(1, 3))
-
-
-
-class Process():
-    
-    def __init__(self,pid,priority):
-        self.pid=pid
-        self.priority=priority
+        return clock.TimerQuantum(random.randrange(2, 5))
 
 
 
