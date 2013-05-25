@@ -38,7 +38,8 @@ class ManagerInterruptions():
     @classmethod     
     def timeOut(self):
         ManagerInterruptions.mode.setModeKernel()
-        ManagerInterruptions.scheduler.add(ManagerInterruptions.cpu.pcb)
+        if(ManagerInterruptions.cpu.pcb is not None):
+            ManagerInterruptions.scheduler.add(ManagerInterruptions.cpu.pcb)
         ManagerInterruptions.cpu.setProcess(ManagerInterruptions.scheduler.get())
         ManagerInterruptions.mode.setModeUser()
     

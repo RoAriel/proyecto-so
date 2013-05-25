@@ -63,7 +63,6 @@ class FCFS(Policy):
 class SJF(Policy):
     
     def __init__(self,isExpropriation):
-        self.running=None
         self.isExpropriation=isExpropriation
         self.processes=q.PriorityQueue(lambda pa,pb: pa.priority-pb.priority)
     

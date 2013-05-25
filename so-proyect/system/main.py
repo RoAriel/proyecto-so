@@ -35,12 +35,12 @@ kernel=kernel.Kernel(cpu.CPU(memory,mode),memory,scheduler.RoundRobin(True),'dis
 kernel.start()
 
 
-for n in range(2):
+for n in range(34):
     a=agregar(kernel,n+2)
     a.start()
 
 time.sleep(3)
-a=agregar(kernel,3)
+a=agregar(kernel,35)
 a.run()
 
 while not kernel.scheduler.policy.isEmpty():
