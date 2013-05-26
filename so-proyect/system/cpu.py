@@ -28,6 +28,7 @@ class CPU():
             self.pcb.addPc()
             instruction=self.memory.getData(pc) 
             instruction.execute(self.pcb)
+           
 
             
             

@@ -31,10 +31,12 @@ class Kernel():
         self.clock.start()
         
     def addPcb(self,pcb):
-        if(self.cpu.pcb is None):
+        self.mode.setModeKernel()
+        if((self.cpu.pcb is None) & self.scheduler.isEmpty()):
             self.cpu.pcb=pcb
         else:
-            self.scheduler.add(pcb)
+            self.scheduler.add(pcb,self.cpu)
+        self.mode.setModeUser()
            
          
 

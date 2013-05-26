@@ -21,9 +21,10 @@ class agregar(t.Thread):
         self.pos=pos
     
     def run(self):
-        self.kernel.memory.setData(self.pos-1,i.Cpu())
+#         self.kernel.memory.setData(self.pos-1,i.Cpu())
+        time.sleep(1)
         self.kernel.memory.setData(self.pos,i.Finalize())
-        self.kernel.addPcb(process.PCB(0, 0, 0,self.pos-1,self.pos))
+        self.kernel.addPcb(process.PCB(0, 0, self.pos,self.pos,self.pos))
 
 
 
@@ -31,17 +32,15 @@ class agregar(t.Thread):
 memory=hardware.Memory(900)
 mode=kernel.Mode()
 
-kernel=kernel.Kernel(cpu.CPU(memory,mode),memory,scheduler.RoundRobin(True),'disk',mode)
+kernel=kernel.Kernel(cpu.CPU(memory,mode),memory,scheduler.SJF(True),'disk',mode)
 kernel.start()
 
 
-for n in range(34):
-    a=agregar(kernel,n+2)
+for n in range(200):
+    a=agregar(kernel,n)
     a.start()
+    
 
-time.sleep(3)
-a=agregar(kernel,35)
-a.run()
 
 while not kernel.scheduler.policy.isEmpty():
     time.sleep(4)

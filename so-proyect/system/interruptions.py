@@ -39,28 +39,35 @@ class ManagerInterruptions():
     def timeOut(self):
         ManagerInterruptions.mode.setModeKernel()
         if(ManagerInterruptions.cpu.pcb is not None):
-            ManagerInterruptions.scheduler.add(ManagerInterruptions.cpu.pcb)
+            ManagerInterruptions.scheduler.add(ManagerInterruptions.cpu.pcb,ManagerInterruptions.cpu)
         ManagerInterruptions.cpu.setProcess(ManagerInterruptions.scheduler.get())
         ManagerInterruptions.mode.setModeUser()
     
     @classmethod     
     def IO(self):
+        ManagerInterruptions.mode.setModeKernel()
         pcb=self.cpu.pcb
         pcb.state=State.wait
 #         ManagerInterruptions.queueWait.add(pcb)
-        ManagerInterruptions.timeOut()
         ManagerInterruptions.timer.resetQuantum()
+        ManagerInterruptions.timeOut()
     
     @classmethod     
     def pcbFinalize(self):
         ManagerInterruptions.mode.setModeKernel()
         ManagerInterruptions.cpu.pcb.state=State.finished
         ManagerInterruptions.cpu.setProcess(ManagerInterruptions.scheduler.get())
+        ManagerInterruptions.timer.resetQuantum()
         ManagerInterruptions.mode.setModeUser()
     
     @classmethod      
     def expropiation(self):
-        print 'ddd'
+        ManagerInterruptions.mode.setModeKernel()
+        ManagerInterruptions.cpu.pcb.state=State.ready
+        ManagerInterruptions.scheduler.addAsReady(ManagerInterruptions.cpu.pcb)
+        ManagerInterruptions.cpu.pcb=ManagerInterruptions.pcbExpropiation
+        ManagerInterruptions.timer.resetQuantum()
+        ManagerInterruptions.mode.setModeUser()
 
 class Interruption():
     timeOut='timeOut'

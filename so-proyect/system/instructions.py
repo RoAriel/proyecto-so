@@ -33,9 +33,11 @@ class Finalize(Instruction):
     def execute(self,pcb):
         pcb.sate=State.finished
         i.ManagerInterruptions.throwInterruption(Interruption.pcbFinalize)
+        print 'process id:',pcb.pid ,'finlize'
         
         
 class Cpu(Instruction):
 
     def execute(self,pcb):
+        print 'process id:',pcb.pid ,'execute'
         pass

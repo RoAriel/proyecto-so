@@ -10,19 +10,29 @@ import clock
 from interruptions  import Interruption 
 import interruptions as i
 import random
+from threading import  Semaphore
 
 class Scheduler():
     
     def __init__(self,policy):
         self.policy=policy
+        self.semaphore = Semaphore(1)
         
     def get(self):
         if(self.policy.isEmpty()):
             return None
-        return self.policy.get()
+        process=self.policy.get()
+        return process
     
-    def add(self,process):
-        self.policy.add(process)
+# agrega al proceso directamente como listo    
+    def addAsReady(self,process):
+        self.policy.addAsReady(process)
+    
+    def add(self,process,cpu):
+        self.policy.add(process,cpu)
+        
+    def isEmpty(self):
+        return self.policy.isEmpty()
 
     def getTimer(self):
         return self.policy.getTimer()
@@ -30,7 +40,10 @@ class Scheduler():
 
 class Policy():
     
-    def add(self,process):
+    def add(self,process,cpu):
+        pass
+    
+    def addAsReady(self):
         pass
     
     def get(self):
@@ -49,7 +62,7 @@ class FCFS(Policy):
         self.processes=q.Queue()
     
     
-    def add(self,process):
+    def add(self,process,cpu):
         self.processes.add(process)
         
     def get(self):
@@ -66,15 +79,21 @@ class SJF(Policy):
         self.isExpropriation=isExpropriation
         self.processes=q.PriorityQueue(lambda pa,pb: pa.priority-pb.priority)
     
-    def add(self,process):
+    def add(self,process,cpu):
         #si no es expropiativo simplemente lo agrega a la cola de espera
         #caso contrario le indica a la managerInterruption cual es el proceso
         #que va a expropiar y lanza la interrupcino de expropiacion
-        if(not self.isExpropriation):
-            self.processes.add(process)
+        if(self.isExpropriation):
+            if(cpu.pcb.priority > process.priority):
+                self.processes.add(process)
+            else:
+                i.ManagerInterruptions.pcbExpropiation=process
+                i.ManagerInterruptions.throwInterruption(Interruption.expropiation)
         else:
-            i.ManagerInterruptions.pcbExpropiation=process
-            i.ManagerInterruptions.throwInterruption(Interruption.expropiation)
+            self.processes.add(process)
+    
+    def addAsReady(self,process):
+        self.processes.add(process)      
             
     def doOld(self):
         processes=q.PriorityQueue(lambda pa,pb: pa.priority-pb.priority)
@@ -107,7 +126,7 @@ class RoundRobin(Policy):
         else:
             self.processes=q.Queue()
     
-    def add(self,process):
+    def add(self,process,cpu):
         self.processes.add(process)
     
     def get(self):
