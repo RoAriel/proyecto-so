@@ -4,7 +4,6 @@ Created on 08/04/2013
 @author: Di Meglio
 '''
 
-import random
 
 class Memory():
     def __init__(self,size=256):
