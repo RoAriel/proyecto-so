@@ -48,7 +48,7 @@ class ManagerInterruptions():
         ManagerInterruptions.mode.setModeKernel()
         pcb=self.cpu.pcb
         pcb.state=State.wait
-#         ManagerInterruptions.queueWait.add(pcb)
+#       ManagerInterruptions.queueWait.add(pcb)
         ManagerInterruptions.timer.resetQuantum()
         ManagerInterruptions.timeOut()
     

@@ -17,15 +17,13 @@ class Instruction():
         pass
     
     
-class IO(Instruction,t.Thread):
+class IO(Instruction):
     
     def execute(self,pcb):
         pcb.sate=State.wait
         i.ManagerInterruptions.throwInterruption(Interruption.IO)
-#         self.run()
+#
         
-    def run(self):
-        time.sleep(random.random(4,10))
         
         
 class Finalize(Instruction):

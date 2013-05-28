@@ -136,7 +136,7 @@ class RoundRobin(Policy):
         return self.processes.isEmpty()
     
     def getTimer(self):
-        return clock.TimerQuantum(random.randrange(2, 5))
+        return clock.TimerQuantum(3)
 
 
 
