@@ -16,13 +16,21 @@ class Memory():
     def setData(self,position,data):
         self.rows[position]=data
         
+    def free(self):
+        return len(self.rowNil)
+    
 class LogicalMemory():
     def __init__(self,memory):
         self.size= memory.size
         self.listBlockNil=[]
         self.listBlockTaken = []
         
-# La memoria Logica esta conformada por BLOQUES!!!!  
+class Block():
+    def __init__(self,memory):
+        self.id= 1
+        self.size= memory.free
+     
+        
         
                 
 
