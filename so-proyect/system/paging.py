@@ -20,10 +20,10 @@ class Paging(MMU):
     
     def __init__(self, disk, physicalMemory,replacementAlgorithms):
         MMU.__init__(self,disk,physicalMemory)
-        self.freePage=self.generatePages(physicalMemory.getSize())
         self.takenPages=[]
-        self.sizePage=4
+        self.sizePage=8
         self.replacementAlgorithms=replacementAlgorithms
+        self.freePage=self.generatePages(physicalMemory.getSize())
  
     def generatePages(self,sizeMemory):
         pages=[]
@@ -44,8 +44,16 @@ class Paging(MMU):
          
     def getPage(self,pcb):
         npage=pcb.pc / self.physicalMemory.getSize()
-        self.takenPages[pcb][npage]
-        return self
+        if(len(self.takenPages[pcb]) <npage):
+            instructions=self.disk.getInstructions(pcb)
+            pages=self.getPagesTo(len(instructions), pcb)
+            self.loadedIntoMemory(pages,instructions)
+            self.AddAll(self.takenPages[pcb],pages)
+            return self.takenPages[pcb][npage]
+        else:
+            return self.takenPages[pcb][npage]
+            
+        
    
     def getPagesTo(self,sizeIntructions,pcb):
         size=self.getAmountPages(sizeIntructions)
@@ -57,11 +65,13 @@ class Paging(MMU):
             
         if(len(pages) < size):
             pagesRest=self.replacementAlgorithms.getPages(self.disk,self,len(pages)-size-self.AmountPagesPcb(pcb))
-            for page in pagesRest:
-                pages.append(page)
+            self.AddAll(pages, pagesRest)
         
         return pages
-        
+       
+    def AddAll(self,pagesA,pagesB):
+        for page in pagesB:
+                pagesA.append(page) 
    
    
     def getAmountPages(self,size):
@@ -73,7 +83,9 @@ class Paging(MMU):
     def AmountPagesPcb(self,pcb):
         return len(self.takenPages[pcb])
     
+    
                 
+
 
 
 
@@ -107,5 +119,5 @@ class Kernel():
 p=Paging('',PhysicalMemory(),'')
 
 
-r=Kernel()
-r.a()
+
+
