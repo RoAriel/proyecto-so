@@ -33,7 +33,7 @@ class Paging(MMU):
       
     def allocateMemory(self, pcb):
         instructions=self.disk.getInstructions(pcb)   
-        pages=self.getPagesTo(instructions)
+        pages=self.getPagesTo(len(instructions),pcb)
         self.takenPages[pcb]=pages
     
     
@@ -43,18 +43,25 @@ class Paging(MMU):
         return self.physicalMemory[direction]
          
     def getPage(self,pcb):
-        pass
+        npage=pcb.pc / self.physicalMemory.getSize()
+        self.takenPages[pcb][npage]
+        return self
    
-    def getPagesTo(self,instructions):
-        size=len(instructions)
-        if(size <= self.freePage):
+    def getPagesTo(self,sizeIntructions,pcb):
+        size=self.getAmountPages(sizeIntructions)
+        current=0
+        while(size> current & len(self.freePage)>0):
             pages=[]
-            for i in range(1,size):
-                pages.append(self.freePage[i])
-                del(self.freePage[i])
-            return pages
-        else:
-            return self.replacementAlgorithms.getPages(self.disk,self)
+            pages.append(self.freePage[current])
+            del(self.freePage[current])
+            
+        if(len(pages) < size):
+            pagesRest=self.replacementAlgorithms.getPages(self.disk,self,len(pages)-size-self.AmountPagesPcb(pcb))
+            for page in pagesRest:
+                pages.append(page)
+        
+        return pages
+        
    
    
     def getAmountPages(self,size):
@@ -63,8 +70,14 @@ class Paging(MMU):
         else:
             return size/self.sizePage+1
    
+    def AmountPagesPcb(self,pcb):
+        return len(self.takenPages[pcb])
     
+                
 
+
+
+"""algoritmos de remplazos de paginas"""
 class ReplacementAlgorithms():
     
     def getPages(self,disk,paging):
@@ -78,7 +91,21 @@ class FIFO(ReplacementAlgorithms):
 class NotRecentlyUsed():
     pass
 
-"""     
-p=Paging('',PhysicalMemory())
-print len(p.freePage)
-"""
+
+
+
+class Kernel():
+    
+    def __init__(self):
+        self.abc=2
+        
+    def a(self):
+        print self.abc
+    
+
+    
+p=Paging('',PhysicalMemory(),'')
+
+
+r=Kernel()
+r.a()

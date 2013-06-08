@@ -47,7 +47,7 @@ class Setting():
         
 
 class PhysicalMemory():
-    def __init__(self,size=256):
+    def __init__(self,size=4000):
         self.rows=range(size);
         self.size=size
             
