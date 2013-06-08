@@ -10,13 +10,13 @@ class MMU():
         self.disk = disk
         self.physicalMemory = physicalMemory
         
-    def allocateMemory(self,):
+    def allocateMemory(self,pcb):
         pass
     
     def free(self, pcb):
         pass
     
-    def getIstruccion(self,pcb):
+    def getInstruction(self,pcb):
         pass
     
 class ContinuousAssignment(MMU):
@@ -32,6 +32,11 @@ class ContinuousAssignment(MMU):
     
     def compact(self):
         pass
+    
+    def allocateMemory(self,pcb):
+        pass
+        
+        
         
 class Setting():
     
@@ -51,6 +56,9 @@ class PhysicalMemory():
     
     def setData(self,position,data):
         self.rows[position]=data
+        
+    def getSize(self):
+        return self.size
 
         
         

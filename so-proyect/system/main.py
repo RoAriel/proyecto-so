@@ -34,7 +34,7 @@ class agregar(t.Thread):
 
 
 
-memory=hardware.Memory(1500)
+memory=hardware.PhysicalMemory(1500)
 mode=kernel.Mode()
 
 kernel=kernel.Kernel(cpu.CPU(memory,mode),memory,scheduler.RoundRobin(False),'disk',mode)
