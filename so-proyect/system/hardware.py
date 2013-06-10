@@ -67,7 +67,7 @@ class ContinuousAssignment(MMU):
      
     def allocateMemory(self,pcb):
         """obtiene las instrucciones del pcb almacenadas en disco y calcula el tamanho"""
-        instructions=self.disk.getInstructions()
+        instructions=self.disk.getInstructions(pcb)
         size=len(instructions)
         """ delega al ajuste la buqueda de un bloque de tamanho size,puede no encotrarlo,en ese caso
             retorna none
