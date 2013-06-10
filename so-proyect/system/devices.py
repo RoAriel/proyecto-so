@@ -7,6 +7,18 @@ import threading  as t
 import time
 import random
 
+
+class ManagerDivices():
+    def __init__(self,scheduler):
+        self.divices={TypeDevice.keyboard:DeviceIO(TypeDevice.keyboard,scheduler),
+                       TypeDevice.monitor:DeviceIO(TypeDevice.monitor,scheduler),
+                       TypeDevice.printer: DeviceIO(TypeDevice.printer,scheduler)
+                       }
+        
+    def getDeviceIO(self,aDevice):
+        return self.divices[aDevice]
+
+
 class DeviceIO():
     
     def __init__(self,type,scheduler):
@@ -30,7 +42,7 @@ class Controller(t.thread):
         self.scheduler.add(self.pcb)
     
 
-class TypeDivice():
+class TypeDevice():
     monitor="monitor"
     keyboard="keyboard"
     printer="printer"
