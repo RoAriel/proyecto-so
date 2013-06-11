@@ -28,7 +28,7 @@ class ContinuousAssignment(MMU):
         MMU.__init__(self,disk, physicalMemory)
         self.freeBlocks=self.generateFreeBlock(physicalMemory)
         self.setting = setting
-        self.takenBlock= {}#es un diccionario,la clave es el pcb y el valor un bloque asignado
+        self.takenBlock={}#es un diccionario,la clave es el pcb y el valor un bloque asignado
      
     """chequea que block no sea none,si no es None le asigna al pcb el block(en takenBlock) una vez asignado
        elimina el block de freeBlock y carga en memoria fisica las instrucciones.
@@ -45,20 +45,26 @@ class ContinuousAssignment(MMU):
        quiere decir que no hay suficiente espacio
     """
     def compactTo(self,size):
-        if(len(self.freeBlocks) <= 1):
-            return None
-        i=1
-        block=self.freeBlocks[0]
-        while(i<len(self.freeBlocks)):
-            newBlock=block.compact(self.freeBlocks[i])
-            del(self.freeBlocks[i-1])
-            self.freeBlocks[i-1]=newBlock
-            if(newBlock.entersBlock(size)):
-                return newBlock
-            i+=1
+        sizeAll=0
+        for block in self.freeBlocks:
+            sizeAll+=block.size
+            
+        newBlock=Block(sizeAll,0)
+        self.moveBlocks(sizeAll)
+        
+        self.freeBlocks=[newBlock]
+        if newBlock.entersBlock(size):
+            return newBlock.breakBlock(size)
         return None
     
-    
+    def moveBlocks(self,directinoIni):
+        dir=directinoIni
+        taken=self.takenBlock.values()
+        for block in taken:
+            instructions=self.getInstructions(block)
+            block.direction=dir
+            self.allocateInstructions(instructions,block)
+            dir+=block.size
     
     """dado el tamanho de memoria fisica generia un block free""" 
     def generateFreeBlock(self,physicalMemory):
@@ -67,14 +73,21 @@ class ContinuousAssignment(MMU):
      
     def allocateMemory(self,pcb):
         """obtiene las instrucciones del pcb almacenadas en disco y calcula el tamanho"""
-        instructions=self.disk.getInstructions(pcb)
-        size=len(instructions)
+        dblock=self.disk.getData(pcb)
+        size=dblock.size()
         """ delega al ajuste la buqueda de un bloque de tamanho size,puede no encotrarlo,en ese caso
             retorna none
         """
         block=self.setting.getFreeBlockTo(size,self.freeBlocks)
         """le asigna al pcb el block y lo carga en memoria fisica"""
-        self.allocate(pcb, block,instructions)
+        if(block is not None):
+            block=self.compactTo(size)
+            if(block is not None):
+                self.allocate(pcb, block,dblock)
+            else:
+                pass
+        else:
+            self.allocate(pcb, block,dblock)
       
       
     """este metodo debe cargar en memoria fisica las instrucciones,tener en cuenta el block(tiene direction y size)"""  
@@ -98,12 +111,45 @@ class Block():
 
     def entersBlock(self,size):
         return  size <= self.size
+    
+    def entersJustBlock(self,size):
+        return  size == self.size
+    
+    def isHigher(self,otherBlock):
+        return self.size >= otherBlock.size
         
         
 class Setting():
     
     def getFreeBlockTo(self,size,freeBloc):
         pass # busca el bloque que me soporta uede retornar null si no lo encuentra
+
+class FirstFit(Setting):
+    
+    def getFreeBlockTo(self, size, freeBloc):
+        for block in freeBloc:
+            if(block.entersBlock(block)):
+                return block
+        return None
+    
+class BestFit(Setting):
+    
+    def getFreeBlockTo(self, size, freeBloc):
+        for block in freeBloc:
+            if(block.entersJustBlock(block)):
+                return block
+        return None
+    
+class WorstFit(Setting):
+    
+    def getFreeBlockTo(self, size, freeBlock):
+        blockMax=freeBlock[0]
+        for block in freeBlock:
+            if(not blockMax.isHigher(block)):
+                blockMax=block
+        if(blockMax.entersBlock(size)):
+            return blockMax
+        return None
     
 
 
@@ -145,13 +191,3 @@ class PhysicalMemory():
    
 """pequenha prueba de compactTo"""
     
-a=ContinuousAssignment('',PhysicalMemory(),'')
-a.freeBlocks= [Block(5,0),Block(8,5),Block(2,11)] 
-                
-o=a.compactTo(10)
-o=a.compactTo(10)
-
-print a.freeBlocks[0].size
-print a.freeBlocks[0].direction
-
-print len( a.freeBlocks)
