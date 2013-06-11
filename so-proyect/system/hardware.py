@@ -5,6 +5,8 @@ Created on 08/04/2013
 '''
 
 import process as p
+import instructions as i
+from process import PCB
 
 class MMU():
     
@@ -36,15 +38,19 @@ class ContinuousAssignment(MMU):
        la primera parte,si retorna none quiere decir que no hay espacio en memoria debe esperar(la parte de espera nose ,hay
        que preguntar)
     """    
-    def allocate(self, pcb, block,instructions):
-        pass 
-    
+    def allocate(self, pcb, block,instructions,size):
+        if(not block.entersJustBlock(size)):
+            self.takenBlock[pcb]=block.breakBlock(size)
+        else:
+            self.takenBlock[pcb]=block
+        self.allocateInMemoryPhisical(instructions, block)    
     
     
     """dado una size compacta la memoria logica y retorna el bloque detamanho size ,en el caso que retorne none
        quiere decir que no hay suficiente espacio
     """
     def compactTo(self,size):
+        print 'compactando!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
         sizeAll=0
         for block in self.freeBlocks:
             sizeAll+=block.size
@@ -63,8 +69,18 @@ class ContinuousAssignment(MMU):
         for block in taken:
             instructions=self.getInstructions(block)
             block.direction=dir
-            self.allocateInstructions(instructions,block)
+            self.allocateInMemoryPhisical(instructions,block)
             dir+=block.size
+        
+    def getInstructions(self,block):
+        direction=block.direction
+        listIns=[]
+        for i in range(block.size):
+            listIns.append(self.physicalMemory.getData(direction))
+            direction+=1
+        return listIns
+            
+            
     
     """dado el tamanho de memoria fisica generia un block free""" 
     def generateFreeBlock(self,physicalMemory):
@@ -73,30 +89,38 @@ class ContinuousAssignment(MMU):
      
     def allocateMemory(self,pcb):
         """obtiene las instrucciones del pcb almacenadas en disco y calcula el tamanho"""
-        dblock=self.disk.getData(pcb)
+        dblock=self.disk.getDiskBlock(pcb)
         size=dblock.size()
         """ delega al ajuste la buqueda de un bloque de tamanho size,puede no encotrarlo,en ese caso
             retorna none
         """
         block=self.setting.getFreeBlockTo(size,self.freeBlocks)
         """le asigna al pcb el block y lo carga en memoria fisica"""
-        if(block is not None):
+        if(block is None):
             block=self.compactTo(size)
-            if(block is not None):
-                self.allocate(pcb, block,dblock)
+            if(block is not  None):
+                self.allocate(pcb, block,dblock.getInstructions(),size)
             else:
                 pass
         else:
-            self.allocate(pcb, block,dblock)
+            print block
+            self.allocate(pcb, block,dblock.getInstructions(),size)
       
       
     """este metodo debe cargar en memoria fisica las instrucciones,tener en cuenta el block(tiene direction y size)"""  
     def allocateInMemoryPhisical(self,instructions,block):
-        pass
+        dirIni=block.direction
+        for i in instructions:
+            self.physicalMemory.setData(dirIni,i)
+            dirIni+=1
+            
      
     """este es muy facil,libera el bloquedel pcb de memorua logica(la fisica no la toca)"""   
     def free(self,pcb):
-        pass
+        block=self.takenBlock[pcb]
+        del(self.takenBlock[pcb])
+        self.freeBlocks.append(block)
+        
   
         
 class Block():
@@ -117,7 +141,11 @@ class Block():
     
     def isHigher(self,otherBlock):
         return self.size >= otherBlock.size
-        
+    
+    def breakBlock(self,size):
+        self.size-=size
+        block=Block(size,self.size)
+        return block
         
 class Setting():
     
@@ -128,7 +156,7 @@ class FirstFit(Setting):
     
     def getFreeBlockTo(self, size, freeBloc):
         for block in freeBloc:
-            if(block.entersBlock(block)):
+            if(block.entersBlock(size)):
                 return block
         return None
     
@@ -155,22 +183,31 @@ class WorstFit(Setting):
 
 
 
-""" esto es para que pruebes,como el dico no lo tenemos hecho
+
 class Disk():
     
-    def getInstructions(self,pcb):
-        a=i.Cpu()
-        b=i.Cpu()
-        c=i.Cpu()
-        d=i.Cpu()
-        e=i.Cpu()
-        f=i.Cpu()
-        g=i.Cpu()
-        h=i.Cpu()
-        list=[a,b,c,d,a,b,c,d,e,a,b,c,d,a,b,c,d,a,b,c,d]
+    def getDiskBlock(self,pcb):
+        return DBlock()
+    
+import random    
+class DBlock():
+    
+    def __init__(self):
+        self.list=self.generate()
+        
+            
+    def generate(self):
+        list=[]
+        for p in range(random.randrange(2,4)):
+            list.append(PCB(0,0,0,0,0))
         return list
-
-""" 
+    
+    def getInstructions(self):
+        return self.list
+    
+    def size(self):
+        return len(self.list)
+        
         
 """MEMORIA FISICA"""
 class PhysicalMemory():
@@ -182,6 +219,7 @@ class PhysicalMemory():
         return self.rows[position]
     
     def setData(self,position,data):
+        print position
         self.rows[position]=data
         
     def getSize(self):
@@ -191,3 +229,26 @@ class PhysicalMemory():
    
 """pequenha prueba de compactTo"""
     
+ac=ContinuousAssignment(Disk(),PhysicalMemory(5),FirstFit())
+
+p=PCB(0,0,0,0,0)
+ac.allocateMemory(p)
+ac.free(p)
+"""
+print len(ac.freeBlocks)
+print ac.freeBlocks[0].size
+print ac.freeBlocks[0].direction
+print ac.takenBlock[p].size
+print ac.takenBlock[p].direction
+"""
+for e in range(5):
+    p=PCB(0,0,0,0,0)
+    ac.allocateMemory(p)
+    ac.free(p)
+
+
+print '-----------------'
+print len(ac.freeBlocks)
+print ac.freeBlocks[0].size
+print ac.freeBlocks[0].direction
+print len(ac.takenBlock.values())
