@@ -4,9 +4,10 @@ Created on 08/04/2013
 @author: Di Meglio
 '''
 
-import process as p
-import instructions as i
 from process import PCB
+import instructions as i
+import process as p
+import random
 
 class MMU():
     
@@ -43,8 +44,20 @@ class ContinuousAssignment(MMU):
             self.takenBlock[pcb]=block.breakBlock(size)
         else:
             self.takenBlock[pcb]=block
+            self.deletBlockFree(block)
+            
         self.allocateInMemoryPhisical(instructions, block)    
     
+    
+    def isBLockFree(self,aBlock):
+        for block in self.freeBlocks:
+            if(block == aBlock):
+                return True
+        return False
+    
+    def deletBlockFree(self,aBlock):
+        if(self.isBLockFree(aBlock)):
+            self.freeBlocks.remove(aBlock)
     
     """dado una size compacta la memoria logica y retorna el bloque detamanho size ,en el caso que retorne none
        quiere decir que no hay suficiente espacio
@@ -60,7 +73,10 @@ class ContinuousAssignment(MMU):
         
         self.freeBlocks=[newBlock]
         if newBlock.entersBlock(size):
-            return newBlock.breakBlock(size)
+            if newBlock.entersJustBlock(size):
+                return newBlock
+            else:
+                return newBlock.breakBlock(size)
         return None
     
     def moveBlocks(self,directinoIni):
@@ -101,9 +117,8 @@ class ContinuousAssignment(MMU):
             if(block is not  None):
                 self.allocate(pcb, block,dblock.getInstructions(),size)
             else:
-                pass
+                print 'no se guardo'
         else:
-            print block
             self.allocate(pcb, block,dblock.getInstructions(),size)
       
       
@@ -189,7 +204,6 @@ class Disk():
     def getDiskBlock(self,pcb):
         return DBlock()
     
-import random    
 class DBlock():
     
     def __init__(self):
@@ -198,7 +212,7 @@ class DBlock():
             
     def generate(self):
         list=[]
-        for p in range(random.randrange(2,4)):
+        for p in range(random.randrange(1,20)):
             list.append(PCB(0,0,0,0,0))
         return list
     
@@ -229,26 +243,65 @@ class PhysicalMemory():
    
 """pequenha prueba de compactTo"""
     
-ac=ContinuousAssignment(Disk(),PhysicalMemory(5),FirstFit())
+ac=ContinuousAssignment(Disk(),PhysicalMemory(300),FirstFit())
 
-p=PCB(0,0,0,0,0)
-ac.allocateMemory(p)
-ac.free(p)
-"""
-print len(ac.freeBlocks)
-print ac.freeBlocks[0].size
-print ac.freeBlocks[0].direction
-print ac.takenBlock[p].size
-print ac.takenBlock[p].direction
-"""
-for e in range(5):
-    p=PCB(0,0,0,0,0)
-    ac.allocateMemory(p)
-    ac.free(p)
+p0=PCB(0,0,0,0,0)
 
+
+ac.allocateMemory(p0)
+ac.free(p0)
+
+for i in range(350):
+    p0=PCB(0,0,0,0,0)
+    ac.allocateMemory(p0)
+    ac.free(p0)
+
+
+"""pruebaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas"""
 
 print '-----------------'
+print 'blockes libres: ',len(ac.freeBlocks)
+tam=0
+for b in ac.freeBlocks:
+   print 'size: ',b.size
+   print 'direccion:',b.direction 
+   tam+=b.size
+print 'size total:',tam
+"""
 print len(ac.freeBlocks)
 print ac.freeBlocks[0].size
 print ac.freeBlocks[0].direction
 print len(ac.takenBlock.values())
+"""
+
+def getBlockId(dir,list):
+    res=[]
+    for x in list:
+        if(x.direction == dir):
+            res.append(x)
+    return res
+
+def sonIguales(list):
+    res=True
+    p=list[0]
+    for x in list:
+        res&=p == x
+    return res
+
+def ocurrenciasDe(dir,lista):
+    ocu=0
+    for b in lista:
+        if(dir == b.direction):
+            ocu+=1
+    return ocu
+print 'ocurrencias:'
+for i in range(20):
+    ocu=ocurrenciasDe(i, ac.freeBlocks)
+    print 'ocurrencias de: ', i, 'son: ',ocu
+    res=getBlockId(i,ac.freeBlocks)
+    if(len(res)>1):
+        print 'iguales? :',sonIguales(res)
+
+
+
+
