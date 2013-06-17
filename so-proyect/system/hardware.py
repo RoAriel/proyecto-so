@@ -184,7 +184,7 @@ class ContinuousAssignment(MMU):
 class Block():
     def __init__(self,size,direction):
         self.size= size
-        """esta direccion hace referencia a una direccion de memoria logica"""
+        """esta direccion hace referencia a una direccion de memoria fisica"""
         self.direction = direction
     
     """dado otro block retorna uno nuevo compactado"""
@@ -235,6 +235,8 @@ class BestFit(Setting):
 class WorstFit(Setting):
     
     def getFreeBlockTo(self, size, freeBlock):
+        if len(freeBlock)==0:
+            return None
         blockMax=freeBlock[0]
         for block in freeBlock:
             if(not blockMax.isHigher(block)):

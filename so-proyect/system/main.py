@@ -40,12 +40,13 @@ lm=hardware.ContinuousAssignment(hardware.Disk(),memory,hardware.WorstFit())
 
 
 kernel=kernel.Kernel(cpu.CPU(lm,mode),memory,lm,scheduler.RoundRobin(False),'desk',mode)
-p1=process.PCB(0, 0, 0,0,0)
-p2=process.PCB(0, 0, 1,0,0)
-kernel.logicMemory.allocateMemory(p1)
-kernel.logicMemory.allocateMemory(p2)
-kernel.addPcb(p1)
-kernel.addPcb(p2)
+
+for i in range(60):
+    p=process.PCB(0, 0,i,0,0)
+    kernel.logicMemory.allocateMemory(p)
+    kernel.addPcb(p)
+
+
 kernel.start()
 
 """
@@ -54,12 +55,12 @@ for n in range(200):
     a.start()
 """  
 
-
+"""
 while not kernel.scheduler.policy.isEmpty():
     time.sleep(4)
     print 'vacia:',kernel.scheduler.policy.isEmpty()
     print 'size:',len(kernel.scheduler.policy.processes.elements)
-
+"""
 
 
 
