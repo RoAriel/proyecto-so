@@ -44,11 +44,8 @@ class ContinuousAssignment(MMU):
         self.setting = setting
         self.takenBlock={}#es un diccionario,la clave es el pcb y el valor un bloque asignado
      
-    """chequea que block no sea none,si no es None le asigna al pcb el block(en takenBlock) una vez asignado
-       elimina el block de freeBlock y carga en memoria fisica las instrucciones.
-       En el caso en el que block se None,se debe compactar la memoria,si compactTo retorna un bloke se debe repetir
-       la primera parte,si retorna none quiere decir que no hay espacio en memoria debe esperar(la parte de espera nose ,hay
-       que preguntar)
+    """parte el bloque(si es mas grande que el pcb)y se lo asigna al pcb ,tambien guarda las
+       instrucciones en la memoria fisica
     """    
     def allocate(self, pcb, block,instructions,size):
 
@@ -57,7 +54,7 @@ class ContinuousAssignment(MMU):
         else:
             self.takenBlock[pcb]=block
             self.deleteBlockFree(block)
-        self.allocateInMemoryPhisical(instructions,self.takenBlock[pcb])    
+        self.allocateInMemoryPhysical(instructions,self.takenBlock[pcb])    
     
     
     def isBLockFree(self,aBlock):
@@ -72,8 +69,9 @@ class ContinuousAssignment(MMU):
         if(self.isBLockFree(aBlock)):
             self.freeBlocks.remove(aBlock)
     
-    """dado una size compacta la memoria logica y retorna el bloque detamanho size ,en el caso que retorne none
-       quiere decir que no hay suficiente espacio
+    """dado una size compacta la memoria logica y retorna el bloque de tamanho size ,en el caso que retorne none
+       quiere decir que no hay suficiente espacio para el pcb de tamanho size.
+       Tambien mueve todas las instrucciones de la memoria fisica
     """
     def compactTo(self,size):
 
@@ -93,6 +91,10 @@ class ContinuousAssignment(MMU):
                 return newBlock.breakBlock(size)
         return None
     
+    """
+    dado una direccion inicial,mueve todos los bloques tomados los los pcb empezando por la
+    direccion inicial(memoria fisica y logica)
+    """
     def moveBlocks(self,directinoIni):
 
         dir=directinoIni
@@ -100,9 +102,12 @@ class ContinuousAssignment(MMU):
         for block in taken:
             instructions=self.getInstructions(block)
             block.direction=dir
-            self.allocateInMemoryPhisical(instructions,block)
+            self.allocateInMemoryPhysical(instructions,block)
             dir+=block.size
-        
+    
+    """
+    Dado un bloque retorna todas las instrucciones almacenadas en memoria fisica
+    """  
     def getInstructions(self,block):
 
         direction=block.direction
@@ -123,7 +128,7 @@ class ContinuousAssignment(MMU):
     
      
     def allocateMemory(self,pcb):
-        """obtiene las instrucciones del pcb almacenadas en disco y calcula el tamanho"""
+        """Obtiene un bloque de disco ,que almacena las instrucciones del pcb"""
         dblock=self.disk.getDiskBlock(pcb)
         size=dblock.size()
 
@@ -131,8 +136,12 @@ class ContinuousAssignment(MMU):
             retorna none
         """
         block=self.setting.getFreeBlockTo(size,self.freeBlocks)
-        """le asigna al pcb el block y lo carga en memoria fisica"""
+        
+        """si el bloque es none,se debe compactar,caso contrario ya se puede guardar en memoria"""
         if(block is None):
+            """si se compacta  y block sigue siendo none,quiere decir que no hay espacion,el pcb no puede ser
+               guardado en memoria en este momento
+            """
             block=self.compactTo(size)
             if(block is not  None):
 
@@ -144,8 +153,8 @@ class ContinuousAssignment(MMU):
             self.allocate(pcb, block,dblock.getInstructions(),size)
       
       
-    """este metodo debe cargar en memoria fisica las instrucciones,tener en cuenta el block(tiene direction y size)"""  
-    def allocateInMemoryPhisical(self,instructions,block):
+    """carga en memoria fisica las instrucciones"""  
+    def allocateInMemoryPhysical(self,instructions,block):
 
         dirIni=block.direction
         for i in instructions:
@@ -154,7 +163,7 @@ class ContinuousAssignment(MMU):
             dirIni+=1
             
      
-    """este es muy facil,libera el bloquedel pcb de memorua logica(la fisica no la toca)"""   
+    """Libera la memoria usada por el pcb"""   
     def free(self,pcb):
         i=self.takenBlock.keys()
         res=False
@@ -175,6 +184,7 @@ class ContinuousAssignment(MMU):
 class Block():
     def __init__(self,size,direction):
         self.size= size
+        """esta direccion hace referencia a una direccion de memoria logica"""
         self.direction = direction
     
     """dado otro block retorna uno nuevo compactado"""
