@@ -57,8 +57,7 @@ class ContinuousAssignment(MMU):
         else:
             self.takenBlock[pcb]=block
             self.deleteBlockFree(block)
-            
-        self.allocateInMemoryPhisical(instructions, block)    
+        self.allocateInMemoryPhisical(instructions,self.takenBlock[pcb])    
     
     
     def isBLockFree(self,aBlock):
@@ -78,7 +77,7 @@ class ContinuousAssignment(MMU):
     """
     def compactTo(self,size):
 
-        print 'compactando!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+
         sizeAll=0
         for block in self.freeBlocks:
             sizeAll+=block.size
@@ -112,7 +111,9 @@ class ContinuousAssignment(MMU):
             listIns.append(self.physicalMemory.getData(direction))
             direction+=1
         return listIns
-            
+         
+    def getData(self,pcb):
+        return self.physicalMemory.getData(self.takenBlock[pcb].direction + pcb.pc)
             
     
     """dado el tamanho de memoria fisica generia un block free""" 
@@ -125,7 +126,7 @@ class ContinuousAssignment(MMU):
         """obtiene las instrucciones del pcb almacenadas en disco y calcula el tamanho"""
         dblock=self.disk.getDiskBlock(pcb)
         size=dblock.size()
-        print size
+
         """ delega al ajuste la buqueda de un bloque de tamanho size,puede no encotrarlo,en ese caso
             retorna none
         """
@@ -134,12 +135,12 @@ class ContinuousAssignment(MMU):
         if(block is None):
             block=self.compactTo(size)
             if(block is not  None):
-                print '-------'
+
                 self.allocate(pcb, block,dblock.getInstructions(),size)
             else:
                 print 'no se guardo'
         else:
-            print '-------'
+
             self.allocate(pcb, block,dblock.getInstructions(),size)
       
       
@@ -149,6 +150,7 @@ class ContinuousAssignment(MMU):
         dirIni=block.direction
         for i in instructions:
             self.physicalMemory.setData(dirIni,i)
+            print 'llego ',dirIni
             dirIni+=1
             
      
@@ -164,9 +166,7 @@ class ContinuousAssignment(MMU):
         """"""
         block=self.takenBlock[pcb]
         del(self.takenBlock[pcb])
-        for x in self.freeBlocks:
-            if(x.direction == block.direction):
-                print 'iguales al hacer free'
+       
 
         self.freeBlocks.append(block)
     
@@ -253,8 +253,9 @@ class DBlock():
             
     def generate(self):
         list=[]
-        for p in range(random.randrange(1,20)):
-            list.append(PCB(0,0,0,0,0))
+        for p in range(random.randrange(1,19)):
+            list.append(i.Cpu())
+        list.append(i.Finalize())
         return list
     
     def getInstructions(self):
@@ -321,22 +322,24 @@ def ocurrenciasDe(dir,lista):
             ocu+=1
     return ocu
     
-ac=ContinuousAssignment(Disk(),PhysicalMemory(10154),WorstFit())
+ac=ContinuousAssignment(Disk(),PhysicalMemory(30),WorstFit())
 
 p0=PCB(0,0,0,0,0)
 
-
+"""
 ac.allocateMemory(p0)
+print ac.takenBlock[p0].direction
+print ac.getData(p0)
 ac.free(p0)
 
 for i in range(11265):
     p0=PCB(0,0,0,0,0)
     ac.allocateMemory(p0)
     ac.free(p0)
-
+"""
 
 """pruebaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas"""
-
+"""
 print '-----------------'
 print 'blockes libres: ',len(ac.freeBlocks)
 tam=0
@@ -346,6 +349,7 @@ for b in ac.freeBlocks:
    tam+=b.size
 print 'size total:',tam
 """
+"""
 
 print len(ac.freeBlocks)
 print ac.freeBlocks[0].size
@@ -353,7 +357,7 @@ print ac.freeBlocks[0].direction
 print len(ac.takenBlock.values())
 """
 
-
+"""
 print 'ocurrencias:'
 for i in range(10):
     ocu=ocurrenciasDe(i, ac.freeBlocks)
@@ -366,4 +370,4 @@ hayOcurrenciaMayo(ac.freeBlocks)
 
 nn=[1,2,3]
 nn.insert(0, 4)
-
+"""

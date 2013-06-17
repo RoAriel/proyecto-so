@@ -9,9 +9,10 @@ import interruptions as i
 
 class Kernel():
     
-    def __init__(self,cpu,memory,policy,disk,mode):
+    def __init__(self,cpu,memoryPhysical,memoryLogic,policy,disk,mode):
         self.cpu=cpu
-        self.memory=memory
+        self.PhysicalMemory=memoryPhysical
+        self.logicMemory=memoryLogic
         self.scheduler=s.Scheduler(policy)
         self.disk=disk
         self.mode=mode

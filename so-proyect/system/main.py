@@ -36,15 +36,23 @@ class agregar(t.Thread):
 
 memory=hardware.PhysicalMemory(1500)
 mode=kernel.Mode()
+lm=hardware.ContinuousAssignment(hardware.Disk(),memory,hardware.WorstFit())
 
-kernel=kernel.Kernel(cpu.CPU(memory,mode),memory,scheduler.RoundRobin(False),'disk',mode)
+
+kernel=kernel.Kernel(cpu.CPU(lm,mode),memory,lm,scheduler.RoundRobin(False),'disk',mode)
+p1=process.PCB(0, 0, 0,0,0)
+p2=process.PCB(0, 0, 1,0,0)
+kernel.logicMemory.allocateMemory(p1)
+kernel.logicMemory.allocateMemory(p2)
+kernel.addPcb(p1)
+kernel.addPcb(p2)
 kernel.start()
 
-
+"""
 for n in range(200):
     a=agregar(kernel,n*6)
     a.start()
-    
+"""  
 
 
 while not kernel.scheduler.policy.isEmpty():

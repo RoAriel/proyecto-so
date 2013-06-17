@@ -24,11 +24,9 @@ class CPU():
        
         if( self.mode.isModeUser() & (self.pcb is not None)): 
             self.pcb.state=State.running
-            pc=self.pcb.pc+self.pcb.initialDirection
             self.pcb.addPc()
-            instruction=self.memory.getData(pc) 
+            instruction=self.memory.getData(self.pcb) 
             instruction.execute(self.pcb)
-           
 
             
             
