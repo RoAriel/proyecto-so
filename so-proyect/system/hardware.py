@@ -146,8 +146,7 @@ class ContinuousAssignment(MMU):
             if(block is not  None):
 
                 self.allocate(pcb, block,dblock.getInstructions(),size)
-            else:
-                print 'no se guardo'
+            
         else:
 
             self.allocate(pcb, block,dblock.getInstructions(),size)
