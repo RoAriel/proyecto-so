@@ -27,6 +27,7 @@ class Paging(MMU):
         self.sizePage=8
         self.replacementAlgorithms=replacementAlgorithms
         self.frames=self.generateFrames(physicalMemory.getSize())
+
  
     """genera sizeMemory paginas,cada una con su direccion"""
     def generateFrames(self,sizeMemory):
@@ -68,11 +69,14 @@ class Paging(MMU):
         
              
     def getFrame(self):
-        if(len(self.replacementAlgorithms.queue)!=0):   
+        if(len(self.replacementAlgorithms.queue)==len(self.frames)):   
             return self.replacementAlgorithms.getFrame(self.takenFrames)
         else:
             return self.getFreeFrame()
-        
+    
+    def getFreeFrame(self):
+        free=filter(lambda block: not block in self.replacementAlgorithms.queue,self.frames)
+        return free[0]
         
      
    

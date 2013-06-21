@@ -22,6 +22,7 @@ class ManagerInterruptions():
     
     paging=None     
     pcb=None
+    disk=None
     
     @classmethod  
     def config(self,scheduler,mode,cpu,timer):
@@ -82,7 +83,7 @@ class ManagerInterruptions():
     def pageFault(self):
         ManagerInterruptions.mode.setModeKernel()
         d=self.paging.getFrame()
-        self.swapIn(d['page'],d['frame'],self.pcb)
+        self.disk.swapIn(d['page'],d['frame'],self.pcb)
         self.paging.allocateInMemoryPhysical(self.pcb,d['frame'])
         ManagerInterruptions.mode.setModeUser()
 
