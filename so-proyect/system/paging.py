@@ -7,6 +7,8 @@ from hardware import MMU
 from hardware import PhysicalMemory
 import instructions as i
 import process as p
+import interruptions as ii
+import kernel
 
 class Page():
     
@@ -65,11 +67,13 @@ class Paging(MMU):
         return self.takenFrames[pcb].getInstruction(pcb,self.physicalMemory,self)
         
              
-    def getFreeFrame(self):
-        if(self.nohay()):   
-            return self.replacementAlgorithms.getFrame()
+    def getFrame(self):
+        if(len(self.replacementAlgorithms.queue)!=0):   
+            return self.replacementAlgorithms.getFrame(self.takenFrames)
         else:
-            return self.getFrame()
+            return self.getFreeFrame()
+        
+        
      
    
 
@@ -84,17 +88,25 @@ class PageData():
         self.TablePages= {}   
         
     def getInstruction(self,pcb,physicalMemory,paging):
-        npage=pcb.pc / self.physicalMemory.getSize()
+        npage=pcb.pc / physicalMemory.getSize()
         page=self.pages[npage]  
         if(page.isMemory):
             nframe=self.TablePages[page.direction]
             return paging.getInstruction(nframe,pcb)
         elif(page.isDisk):
-            i.ManagerInterruptions.throwInterruption(self,i.Interruption.pageFaultInDisk)
+            ii.ManagerInterruptions.throwInterruption(ii.Interruption.pageFaultInDisk)
         else:
-            i.ManagerInterruptions.throwInterruption(self,i.Interruption.pageFault)
+            ii.ManagerInterruptions.paging=paging
+            ii.ManagerInterruptions.pcb=pcb
+            ii.ManagerInterruptions.throwInterruption(ii.Interruption.pageFault)
       
-      
+    def allocateInMemoryPhysical(self,pcb,frame): 
+        iss=self.disk.getInstructions(pcb)
+        dir=frame.direction
+        for i in iss:
+            self.physicalMemory.setData(dir,i)
+            dir+=1
+             
          
 
 class Frame():
@@ -114,12 +126,18 @@ class ReplacementAlgorithms():
 
 class FIFO(ReplacementAlgorithms):    
      
+    def __init__(self):
+        self.queue=[]
+        self.takenBlock={}
+     
+     
     def register(self,block,pcb):
         self.takenBlock[block]=pcb
-        self.queue.add(block)
+        self.queue.append(block)
         
     def getFrame(self,takenBlock):
-        block=self.queue.get()
+        block=self.queue[0]
+        del self.queue[0]
         dataPage=takenBlock[self.takenBlock[block]]
         page=dataPage.getPageOf(block)
         return {'page':page,'block':block} 
@@ -148,22 +166,22 @@ class Disk():
         f=i.Cpu()
         g=i.Cpu()
         h=i.Cpu()
-        list=[a,b,c,d,a,b,c,d,e,a,b,c,d,a,b,c,d,a,b,c,d]
+        list=[a,b,c,d,a]
         return list
     
-
+ii.ManagerInterruptions.config(None, kernel.Mode(), None,None)
     
-pa=Paging(Disk(),PhysicalMemory(),'')
-ppp=p.PCB(0,0,0,0,0)
-pa.allocateMemory(ppp)
+pa=Paging(Disk(),PhysicalMemory(),FIFO())
+p=p.PCB(0,0,0,4,0)
+pa.allocateMemory(p)
 
-
+"""
 for i in pa.takenPages[ppp]:
     print i.dir
     
 print len(pa.freePage)
-
-
-
+"""
+print pa.takenFrames[p].pages
+pa.getData(p)
 
 

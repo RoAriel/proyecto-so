@@ -12,12 +12,12 @@ class Program():
 # cuando termina el proceso guardo al ese proceso en PCB'S en DeadTable 
 
 class PCB():
-    def __init__(self, pc, stack, pid,initialDir,priority):
+    def __init__(self, pc, stack, pid,size,priority):
         self.pc= pc
         self.estado=State.new
         self.stack = 'direccion de alojamiento'
         self.pid=pid
-        self.initialDirection=initialDir
+        self.size=size
         self.priority=priority
         
     def addPc(self):

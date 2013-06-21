@@ -20,6 +20,9 @@ class ManagerInterruptions():
     scheduler=None
     mapInterruption=None
     
+    paging=None     
+    pcb=None
+    
     @classmethod  
     def config(self,scheduler,mode,cpu,timer):
         ManagerInterruptions.timer=timer
@@ -29,7 +32,8 @@ class ManagerInterruptions():
         ManagerInterruptions.mapInterruption={Interruption.timeOut: ManagerInterruptions.timeOut,
                               Interruption.IO: ManagerInterruptions.IO,
                               Interruption.pcbFinalize:ManagerInterruptions.pcbFinalize,
-                              Interruption.expropiation:ManagerInterruptions.expropiation}
+                              Interruption.expropiation:ManagerInterruptions.expropiation,
+                              Interruption.pageFault:ManagerInterruptions.pageFault}
         
     @classmethod      
     def throwInterruption(self,interruption):
@@ -69,17 +73,17 @@ class ManagerInterruptions():
         ManagerInterruptions.timer.resetQuantum()
         ManagerInterruptions.mode.setModeUser()
         
-        
+    @classmethod       
     def pageFaultInDisk(self):
         ManagerInterruptions.mode.setModeKernel()
         self.disk.swapOut(self.page,self.pcb,self.physicaMemory)
         ManagerInterruptions.mode.setModeUser()
-        
+    @classmethod      
     def pageFault(self):
         ManagerInterruptions.mode.setModeKernel()
         d=self.paging.getFrame()
         self.swapIn(d['page'],d['frame'],self.pcb)
-        self.paging.allocate(self.pcb,d['frame'])
+        self.paging.allocateInMemoryPhysical(self.pcb,d['frame'])
         ManagerInterruptions.mode.setModeUser()
 
 class Interruption():
