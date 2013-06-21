@@ -68,12 +68,27 @@ class ManagerInterruptions():
         ManagerInterruptions.cpu.pcb=ManagerInterruptions.pcbExpropiation
         ManagerInterruptions.timer.resetQuantum()
         ManagerInterruptions.mode.setModeUser()
+        
+        
+    def pageFaultInDisk(self):
+        ManagerInterruptions.mode.setModeKernel()
+        self.disk.swapOut(self.page,self.pcb,self.physicaMemory)
+        ManagerInterruptions.mode.setModeUser()
+        
+    def pageFault(self):
+        ManagerInterruptions.mode.setModeKernel()
+        d=self.paging.getFrame()
+        self.swapIn(d['page'],d['frame'],self.pcb)
+        self.paging.allocate(self.pcb,d['frame'])
+        ManagerInterruptions.mode.setModeUser()
 
 class Interruption():
     timeOut='timeOut'
     IO='IO'
     pcbFinalize="pcbFinalize"
     expropiation="expropiatio"
+    pageFaultInDisk='pageFaultInDisk'
+    pageFault='pageFault'
     
 """
 EJEMPLO DE USO
