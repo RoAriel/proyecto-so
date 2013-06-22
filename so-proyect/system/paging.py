@@ -9,10 +9,12 @@ import instructions as i
 import process as p
 import interruptions as ii
 import kernel
+import Queue as q
 
 class Page():
     
-    def __init__(self):
+    def __init__(self,direction):
+        self.direction=direction
         self.isDisk=False
         self.isMemory=False
         
@@ -23,32 +25,38 @@ class Paging(MMU):
     
     def __init__(self, disk, physicalMemory,replacementAlgorithms):
         MMU.__init__(self,disk,physicalMemory)
-        self.takenFrames={}
+        self.pagesOfPcb={}
         self.sizePage=8
         self.replacementAlgorithms=replacementAlgorithms
         self.frames=self.generateFrames(physicalMemory.getSize())
-
+        self.takenFrame=[]
+        replacementAlgorithms.paging=self
+        disk.paging=self
  
-    """genera sizeMemory paginas,cada una con su direccion"""
+    """genera sizeMemory frames,cada una con su direccion fisica"""
     def generateFrames(self,sizeMemory):
         frames=[]
-        for i in range (0, sizeMemory):
-            frames.append(Frame(i*(self.sizePage)))
+        directionLogic=0
+        for i in range (0, sizeMemory/self.sizePage):
+            frames.append(Frame(directionLogic,i*(self.sizePage)))
+            directionLogic+=1
         return frames
       
-    """ guarda en memoria fisica las instrucciones del pcb"""
+    """ genera paginas necesarias para el pcb,sin cargarlas a memoria"""
     def allocateMemory(self, pcb):   
         pages=self.getPagesTo(pcb.size)
-        self.takenFrames[pcb]=PageData(pages)
+        self.pagesOfPcb[pcb]=PageData(pages)
         
             
         
-    """ retorna todas las pagias que necesita el pcb ,si no hay suficiente,las busca en disco"""
+    """ retorna todas las paginas que necesita el pcb """
     def getPagesTo(self,size):
         amount=self.getAmountPages(size)
         pages=[]
+        direction=0
         for i in range(amount):
-            pages.append(Page())
+            pages.append(Page(direction))
+            direction+=1
         return pages
             
     def getInstruction(self,nframe,pcb):
@@ -63,45 +71,74 @@ class Paging(MMU):
         else:
             return size/self.sizePage+1
        
-       
+    """retorna la instruccion que indique el pc del pcb"""   
     def getData(self,pcb): 
-        return self.takenFrames[pcb].getInstruction(pcb,self.physicalMemory,self)
+        return self.pagesOfPcb[pcb].getInstruction(pcb,self.physicalMemory,self)
         
              
     def getFrame(self):
-        if(len(self.replacementAlgorithms.queue)==len(self.frames)):   
-            return self.replacementAlgorithms.getFrame(self.takenFrames)
+        """Si la cantidad de frame tomados es igual a la del total de frames
+           no hay frame libres,tiene que ejecutar el algoritmo,caso contrario
+           agarra un frame libre
+        """
+        if(len(self.takenFrame) == len(self.frames)):   
+            return self.replacementAlgorithms.getFrame(self.pagesOfPcb,self.disk)
         else:
-            return self.getFreeFrame()
+            frame= self.getFreeFrame()
+            self.takenFrame.append(frame)
+            return frame
     
+    """
+    retorna un frame libre 
+    """
     def getFreeFrame(self):
-        free=filter(lambda block: not block in self.replacementAlgorithms.queue,self.frames)
-        return free[0]
-        
+        for frame in self.frames:
+            if(not frame in self.takenFrame):
+                return frame
+       
+    """dado un pcb carga en memoria las instrucciones""" 
+    def allocateInMemoryPhysical(self,pcb,frame): 
+        iss=self.disk.getInstructions(pcb)
+        dir=frame.directionPhysical
+        for i in iss:
+            self.physicalMemory.setData(dir,i)
+            dir+=1
      
-   
+    def updateTablePageOf(self,pcb,page,frame):
+        self.pagesOfPcb[pcb].updateTablePage(page,frame)
 
     
+    def allocateInstructionInMemoryPhysical(self,instruction,frame):
+        direction=frame.directionPhysical
+        for ins in instruction:
+            self.physicalMemory.setData(direction,ins)
+            direction+=1
     
+    def getDataOfPhysical(self,frame):
+        ins=[]
+        direction=frame.directionPhysical
+        for dir in range(self.sizePage):
+            ins.append(self.physicalMemory.getData(direction))
+            direction+=1
+        return ins
       
       
 class PageData():
     
     def __init__(self,pages):
         self.pages=pages
-        self.TablePages= {}   
+        self.tablePages= {}   
         
     def getInstruction(self,pcb,physicalMemory,paging):
         npage=pcb.pc / physicalMemory.getSize()
         page=self.pages[npage]  
         if(page.isMemory):
-            nframe=self.TablePages[page.direction]
+            nframe=self.tablePages[page.direction]
             return paging.getInstruction(nframe,pcb)
-        elif(page.isDisk):
-            ii.ManagerInterruptions.throwInterruption(ii.Interruption.pageFaultInDisk)
         else:
             ii.ManagerInterruptions.paging=paging
             ii.ManagerInterruptions.pcb=pcb
+            ii.ManagerInterruptions.page=page
             ii.ManagerInterruptions.throwInterruption(ii.Interruption.pageFault)
       
     def allocateInMemoryPhysical(self,pcb,frame): 
@@ -110,15 +147,25 @@ class PageData():
         for i in iss:
             self.physicalMemory.setData(dir,i)
             dir+=1
-             
-         
+       
+    def updateTablePage(self,page,frame):
+        self.tablePages[page.direction]=frame.directionLogic 
+        
+    def getFrameOf(self,page):
+        return self.tablePages[page.direction]  
+    
+    
+    
+    
 
 class Frame():
     
-    def __init__(self,direction):
-        self.direction=direction
+    def __init__(self,directionLogic,directionPhysical):
+        self.directionLogic=directionLogic
+        self.directionPhysical=directionPhysical
 
-
+    def getInstruction(self,pcb,physicalMemory):
+        return physicalMemory.getData(pcb.pc+self.directionPhysical)
 
 
 """algoritmos de remplazos de paginas"""
@@ -130,23 +177,28 @@ class ReplacementAlgorithms():
 
 class FIFO(ReplacementAlgorithms):    
      
-    def __init__(self):
-        self.queue=[]
-        self.takenBlock={}
-     
-     
-    def register(self,block,pcb):
-        self.takenBlock[block]=pcb
-        self.queue.append(block)
+    def __init__(self,paging=None):
+        self.queue=q.Queue()
+        self.takenPage={}
+        self.paging=paging
         
-    def getFrame(self,takenBlock):
-        block=self.queue[0]
-        del self.queue[0]
-        dataPage=takenBlock[self.takenBlock[block]]
-        page=dataPage.getPageOf(block)
-        return {'page':page,'block':block} 
+     
+    def register(self,page,pcb):
+        self.takenPage[page]=pcb
+        self.queue.put(page)
+        
+    def getFrame(self,pagesOfPcb,disk):
+        page=self.queue.get()
+        pcb=self.takenPage[page]
+        pageData=pagesOfPcb[pcb]
+        page.isMemory=False
+        page.isDisk=True
+        nframe=pageData.getFrameOf(page)
+        frame=self.paging.frames[nframe]
+        disk.swapIn(pcb,frame,page)
+        return frame
 
-    def free(self,block):
+    def remove(self,block):
         del self.takenBlock[block]
         self.queue.remove(block)
         
@@ -161,8 +213,12 @@ class NotRecentlyUsed():
 
 class Disk():
     
+    def __init__(self):
+        self.taken={}
+        self.paging=None
+    
     def getInstructions(self,pcb):
-        a=i.Cpu()
+        a=i.IO()
         b=i.Cpu()
         c=i.Cpu()
         d=i.Cpu()
@@ -170,14 +226,32 @@ class Disk():
         f=i.Cpu()
         g=i.Cpu()
         h=i.Cpu()
-        list=[a,b,c,d,a]
+        list=[a,b,c,d]
         return list
     
-ii.ManagerInterruptions.config(None, kernel.Mode(), None,None)
+    def swapOut(self,page,pcb):
+        page.isDisk=False
+        page.isMemory=True
+        frame=self.paging.getFrame()
+        self.paging.allocateInstructionInMemoryPhysical(self.taken[page][2],frame)
+        self.paging.replacementAlgorithms.register(page,pcb)
+        self.paging.updateTablePageOf(pcb,page,frame)
     
-pa=Paging(Disk(),PhysicalMemory(),FIFO())
-p=p.PCB(0,0,0,4,0)
-pa.allocateMemory(p)
+    def swapIn(self,pcb,frame,page):
+        self.taken[page]=[pcb,frame,self.paging.getDataOfPhysical(frame)]
+    
+    
+d=Disk()
+ii.ManagerInterruptions.config(None, kernel.Mode(), None,None)
+ii.ManagerInterruptions.disk=d
+pa=Paging(d,PhysicalMemory(80),FIFO())
+
+proces=[]
+for im in range(94):
+    p1=p.PCB(0,0,0,8,im)
+    pa.allocateMemory(p1)
+    proces.append(p1)
+
 
 """
 for i in pa.takenPages[ppp]:
@@ -185,7 +259,18 @@ for i in pa.takenPages[ppp]:
     
 print len(pa.freePage)
 """
-print pa.takenFrames[p].pages
-pa.getData(p)
+# print len(pa.frames)
+for ipa in range(8):
+    for p in proces:
+        print pa.getData(p)
+        print pa.getData(p)
+        p.addPc()
+        
+    
+    
+
+    
+
+
 
 

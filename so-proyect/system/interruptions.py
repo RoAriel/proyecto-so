@@ -18,11 +18,14 @@ class ManagerInterruptions():
     cpu=None
     mode=None
     scheduler=None
-    mapInterruption=None
+    disk=None
     
+    page=None
     paging=None     
     pcb=None
-    disk=None
+    
+    mapInterruption=None
+
     
     @classmethod  
     def config(self,scheduler,mode,cpu,timer):
@@ -74,17 +77,19 @@ class ManagerInterruptions():
         ManagerInterruptions.timer.resetQuantum()
         ManagerInterruptions.mode.setModeUser()
         
-    @classmethod       
-    def pageFaultInDisk(self):
-        ManagerInterruptions.mode.setModeKernel()
-        self.disk.swapOut(self.page,self.pcb,self.physicaMemory)
-        ManagerInterruptions.mode.setModeUser()
+    
     @classmethod      
     def pageFault(self):
         ManagerInterruptions.mode.setModeKernel()
-        d=self.paging.getFrame()
-        self.disk.swapIn(d['page'],d['frame'],self.pcb)
-        self.paging.allocateInMemoryPhysical(self.pcb,d['frame'])
+        if(self.page.isDisk):
+            self.disk.swapOut(self.page,self.pcb)
+        else:
+            frame=self.paging.getFrame()
+            self.paging.allocateInMemoryPhysical(self.pcb,frame)
+            self.page.isMemory=True
+            self.page.isDisk=False
+            self.paging.replacementAlgorithms.register(self.page,self.pcb)
+            self.paging.updateTablePageOf(self.pcb,self.page,frame)
         ManagerInterruptions.mode.setModeUser()
 
 class Interruption():
@@ -92,7 +97,6 @@ class Interruption():
     IO='IO'
     pcbFinalize="pcbFinalize"
     expropiation="expropiatio"
-    pageFaultInDisk='pageFaultInDisk'
     pageFault='pageFault'
     
 """
@@ -101,4 +105,11 @@ throwInterruption(Interruption.timeOut)
 """
 
 
+
+class ContextPageFault():
+    
+    def __init__(self,paging,pcb,page):
+        self.paging=paging
+        self.pcb=pcb
+        self.page=page
         
