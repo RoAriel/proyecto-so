@@ -123,6 +123,9 @@ class Paging(MMU):
         return ins
     
     def kill(self,pcb):
+        """libera los frames usados por el pcb,tambien las pages que mantiene el algoritmo de lemplazo
+           y paginas almacenadas en disco
+        """
         usedFrame=self.pagesOfPcb[pcb].getUsedFrames()
         self.pagesOfPcb[pcb].kill(self.replacementAlgorithms)
         del self.pagesOfPcb[pcb]
