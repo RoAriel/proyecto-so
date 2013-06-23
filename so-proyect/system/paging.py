@@ -295,7 +295,7 @@ for i in pa.takenPages[ppp]:
 print len(pa.freePage)
 """
 # print len(pa.frames)
-for ipa in range(8):
+for ipa in range(1):
     for p in proces:
         print pa.getData(p)
         print pa.getData(p)
