@@ -121,6 +121,14 @@ class Paging(MMU):
             ins.append(self.physicalMemory.getData(direction))
             direction+=1
         return ins
+    
+    def kill(self,pcb):
+        usedFrame=self.pagesOfPcb[pcb].getUsedFrames()
+        self.pagesOfPcb[pcb].kill(self.replacementAlgorithms)
+        del self.pagesOfPcb[pcb]
+        for frame in usedFrame:
+            self.takenFrame.remove(frame)
+            
       
       
 class PageData():
@@ -171,9 +179,7 @@ class Frame():
 """algoritmos de remplazos de paginas"""
 class ReplacementAlgorithms():
     
-    def getPages(self,disk,paging):
-        pass
-        
+    pass
 
 class FIFO(ReplacementAlgorithms):    
      
@@ -198,17 +204,43 @@ class FIFO(ReplacementAlgorithms):
         disk.swapIn(pcb,frame,page)
         return frame
 
-    def remove(self,block):
-        del self.takenBlock[block]
-        self.queue.remove(block)
+    def remove(self,page):
+        pass
         
         
 class NotRecentlyUsed():
     
-    def register(self,block,pcb):
+    def __init__(self,paging=None):
+        self.queue=q.Queue()
+        self.takenPage={}
+        self.paging=paging
+    
+    def getFrame(self,pagesOfPcb,disk):
+        tupla=self.queue.get()
+        if(tupla[1]):
+            page=tupla[0]
+            pcb=self.takenPage[page]
+            pageData=pagesOfPcb[pcb]
+            page.isMemory=False
+            page.isDisk=True
+            nframe=pageData.getFrameOf(page)
+            frame=self.paging.frames[nframe]
+            disk.swapIn(pcb,frame,page)
+            return frame
+        else:
+            tupla[1]=True
+            self.queue.put(tupla)
+            self.getFrame(pagesOfPcb, disk)
+            
+        
+    
+      
+    def register(self,page,pcb):  
+        self.takenPage[page]=pcb
+        self.queue.put([page,False])
+
+    def remove(self,page):
         pass
-
-
 
 
 class Disk():
