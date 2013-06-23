@@ -19,6 +19,9 @@ class Instruction():
     
 class IO(Instruction):
     
+    def __init__(self,divice=None):
+        self.divice=divice
+        
     def execute(self,pcb):
         pcb.sate=State.wait
         i.ManagerInterruptions.throwInterruption(Interruption.IO)

@@ -104,7 +104,13 @@ EJEMPLO DE USO
 throwInterruption(Interruption.timeOut)
 """
 
-
+"""Estas clases sirven para agrupar los objetos que va a necesitar cada interrupcion,por ahora no esta en uso
+  pero la idea es que el managerInterruption tenga un map  con estos contextos 
+"""
+class ContextExpropiation():
+    
+    def __init__(self,pcb):
+        self.pcb=pcb
 
 class ContextPageFault():
     
@@ -112,4 +118,10 @@ class ContextPageFault():
         self.paging=paging
         self.pcb=pcb
         self.page=page
+        
+class ContextIO():
+    
+    def __init__(self,pcb,instruction):
+        self.pcb=pcb
+        self.instruction=instruction
         
