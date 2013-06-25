@@ -81,16 +81,9 @@ class ManagerInterruptions():
     @classmethod      
     def pageFault(self):
         ManagerInterruptions.mode.setModeKernel()
-        if(self.page.isDisk):
-            self.disk.swapOut(self.page,self.pcb)
-        else:
-            frame=self.paging.getFrame()
-            self.paging.allocateInMemoryPhysical(self.pcb,frame)
-            self.page.isMemory=True
-            self.page.isDisk=False
-            self.paging.replacementAlgorithms.register(self.page,self.pcb)
-            self.paging.updateTablePageOf(self.pcb,self.page,frame)
+        self.kernel.swapIn(self.page,self.pcb)
         ManagerInterruptions.mode.setModeUser()
+
 
 class Interruption():
     timeOut='timeOut'

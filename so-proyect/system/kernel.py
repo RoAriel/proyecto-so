@@ -38,7 +38,16 @@ class Kernel():
         else:
             self.scheduler.add(pcb,self.cpu)
         self.mode.setModeUser()
-           
+        
+    def swapIn(self,page,pcb):
+        diskBlock=self.disk.getBlock(page)
+        frame=self.paging.getFrame()
+        self.paging.allocateInstructionInMemoryPhysical(diskBlock.getINstructions(),frame)
+        self.page.isMemory=True
+        self.page.isDisk=False
+        self.paging.replacementAlgorithms.register(page,pcb)
+        self.paging.updateTablePageOf(pcb,page,frame)
+   
          
 
 class Mode():
