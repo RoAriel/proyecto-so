@@ -9,7 +9,8 @@ import interruptions as i
 import random
 import time
 from process import State
-
+from interruptions import GloabalContext
+from interruptions import IOContext
 
 class Instruction():
     
@@ -24,7 +25,7 @@ class IO(Instruction):
         
     def execute(self,pcb):
         pcb.sate=State.wait
-        i.ManagerInterruptions.throwInterruption(Interruption.IO)
+        i.ManagerInterruptions.throwInterruption(Interruption.IO,IOContext(pcb,self.divice))
 #
         
         
@@ -33,7 +34,7 @@ class Finalize(Instruction):
 
     def execute(self,pcb):
         pcb.sate=State.finished
-        i.ManagerInterruptions.throwInterruption(Interruption.pcbFinalize)
+        i.ManagerInterruptions.throwInterruption(Interruption.pcbFinalize,GloabalContext(pcb))
         print 'process id:',pcb.pid ,'finlize'
         
         

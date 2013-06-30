@@ -10,6 +10,7 @@ import clock
 from interruptions  import Interruption 
 import interruptions as i
 import random
+from interruptions import GloabalContext
 
 class Scheduler():
     
@@ -85,8 +86,7 @@ class SJF(Policy):
             if(cpu.pcb.priority > process.priority):
                 self.processes.add(process)
             else:
-                i.ManagerInterruptions.pcbExpropiation=process
-                i.ManagerInterruptions.throwInterruption(Interruption.expropiation)
+                i.ManagerInterruptions.throwInterruption(Interruption.expropiation,GloabalContext(process))
         else:
             self.processes.add(process)
     

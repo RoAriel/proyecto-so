@@ -18,6 +18,8 @@ class ManagerDivices():
     def getDeviceIO(self,aDevice):
         return self.divices[aDevice]
 
+    def add(self,pcb,aDevice):
+        self.getDeviceIO(aDevice).add(pcb)
 
 class DeviceIO():
     

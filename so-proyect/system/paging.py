@@ -11,6 +11,7 @@ import interruptions as ii
 import kernel
 import Queue as q
 import disk
+from interruptions import PageFaultContext 
 
 class Page():
     
@@ -148,10 +149,7 @@ class PageData():
             nframe=self.tablePages[page.direction]
             return paging.getInstruction(nframe,pcb)
         else:
-            ii.ManagerInterruptions.paging=paging
-            ii.ManagerInterruptions.pcb=pcb
-            ii.ManagerInterruptions.page=page
-            ii.ManagerInterruptions.throwInterruption(ii.Interruption.pageFault)
+            ii.ManagerInterruptions.throwInterruption(ii.Interruption.pageFault,PageFaultContext(pcb,page))
       
     def allocateInMemoryPhysical(self,pcb,frame): 
         iss=self.disk.getInstructions(pcb)

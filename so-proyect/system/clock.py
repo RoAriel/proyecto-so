@@ -8,6 +8,7 @@ import time
 from interruptions  import Interruption 
 import interruptions as i
 
+
 class Clock(t.Thread):
     
     def _init_(self,cpu,timer):
@@ -41,7 +42,7 @@ class TimerQuantum(Timer):
             self.currentTime+=1
         else:
             self.resetQuantum()
-            i.ManagerInterruptions.throwInterruption(Interruption.timeOut)
+            i.ManagerInterruptions.throwInterruption(Interruption.timeOut,None)
             
     def resetQuantum(self):
         self.currentTime=0

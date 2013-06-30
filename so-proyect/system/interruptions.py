@@ -12,7 +12,6 @@ from process import State
 class ManagerInterruptions():
     
     #es el pcb que debe expropiar la cpu
-    pcbExpropiation=None
     
     timer=None
     cpu=None
@@ -20,10 +19,7 @@ class ManagerInterruptions():
     scheduler=None
     disk=None
     kernel=None
-    
-    page=None
-    paging=None     
-    pcb=None
+    managerDivices=None
     
     mapInterruption=None
 
@@ -42,11 +38,11 @@ class ManagerInterruptions():
                               Interruption.pageFault:ManagerInterruptions.pageFault}
         
     @classmethod      
-    def throwInterruption(self,interruption):
-        ManagerInterruptions.mapInterruption[interruption]()
+    def throwInterruption(self,interruption,context):
+        ManagerInterruptions.mapInterruption[interruption](context)
     
     @classmethod     
-    def timeOut(self):
+    def timeOut(self,context):
         ManagerInterruptions.mode.setModeKernel()
         if(ManagerInterruptions.cpu.pcb is not None):
             ManagerInterruptions.scheduler.add(ManagerInterruptions.cpu.pcb,ManagerInterruptions.cpu)
@@ -54,24 +50,23 @@ class ManagerInterruptions():
         ManagerInterruptions.mode.setModeUser()
     
     @classmethod     
-    def IO(self):
+    def IO(self,context):
         ManagerInterruptions.mode.setModeKernel()
-        pcb=self.cpu.pcb
-        pcb.state=State.wait
-#       ManagerInterruptions.queueWait.add(pcb)
+        context.pcb.state=State.wait
+        ManagerInterruptions.managerDivices.add(context.pcb,context.divide)
         ManagerInterruptions.timer.resetQuantum()
         ManagerInterruptions.timeOut()
     
     @classmethod     
-    def pcbFinalize(self):
+    def pcbFinalize(self,context):
         ManagerInterruptions.mode.setModeKernel()
-        ManagerInterruptions.cpu.pcb.state=State.finished
+        context.pcb.state=State.finished
         ManagerInterruptions.cpu.setProcess(ManagerInterruptions.scheduler.get())
         ManagerInterruptions.timer.resetQuantum()
         ManagerInterruptions.mode.setModeUser()
     
     @classmethod      
-    def expropiation(self):
+    def expropiation(self,context):
         ManagerInterruptions.mode.setModeKernel()
         ManagerInterruptions.cpu.pcb.state=State.ready
         ManagerInterruptions.scheduler.addAsReady(ManagerInterruptions.cpu.pcb)
@@ -81,10 +76,11 @@ class ManagerInterruptions():
         
     
     @classmethod      
-    def pageFault(self):
+    def pageFault(self,context):
         ManagerInterruptions.mode.setModeKernel()
-        self.kernel.swapIn(self.page,self.pcb)
+        self.kernel.swapIn(context.pcb,context.page)
         ManagerInterruptions.mode.setModeUser()
+        
 
 
 class Interruption():
@@ -99,24 +95,25 @@ EJEMPLO DE USO
 throwInterruption(Interruption.timeOut)
 """
 
+
+
 """Estas clases sirven para agrupar los objetos que va a necesitar cada interrupcion,por ahora no esta en uso
   pero la idea es que el managerInterruption tenga un map  con estos contextos 
 """
-class ContextExpropiation():
-    
+
+class GloabalContext():
     def __init__(self,pcb):
         self.pcb=pcb
 
-class ContextPageFault():
+
+class PageFaultContext():
     
-    def __init__(self,paging,pcb,page):
-        self.paging=paging
+    def __init__(self,pcb,page):
         self.pcb=pcb
         self.page=page
         
-class ContextIO():
+class IOContext():
     
-    def __init__(self,pcb,instruction):
+    def __init__(self,pcb,divice):
         self.pcb=pcb
-        self.instruction=instruction
-        
+        self.divice=divice
