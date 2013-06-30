@@ -10,6 +10,7 @@ import process as p
 import interruptions as ii
 import kernel
 import Queue as q
+import disk
 
 class Page():
     
@@ -61,7 +62,7 @@ class Paging(MMU):
             
     def getInstruction(self,nframe,pcb):
         frame=self.frames[nframe]   
-        return frame.getInstruction(pcb,self.physicalMemory)
+        return frame.getInstruction(pcb,self.physicalMemory,pcb.pc % self.sizePage)
    
    
     """retorna la cantidad de pages que necesitan las instrucciones de tamanho size"""
@@ -73,7 +74,8 @@ class Paging(MMU):
        
     """retorna la instruccion que indique el pc del pcb"""   
     def getData(self,pcb): 
-        return self.pagesOfPcb[pcb].getInstruction(pcb,self.physicalMemory,self)
+        npage=pcb.pc/self.sizePage
+        return self.pagesOfPcb[pcb].getInstruction(pcb,npage,self.physicalMemory,self)
         
              
     def getFrame(self):
@@ -82,7 +84,7 @@ class Paging(MMU):
            agarra un frame libre
         """
         if(len(self.takenFrame) == len(self.frames)):   
-            return self.replacementAlgorithms.getFrame(self.pagesOfPcb,self.disk)
+            return self.replacementAlgorithms.getFrame(self.pagesOfPcb,ii.ManagerInterruptions.kernel)
         else:
             frame= self.getFreeFrame()
             self.takenFrame.append(frame)
@@ -140,8 +142,7 @@ class PageData():
         self.pages=pages
         self.tablePages= {}   
         
-    def getInstruction(self,pcb,physicalMemory,paging):
-        npage=pcb.pc / physicalMemory.getSize()
+    def getInstruction(self,pcb,npage,physicalMemory,paging):
         page=self.pages[npage]  
         if(page.isMemory):
             nframe=self.tablePages[page.direction]
@@ -175,8 +176,8 @@ class Frame():
         self.directionLogic=directionLogic
         self.directionPhysical=directionPhysical
 
-    def getInstruction(self,pcb,physicalMemory):
-        return physicalMemory.getData(pcb.pc+self.directionPhysical)
+    def getInstruction(self,pcb,physicalMemory,resto):
+        return physicalMemory.getData(self.directionPhysical+resto)
 
 
 """algoritmos de remplazos de paginas"""
@@ -196,7 +197,7 @@ class FIFO(ReplacementAlgorithms):
         self.takenPage[page]=pcb
         self.queue.put(page)
         
-    def getFrame(self,pagesOfPcb,disk):
+    def getFrame(self,pagesOfPcb,kernel):
         page=self.queue.get()
         pcb=self.takenPage[page]
         pageData=pagesOfPcb[pcb]
@@ -204,7 +205,7 @@ class FIFO(ReplacementAlgorithms):
         page.isDisk=True
         nframe=pageData.getFrameOf(page)
         frame=self.paging.frames[nframe]
-        disk.swapIn(pcb,frame,page)
+        kernel.swapOut(page,pcb,frame)
         return frame
 
     def remove(self,page):
@@ -218,23 +219,26 @@ class NotRecentlyUsed():
         self.takenPage={}
         self.paging=paging
     
-    def getFrame(self,pagesOfPcb,disk):
+    def getFrame(self,pagesOfPcb,kernel):
         tupla=self.queue.get()
-        if(tupla[1]):
-            page=tupla[0]
-            pcb=self.takenPage[page]
-            pageData=pagesOfPcb[pcb]
-            page.isMemory=False
-            page.isDisk=True
-            nframe=pageData.getFrameOf(page)
-            frame=self.paging.frames[nframe]
-            disk.swapIn(pcb,frame,page)
-            return frame
-        else:
+        
+        while(not tupla[1]):
             tupla[1]=True
             self.queue.put(tupla)
-            self.getFrame(pagesOfPcb, disk)
+            tupla=self.queue.get()
             
+            
+        page=tupla[0]
+        pcb=self.takenPage[page]
+        pageData=pagesOfPcb[pcb]
+        page.isMemory=False
+        page.isDisk=True
+        nframe=pageData.getFrameOf(page)
+        frame=self.paging.frames[nframe]
+        kernel.swapOut(page,pcb,frame)
+        return frame  
+        
+                
         
     
       
@@ -245,64 +249,63 @@ class NotRecentlyUsed():
     def remove(self,page):
         pass
 
+"""***************************************************************************************"""
+    
 
-class Disk():
-    
-    def __init__(self):
-        self.taken={}
-        self.paging=None
-    
-    def getInstructions(self,pcb):
-        a=i.IO()
-        b=i.Cpu()
-        c=i.Cpu()
-        d=i.Cpu()
-        e=i.Cpu()
-        f=i.Cpu()
-        g=i.Cpu()
-        h=i.Cpu()
-        list=[a,b,c,d]
-        return list
-    
-    def swapOut(self,page,pcb):
-        page.isDisk=False
-        page.isMemory=True
-        frame=self.paging.getFrame()
-        self.paging.allocateInstructionInMemoryPhysical(self.taken[page][2],frame)
-        self.paging.replacementAlgorithms.register(page,pcb)
-        self.paging.updateTablePageOf(pcb,page,frame)
-    
-    def swapIn(self,pcb,frame,page):
-        self.taken[page]=[pcb,frame,self.paging.getDataOfPhysical(frame)]
-    
-    
-d=Disk()
-ii.ManagerInterruptions.config(None, kernel.Mode(), None,None)
+import hardware
+import scheduler    
+import cpu
+
+memory=hardware.PhysicalMemory(8)
+mode=kernel.Mode()
+
+
+d=disk.Disk(8)
 ii.ManagerInterruptions.disk=d
-pa=Paging(d,PhysicalMemory(80),FIFO())
+pa=Paging(d,memory,NotRecentlyUsed())
+kernels=kernel.Kernel(cpu.CPU(pa,mode),memory,pa,scheduler.RoundRobin(False),d,mode)
+    
+
+ii.ManagerInterruptions.disk=d
+
+
+import program 
+pro=[]
+for imp in range(5):
+    p1=program.Program([i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Finalize()])
+    d.addProgram(p1,imp)
+    
+
 
 proces=[]
-for im in range(94):
-    p1=p.PCB(0,0,0,8,im)
+for im in range(5):
+    p1=p.PCB(0,0,im,10,im)
     pa.allocateMemory(p1)
     proces.append(p1)
 
 
-"""
-for i in pa.takenPages[ppp]:
-    print i.dir
-    
-print len(pa.freePage)
-"""
-# print len(pa.frames)
-for ipa in range(1):
-    for p in proces:
-        print pa.getData(p)
-        print pa.getData(p)
-        p.addPc()
-        
-    
-    
+
+
+
+for jj in range(10):
+    cou=0
+    # print len(pa.frames)
+    while len(pa.pagesOfPcb.keys())>cou:
+    #     print cou
+
+
+        n= pa.getData(pa.pagesOfPcb.keys()[cou])
+        print pa.pagesOfPcb.keys()[cou].pid
+        print n
+        if(n is not None):
+#           n= pa.getData(pa.pagesOfPcb.keys()[cou])
+            pa.pagesOfPcb.keys()[cou].addPc()
+        else:
+            n= pa.getData(pa.pagesOfPcb.keys()[cou])
+            print n
+            pa.pagesOfPcb.keys()[cou].addPc()
+        cou+=1
+        len(pa.pagesOfPcb.keys())>cou
 
     
 

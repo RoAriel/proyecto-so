@@ -19,6 +19,7 @@ class ManagerInterruptions():
     mode=None
     scheduler=None
     disk=None
+    kernel=None
     
     page=None
     paging=None     
@@ -28,7 +29,8 @@ class ManagerInterruptions():
 
     
     @classmethod  
-    def config(self,scheduler,mode,cpu,timer):
+    def config(self,scheduler,mode,cpu,timer,kernel):
+        ManagerInterruptions.kernel=kernel
         ManagerInterruptions.timer=timer
         ManagerInterruptions.mode=mode
         ManagerInterruptions.scheduler=scheduler  

@@ -7,18 +7,21 @@ import hardware
 
 class Program:
 
-    def __init__(self,insts,memory):
+    def __init__(self,insts):
         self.instructions=insts
-        self.memory=memory;
 
     def run(self):
         for x in self.instructions:
             x.execute(self.memory)
 
+    def size(self):
+        return len(self.instructions)
 
     def add(self,inst):
         self.instructions.append(inst)
 
+    def getInstructions(self):
+        return self.instructions
 
 
 class Instruction():
@@ -62,8 +65,8 @@ class Resta(Instruction):
 
 
 #Example
-
-memory=hardware.Memory()
+"""
+memory=hardware.PhysicalMemory()
 
 
 instA=Suma(1,2,3)
@@ -80,3 +83,4 @@ guardarMetodo=program.run
 guardarMetodo()
 print memory.rows
 
+"""

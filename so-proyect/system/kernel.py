@@ -10,6 +10,7 @@ import interruptions as i
 class Kernel():
     
     def __init__(self,cpu,memoryPhysical,memoryLogic,policy,disk,mode):
+        self.memoryLogic=memoryLogic
         self.cpu=cpu
         self.PhysicalMemory=memoryPhysical
         self.logicMemory=memoryLogic
@@ -19,7 +20,7 @@ class Kernel():
         self.clock=c.Clock(None)
         self.clock.cpu=self.cpu
         self.clock.timer=self.scheduler.getTimer()
-        i.ManagerInterruptions.config(self.scheduler,self.mode,self.cpu,self.clock.timer)
+        i.ManagerInterruptions.config(self.scheduler,self.mode,self.cpu,self.clock.timer,self)
     
         
     def executeProgram(self,nameProgram):
@@ -40,14 +41,18 @@ class Kernel():
         self.mode.setModeUser()
         
     def swapIn(self,page,pcb):
-        diskBlock=self.disk.getBlock(page)
-        frame=self.paging.getFrame()
-        self.paging.allocateInstructionInMemoryPhysical(diskBlock.getINstructions(),frame)
-        self.page.isMemory=True
-        self.page.isDisk=False
-        self.paging.replacementAlgorithms.register(page,pcb)
-        self.paging.updateTablePageOf(pcb,page,frame)
-   
+        diskBlock=self.disk.getBlock(page,pcb.pid)
+
+        frame=self.memoryLogic.getFrame()
+
+        self.memoryLogic.allocateInstructionInMemoryPhysical(diskBlock.getInstructions(),frame)
+        page.isMemory=True
+        page.isDisk=False
+        self.memoryLogic.replacementAlgorithms.register(page,pcb)
+        self.memoryLogic.updateTablePageOf(pcb,page,frame)
+        
+    def swapOut(self,page,pcb,frame):
+        pass
          
 
 class Mode():

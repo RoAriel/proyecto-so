@@ -10,13 +10,11 @@ import clock
 from interruptions  import Interruption 
 import interruptions as i
 import random
-from threading import  Semaphore
 
 class Scheduler():
     
     def __init__(self,policy):
         self.policy=policy
-        self.semaphore = Semaphore(1)
         
     def get(self):
         if(self.policy.isEmpty()):
