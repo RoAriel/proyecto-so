@@ -277,7 +277,7 @@ for imp in range(5):
 
 proces=[]
 for im in range(5):
-    p1=p.PCB(0,0,im,10,im)
+    p1=p.PCB(im,10,im)
     pa.allocateMemory(p1)
     proces.append(p1)
 

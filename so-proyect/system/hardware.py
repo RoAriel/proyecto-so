@@ -335,7 +335,7 @@ def ocurrenciasDe(dir,lista):
     
 ac=ContinuousAssignment(Disk(),PhysicalMemory(30),WorstFit())
 
-p0=PCB(0,0,0,0,0)
+p0=PCB(0,0,0)
 
 """
 ac.allocateMemory(p0)

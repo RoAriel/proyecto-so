@@ -78,7 +78,7 @@ class ManagerInterruptions():
     @classmethod      
     def pageFault(self,context):
         ManagerInterruptions.mode.setModeKernel()
-        self.kernel.swapIn(context.pcb,context.page)
+        self.kernel.swapIn(context.page,context.pcb)
         ManagerInterruptions.mode.setModeUser()
         
 
