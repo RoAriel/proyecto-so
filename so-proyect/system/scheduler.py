@@ -36,6 +36,8 @@ class Scheduler():
     def getTimer(self):
         return self.policy.getTimer()
 
+    def getQueue(self):
+        return self.policy.getQueue()
 
 class Policy():
     
@@ -57,6 +59,8 @@ class Policy():
     def getTimer(self):
         return clock.Timer()
 
+    def getQueue(self):
+        return q.Queue()
 
 class FCFS(Policy):
     
@@ -107,7 +111,8 @@ class SJF(Policy):
         
         self.processes=processes
             
-            
+    def getQueue(self):
+        return qp.PQueueToPcb()    
                 
     def get(self):
         running=self.processes.get()
@@ -121,11 +126,14 @@ class RoundRobin(Policy):
     
     def __init__(self,isPriority):
         Policy.__init__(self)
+        self.isPriority=isPriority
         self.quamtum=random.randrange(1, 5)
         if(isPriority):
             self.processes=qp.PQueueToPcb()
     
     def add(self,process,cpu):
+        if(self.isPriority):
+            process.priority=random.randrange(1,150)
         self.processes.put(process)
     
     def get(self):
@@ -135,6 +143,11 @@ class RoundRobin(Policy):
     def getTimer(self):
         return clock.TimerQuantum(3)
 
+    def getQueue(self):
+        if(self.isPriority):
+            return qp.PQueueToPcb()
+        else:
+            return Policy.getQueue(self)
 
 
 

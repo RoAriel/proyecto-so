@@ -24,8 +24,8 @@ import random
     
 class ContinuousAssignment():
     
-    def __init__(self, disk, physicalMemory,setting):
-
+    def __init__(self, disk, physicalMemory,setting,plp=None):
+        self.plp=plp
         self.disk = disk
         self.physicalMemory = physicalMemory
         self.freeBlocks=self.generateFreeBlock(physicalMemory)
@@ -165,7 +165,7 @@ class ContinuousAssignment():
         block=self.takenBlock[pcb]
         del(self.takenBlock[pcb])
         self.freeBlocks.append(block)
-    
+        self.plp.notify(pcb.size)
    
         
 class Block():
