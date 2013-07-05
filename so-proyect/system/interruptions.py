@@ -4,7 +4,7 @@ Created on 15/05/2013
 
 @author: Di Meglio
 '''
-from process import State
+from processAndProgram import State
 
 #la intencion de que esta clase sea estatica  es porque en muchas partes
 #del sistema se requiere
@@ -45,7 +45,7 @@ class ManagerInterruptions():
     def timeOut(self,context):
         ManagerInterruptions.mode.setModeKernel()
         if(ManagerInterruptions.cpu.pcb is not None):
-            ManagerInterruptions.scheduler.add(ManagerInterruptions.cpu.pcb,ManagerInterruptions.cpu)
+            ManagerInterruptions.scheduler.add(ManagerInterruptions.cpu.pcb,ManagerInterruptions.cpu)   
         ManagerInterruptions.cpu.setProcess(ManagerInterruptions.scheduler.get())
         ManagerInterruptions.mode.setModeUser()
     
@@ -70,7 +70,7 @@ class ManagerInterruptions():
         ManagerInterruptions.mode.setModeKernel()
         ManagerInterruptions.cpu.pcb.state=State.ready
         ManagerInterruptions.scheduler.addAsReady(ManagerInterruptions.cpu.pcb)
-        ManagerInterruptions.cpu.pcb=ManagerInterruptions.pcbExpropiation
+        ManagerInterruptions.cpu.pcb=context.pcb
         ManagerInterruptions.timer.resetQuantum()
         ManagerInterruptions.mode.setModeUser()
         
@@ -80,7 +80,7 @@ class ManagerInterruptions():
         ManagerInterruptions.mode.setModeKernel()
         self.kernel.swapIn(context.page,context.pcb)
         ManagerInterruptions.mode.setModeUser()
-        
+
 
 
 class Interruption():

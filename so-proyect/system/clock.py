@@ -43,7 +43,6 @@ class TimerQuantum(Timer):
         else:
             self.resetQuantum()
             i.ManagerInterruptions.throwInterruption(Interruption.timeOut,None)
-            
     def resetQuantum(self):
         self.currentTime=0
         

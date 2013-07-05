@@ -5,62 +5,55 @@ Created on 24/05/2013
 '''
 import threading  as t
 import kernel
-import cpu
+from hardware import CPU
 import scheduler
 import hardware
-import process
+import processAndProgram
 import instructions as i 
 import time
 import random
+import logicMemory
+import time
 
-
-class agregar(t.Thread):
-    
-    def __init__(self,kernel,pos):
-        t.Thread.__init__(self) 
-        self.kernel=kernel
-        self.pos=pos
-    
-    def run(self):
-#         time.sleep(random.randrange(0,3))
-        self.kernel.memory.setData(self.pos,i.Cpu())
-        self.kernel.memory.setData(self.pos+1,i.Cpu())
-        self.kernel.memory.setData(self.pos+2,i.Cpu())
-        self.kernel.memory.setData(self.pos+3,i.Cpu())
-        self.kernel.memory.setData(self.pos+4,i.Cpu())
-        self.kernel.memory.setData(self.pos+5,i.Finalize())
-        self.kernel.addPcb(process.PCB(0, 0, self.pos,self.pos,self.pos))
-
-
-
-
-memory=hardware.PhysicalMemory(1500)
 mode=kernel.Mode()
-lm=hardware.ContinuousAssignment(hardware.Disk(),memory,hardware.WorstFit())
+physicalMemory=hardware.PhysicalMemory(40)
+disk=hardware.Disk(8)
+paging=logicMemory.Paging(hardware.Disk(8),physicalMemory,logicMemory.FIFO())
+cpu=CPU(paging,mode)
+scheduler=scheduler.SJF(True)
 
 
-kernel=kernel.Kernel(cpu.CPU(lm,mode),memory,lm,scheduler.RoundRobin(False),'desk',mode)
+k=kernel.Kernel(cpu,physicalMemory,paging,scheduler,disk,mode)
+k.start()
 
-for i in range(60):
-    p=process.PCB(0, 0,i,0,0)
-    kernel.logicMemory.allocateMemory(p)
-    kernel.addPcb(p)
+"""Creacion de programas"""
+myProgram=processAndProgram.Program('Home/user/myProgram',[i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Finalize()])
+myProgram1=processAndProgram.Program('Home/user/myProgram1',[i.Cpu(),i.Cpu(),i.Finalize()])
+myProgram2=processAndProgram.Program('Home/user/myProgram2',[i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Finalize()])
+myProgram3=processAndProgram.Program('Home/user/myProgram3',[i.Cpu(),i.Cpu(),i.Finalize()])
 
 
-kernel.start()
+k.addProgram(myProgram)
+k.addProgram(myProgram1)
+k.addProgram(myProgram2)
+k.addProgram(myProgram3)
 
-"""
-for n in range(200):
-    a=agregar(kernel,n*6)
-    a.start()
-"""  
 
-"""
-while not kernel.scheduler.policy.isEmpty():
-    time.sleep(4)
-    print 'vacia:',kernel.scheduler.policy.isEmpty()
-    print 'size:',len(kernel.scheduler.policy.processes.elements)
-"""
+
+
+
+k.executeProgram('Home/user/myProgram')
+k.executeProgram('Home/user/myProgram')
+k.executeProgram('Home/user/myProgram')
+k.executeProgram('Home/user/myProgram')
+
+
+time.sleep(25)
+
+# t=k.memoryLogic.pagesOfPcb[k.memoryLogic.pagesOfPcb.keys()[1]]
+# print k.memoryLogic.pagesOfPcb.keys()[1].pid
+# print k.memoryLogic.getDataOfPhysical(k.memoryLogic.frames[k.memoryLogic.pagesOfPcb.values()[0].tablePages[0]])
+
 
 
 

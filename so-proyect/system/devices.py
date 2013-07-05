@@ -21,6 +21,7 @@ class ManagerDivices():
     def add(self,pcb,aDevice):
         self.getDeviceIO(aDevice).add(pcb)
 
+
 class DeviceIO():
     
     def __init__(self,type,scheduler):
@@ -32,7 +33,7 @@ class DeviceIO():
           
         
         
-        
+"""Se encarga de simular que tiempo de IO que tarda la instruccion""" 
 class Controller(t.thread):
     
     def __init__(self,pcb,scheduler):
@@ -43,6 +44,7 @@ class Controller(t.thread):
         time(random.randrange(1,15))
         self.scheduler.add(self.pcb)
     
+
 
 class TypeDevice():
     monitor="monitor"

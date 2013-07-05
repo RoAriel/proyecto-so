@@ -5,7 +5,8 @@ Created on 29/04/2013
 '''
 
 import random
-import queues as q
+import queuePCB as qp
+import Queue as q
 import clock
 from interruptions  import Interruption 
 import interruptions as i
@@ -20,8 +21,7 @@ class Scheduler():
     def get(self):
         if(self.policy.isEmpty()):
             return None
-        process=self.policy.get()
-        return process
+        return self.policy.get()
     
 # agrega al proceso directamente como listo    
     def addAsReady(self,process):
@@ -39,6 +39,9 @@ class Scheduler():
 
 class Policy():
     
+    def __init__(self):
+        self.processes=q.Queue()
+    
     def add(self,process,cpu):
         pass
     
@@ -49,7 +52,7 @@ class Policy():
         pass
     
     def isEmpty(self):
-        pass
+        return self.processes.empty()
     
     def getTimer(self):
         return clock.Timer()
@@ -58,47 +61,49 @@ class Policy():
 class FCFS(Policy):
     
     def __init__(self):
-        self.processes=q.Queue()
+        Policy.__init__(self)
     
     
     def add(self,process,cpu):
-        self.processes.add(process)
+        self.processes.put(process)
         
     def get(self):
         return self.processes.get()
         
-        
-    def isEmpty(self):
-        return self.processes.isEmpty()
+
     
 
 class SJF(Policy):
     
     def __init__(self,isExpropriation):
         self.isExpropriation=isExpropriation
-        self.processes=q.PriorityQueue(lambda pa,pb: pa.priority-pb.priority)
+        self.processes=qp.PQueueToPcb()
     
     def add(self,process,cpu):
         #si no es expropiativo simplemente lo agrega a la cola de espera
         #caso contrario le indica a la managerInterruption cual es el proceso
         #que va a expropiar y lanza la interrupcino de expropiacion
+        
+        #Agrega la variable priority al pcb en tiempo de ejecucion
+        process.priority=random.randrange(1,150)
+        
         if(self.isExpropriation):
             if(cpu.pcb.priority > process.priority):
-                self.processes.add(process)
+                self.processes.put(process)
             else:
                 i.ManagerInterruptions.throwInterruption(Interruption.expropiation,GloabalContext(process))
         else:
-            self.processes.add(process)
+            self.processes.put(process)
     
     def addAsReady(self,process):
-        self.processes.add(process)      
+        self.processes.put(process)      
             
     def doOld(self):
-        processes=q.PriorityQueue(lambda pa,pb: pa.priority-pb.priority)
+        processes=qp.PQueueToPcb()
         while not self.isEmpty():
             p=self.processes.get()
             p.priority+=2
-            processes.add(p)
+            processes.put(p)
         
         self.processes=processes
             
@@ -108,34 +113,27 @@ class SJF(Policy):
         running=self.processes.get()
         self.doOld()
         return running
-        
-    def isEmpty(self):
-        return self.processes.isEmpty()    
+            
     
 
 
 class RoundRobin(Policy):
     
     def __init__(self,isPriority):
-        
+        Policy.__init__(self)
         self.quamtum=random.randrange(1, 5)
         if(isPriority):
-            self.processes=q.PriorityQueue(lambda pa,pb: pa.priority-pb.priority)
-        else:
-            self.processes=q.Queue()
+            self.processes=qp.PQueueToPcb()
     
     def add(self,process,cpu):
-        self.processes.add(process)
+        self.processes.put(process)
     
     def get(self):
         return self.processes.get()
         
-    def isEmpty(self):
-        return self.processes.isEmpty()
     
     def getTimer(self):
         return clock.TimerQuantum(3)
-
 
 
 

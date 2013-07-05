@@ -8,7 +8,7 @@ from interruptions  import Interruption
 import interruptions as i
 import random
 import time
-from process import State
+from processAndProgram import State
 from interruptions import GloabalContext
 from interruptions import IOContext
 
@@ -42,4 +42,5 @@ class Cpu(Instruction):
 
     def execute(self,pcb):
         print 'process id:',pcb.pid ,'execute'
-        pass
+
+  
