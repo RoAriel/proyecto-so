@@ -353,7 +353,8 @@ class Paging():
         """libera los frames usados por el pcb,tambien las pages que mantiene el algoritmo de lemplazo
            
         """
-        usedFrame=self.pagesOfPcb[pcb].getUsedFrames()
+        self.disk.removePcbInSwap(pcb.pid)
+        usedFrame=self.pagesOfPcb[pcb].getUsedFrames(self.frames)
         self.replacementAlgorithms.removePages(self.pagesOfPcb[pcb].pages)
         del self.pagesOfPcb[pcb]
         for frame in usedFrame:
@@ -389,6 +390,12 @@ class PageData():
     def getFrameOf(self,page):
         return self.tablePages[page.direction]  
     
+    def getUsedFrames(self,frames):
+        nsframes=self.tablePages.values()
+        fs=[]
+        for nframe in nsframes:
+            fs.append(frames[nframe])
+        return fs
     
     
     
@@ -407,14 +414,23 @@ class Frame():
 """algoritmos de remplazos de paginas"""
 class ReplacementAlgorithms():
     
-    pass
-
-class FIFO(ReplacementAlgorithms):    
-     
     def __init__(self,paging=None):
         self.queue=q.Queue()
         self.takenPage={}
         self.paging=paging
+    
+    
+    def removePages(self,pages):
+        for page in pages:
+            del(self.takenPage[page])
+        
+    
+   
+
+class FIFO(ReplacementAlgorithms):    
+     
+    def __init__(self,paging=None):
+        ReplacementAlgorithms.__init__(self,paging)
         
      
     def register(self,page,pcb):
@@ -432,17 +448,19 @@ class FIFO(ReplacementAlgorithms):
         return frame
 
     def removePages(self,pages):
-        for page in pages:
-            if(page in self.pages):
-                self.pages.remove(page)
+        ReplacementAlgorithms.removePages(self, pages)
+        newQueue=q.Queue()
+        while not self.queue.empty():
+            page=self.queue.get()
+            if(not page in pages):
+                newQueue.put(page)
+        self.queue=newQueue
         
         
 class NotRecentlyUsed():
     
     def __init__(self,paging=None):
-        self.queue=q.Queue()
-        self.takenPage={}
-        self.paging=paging
+        ReplacementAlgorithms.__init__(self,paging)
     
     def getFrame(self,pagesOfPcb,kernel):
         tupla=self.queue.get()
@@ -469,6 +487,7 @@ class NotRecentlyUsed():
         self.queue.put([page,False])
 
     def removePages(self,pages):
+        ReplacementAlgorithms.removePages(self, pages)
         newQueue=q.Queue()
         while(not self.queue.empty()):
             page=self.queue.get()[0]

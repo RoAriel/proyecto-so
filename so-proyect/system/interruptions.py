@@ -62,6 +62,7 @@ class ManagerInterruptions():
         ManagerInterruptions.mode.setModeKernel()
         context.pcb.state=State.finished
         ManagerInterruptions.cpu.setProcess(ManagerInterruptions.scheduler.get())
+        ManagerInterruptions.kernel.kill(context.pcb)
         ManagerInterruptions.timer.resetQuantum()
         ManagerInterruptions.mode.setModeUser()
     

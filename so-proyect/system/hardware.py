@@ -114,7 +114,8 @@ class Disk():
         
     
     def removePcbInSwap(self,pid):
-        del(self.swap[pid])
+        if(pid in self.swap.keys()):
+            del(self.swap[pid])
     
     def programExists(self,pathProgram):
         return pathProgram in self.programs.keys()

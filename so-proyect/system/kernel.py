@@ -66,6 +66,9 @@ class Kernel():
         pcb=PCB(pathProgram,PidGenerator.getPid(),self.disk.getSizeProgram(pathProgram))
         self.addPcb(pcb)
         self.memoryLogic.allocateMemory(pcb)
+        
+    def kill(self,pcb):
+        self.memoryLogic.kill(pcb)
 
 class Mode():
     

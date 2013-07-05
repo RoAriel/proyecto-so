@@ -43,17 +43,17 @@ k.addProgram(myProgram3)
 
 
 k.executeProgram('Home/user/myProgram')
-k.executeProgram('Home/user/myProgram')
-k.executeProgram('Home/user/myProgram')
-k.executeProgram('Home/user/myProgram')
+#k.executeProgram('Home/user/myProgram')
+#k.executeProgram('Home/user/myProgram')
+#k.executeProgram('Home/user/myProgram')
 
 
-time.sleep(25)
+time.sleep(15)
 
-# t=k.memoryLogic.pagesOfPcb[k.memoryLogic.pagesOfPcb.keys()[1]]
-# print k.memoryLogic.pagesOfPcb.keys()[1].pid
-# print k.memoryLogic.getDataOfPhysical(k.memoryLogic.frames[k.memoryLogic.pagesOfPcb.values()[0].tablePages[0]])
-
-
+print k.disk.swap
+print k.memoryLogic.pagesOfPcb
+print k.memoryLogic.takenFrame
+print k.memoryLogic. replacementAlgorithms.queue.empty()
+print k.memoryLogic. replacementAlgorithms.takenPage
 
 
