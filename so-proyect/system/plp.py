@@ -3,6 +3,10 @@ Created on 17/06/2013
 
 @author: usuario
 '''
+
+"""Muy simple version de planificador de largo plazo,solo controla si hay memoria 
+   disponible
+"""
 class PLP():
     
     def __init__(self,memory,queueWait,scheduler):
@@ -23,6 +27,7 @@ class PLP():
             if(pcb.size<=size):
                 self.memory.allocateMemory(pcb)
                 self.scheduler.add(pcb)
-                break
+            
+            
                 
             
