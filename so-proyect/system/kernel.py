@@ -8,6 +8,7 @@ import clock as c
 import interruptions as i
 from hardware import PCB
 from hardware import PidGenerator
+import devices
 
 class Kernel():
     
@@ -22,7 +23,8 @@ class Kernel():
         self.clock=c.Clock(None)
         self.clock.cpu=self.cpu
         self.clock.timer=self.scheduler.getTimer()
-        i.ManagerInterruptions.config(self.scheduler,self.mode,self.cpu,self.clock.timer,self)
+        self.managerDevices=devices.ManagerDivices(self)
+        i.ManagerInterruptions.config(self.scheduler,self.mode,self.cpu,self.clock.timer,self,self.managerDevices)
     
         
     def executeProgram(self,pathProgram):

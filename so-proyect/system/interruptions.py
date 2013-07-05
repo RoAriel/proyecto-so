@@ -19,13 +19,14 @@ class ManagerInterruptions():
     scheduler=None
     disk=None
     kernel=None
-    managerDivices=None
+    managerDevices=None
     
     mapInterruption=None
 
     
     @classmethod  
-    def config(self,scheduler,mode,cpu,timer,kernel):
+    def config(self,scheduler,mode,cpu,timer,kernel,managerDevices):
+        ManagerInterruptions.managerDevices=managerDevices
         ManagerInterruptions.kernel=kernel
         ManagerInterruptions.timer=timer
         ManagerInterruptions.mode=mode
@@ -48,14 +49,16 @@ class ManagerInterruptions():
             ManagerInterruptions.scheduler.add(ManagerInterruptions.cpu.pcb,ManagerInterruptions.cpu)   
         ManagerInterruptions.cpu.setProcess(ManagerInterruptions.scheduler.get())
         ManagerInterruptions.mode.setModeUser()
+        print 'interruptins timeOut'
     
     @classmethod     
     def IO(self,context):
         ManagerInterruptions.mode.setModeKernel()
         context.pcb.state=State.wait
-        ManagerInterruptions.managerDivices.add(context.pcb,context.divide)
+        ManagerInterruptions.managerDevices.add(context.pcb,context.device)
         ManagerInterruptions.timer.resetQuantum()
-        ManagerInterruptions.timeOut()
+        ManagerInterruptions.cpu.setProcess(ManagerInterruptions.scheduler.get())
+        ManagerInterruptions.mode.setModeUser()
     
     @classmethod     
     def pcbFinalize(self,context):
@@ -65,6 +68,7 @@ class ManagerInterruptions():
         ManagerInterruptions.kernel.kill(context.pcb)
         ManagerInterruptions.timer.resetQuantum()
         ManagerInterruptions.mode.setModeUser()
+        print 'interruptins finalize'
     
     @classmethod      
     def expropiation(self,context):
@@ -74,13 +78,14 @@ class ManagerInterruptions():
         ManagerInterruptions.cpu.pcb=context.pcb
         ManagerInterruptions.timer.resetQuantum()
         ManagerInterruptions.mode.setModeUser()
-        
+        print 'interruptins expropiation'
     
     @classmethod      
     def pageFault(self,context):
         ManagerInterruptions.mode.setModeKernel()
         self.kernel.swapIn(context.page,context.pcb)
         ManagerInterruptions.mode.setModeUser()
+        print 'interruptins pageFault'
 
 
 
@@ -115,6 +120,6 @@ class PageFaultContext():
         
 class IOContext():
     
-    def __init__(self,pcb,divice):
+    def __init__(self,pcb,device):
         self.pcb=pcb
-        self.divice=divice
+        self.device=device

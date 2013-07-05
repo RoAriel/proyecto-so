@@ -14,6 +14,7 @@ import time
 import random
 import logicMemory
 import time
+from devices import TypeDevice
 
 mode=kernel.Mode()
 physicalMemory=hardware.PhysicalMemory(40)
@@ -27,7 +28,7 @@ k=kernel.Kernel(cpu,physicalMemory,paging,scheduler,disk,mode)
 k.start()
 
 """Creacion de programas"""
-myProgram=processAndProgram.Program('Home/user/myProgram',[i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Finalize()])
+myProgram=processAndProgram.Program('Home/user/myProgram',[i.Cpu(),i.IO(TypeDevice.monitor),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Finalize()])
 myProgram1=processAndProgram.Program('Home/user/myProgram1',[i.Cpu(),i.Cpu(),i.Finalize()])
 myProgram2=processAndProgram.Program('Home/user/myProgram2',[i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Finalize()])
 myProgram3=processAndProgram.Program('Home/user/myProgram3',[i.Cpu(),i.Cpu(),i.Finalize()])
@@ -48,7 +49,7 @@ k.executeProgram('Home/user/myProgram')
 #k.executeProgram('Home/user/myProgram')
 
 
-time.sleep(15)
+time.sleep(65)
 
 print k.disk.swap
 print k.memoryLogic.pagesOfPcb

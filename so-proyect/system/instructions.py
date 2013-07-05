@@ -20,12 +20,12 @@ class Instruction():
     
 class IO(Instruction):
     
-    def __init__(self,divice=None):
-        self.divice=divice
+    def __init__(self,device=None):
+        self.device=device
         
     def execute(self,pcb):
         pcb.sate=State.wait
-        i.ManagerInterruptions.throwInterruption(Interruption.IO,IOContext(pcb,self.divice))
+        i.ManagerInterruptions.throwInterruption(Interruption.IO,IOContext(pcb,self.device))
 #
         
         
