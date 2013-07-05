@@ -117,7 +117,7 @@ class ContinuousAssignment():
     def allocateMemory(self,pcb):
         """Obtiene un bloque de disco ,que almacena las instrucciones del pcb"""
         dblock=self.disk.getDiskBlock(pcb)
-        size=dblock.size()
+        size=pcb.size
 
         """ delega al ajuste la buqueda de un bloque de tamanho size,puede no encotrarlo,en ese caso
             retorna none
@@ -146,7 +146,12 @@ class ContinuousAssignment():
         for i in instructions:
             self.physicalMemory.setData(dirIni,i)
             dirIni+=1
-            
+      
+    def getFreeSpace(self):
+        size=0
+        for block in self.freeBlocks:
+            size+=block.size       
+        return size
      
     """Libera la memoria usada por el pcb"""   
     def kill(self,pcb):

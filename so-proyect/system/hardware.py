@@ -99,6 +99,15 @@ class Disk():
                     return True
         return False
     
+    def getDiskBlock(self,pcb):
+        blocks=self.programs[pcb.pathProgram]
+        listInstructions=[]
+        for block in blocks:
+            for instruction in block.getInstructions():
+                listInstructions.append(instruction)
+        return DiskBlock(listInstructions)
+            
+    
       
     def getAmountBlock(self,size):
         if(size % self.sizeBlock == 0):
@@ -128,12 +137,15 @@ class Disk():
     
 class DiskBlock():
     
-    def __init__(self,instructions,direction):
+    def __init__(self,instructions,direction=None):
         self.instructions=instructions
         self.direction=direction
     
     def getInstructions(self):
         return self.instructions
+    
+    def size(self):
+        return len(self.instructions)
     
 
 class PidGenerator():
