@@ -130,7 +130,7 @@ class ContinuousAssignment(LogicMemory):
     def allocateMemory(self,pcb):
         """Obtiene un bloque de disco ,que almacena las instrucciones del pcb"""
         dblock=self.disk.getDiskBlock(pcb)
-        size=pcb.size
+        size=pcb.getSize()
 
         """ delega al ajuste la buqueda de un bloque de tamanho size,puede no encotrarlo,en ese caso
             retorna none
@@ -173,7 +173,7 @@ class ContinuousAssignment(LogicMemory):
         block=self.takenBlock[pcb]
         del(self.takenBlock[pcb])
         self.freeBlocks.append(block)
-        self.plp.notify(pcb.size)
+        self.plp.notify(pcb.getSize())
         
     def show(self):
         pq=q.PriorityQueue()
@@ -331,7 +331,7 @@ class Paging(LogicMemory):
       
     """ genera paginas necesarias para el pcb,sin cargarlas a memoria"""
     def allocateMemory(self, pcb):   
-        pages=self.getPagesTo(pcb.size)
+        pages=self.getPagesTo(pcb.getSize())
         self.pagesOfPcb[pcb]=PageData(pages)
         
             
