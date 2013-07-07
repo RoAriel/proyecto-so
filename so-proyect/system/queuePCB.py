@@ -8,7 +8,8 @@ import Queue
 class PQueueToPcb(Queue.PriorityQueue):
     
     def put(self,pcb):
-        Queue.PriorityQueue.put(self,pcb,pcb.priority)
+        Queue.PriorityQueue.put(self,(pcb.priority,pcb))
 
-
+    def get(self):
+        return Queue.PriorityQueue.get(self)[0]
 

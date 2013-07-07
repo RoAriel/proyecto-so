@@ -17,27 +17,47 @@ import time
 from devices import TypeDevice
 
 mode=kernel.Mode()
-physicalMemory=hardware.PhysicalMemory(1600)
+physicalMemory=hardware.PhysicalMemory(50)
 disk=hardware.Disk(8)
-acont=logicMemory.ContinuousAssignment(disk, physicalMemory,logicMemory.FirstFit())
+acont=logicMemory.ContinuousAssignment(disk, physicalMemory,logicMemory.BestFit())
 cpu=CPU(acont,mode)
-scheduler=scheduler.SJF(True)
+scheduler=scheduler.FCFS()
 
 
 k=kernel.Kernel(cpu,physicalMemory,acont,scheduler,disk,mode)
-k.start()
+# k.start()
 
 """Creacion de programas"""
-myProgram=processAndProgram.Program('Home/user/myProgram',[i.Cpu(),i.IO(TypeDevice.monitor),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Finalize()])
+path='Home/user/myProgram'
+myProgram=processAndProgram.Program(path,[i.Cpu(),i.IO(TypeDevice.monitor),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Finalize()])
 myProgram1=processAndProgram.Program('Home/user/myProgram1',[i.Cpu(),i.Cpu(),i.Finalize()])
 myProgram2=processAndProgram.Program('Home/user/myProgram2',[i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Finalize()])
 myProgram3=processAndProgram.Program('Home/user/myProgram3',[i.Cpu(),i.Cpu(),i.Finalize()])
+
 
 
 k.addProgram(myProgram)
 k.addProgram(myProgram1)
 k.addProgram(myProgram2)
 k.addProgram(myProgram3)
+
+import processAndProgram 
+
+pcb=processAndProgram.PCB('Home/user/myProgram',0,11)
+k.plp.allocateMemory(pcb)
+pcb=processAndProgram.PCB('Home/user/myProgram2',1,6)
+k.plp.allocateMemory(pcb)
+pcb3=processAndProgram.PCB('Home/user/myProgram3',2,3)
+k.plp.allocateMemory(pcb3)
+pcb=processAndProgram.PCB('Home/user/myProgram',4,11)
+k.plp.allocateMemory(pcb)
+pcb=processAndProgram.PCB('Home/user/myProgram',5,11)
+k.plp.allocateMemory(pcb)
+acont.kill(pcb3)
+
+acont.show()
+
+"""
 
 import threading  as t
 
@@ -66,7 +86,7 @@ a().run()
 b().run()
 c().run()
 
-
+"""
 
 """
 time.sleep(65)

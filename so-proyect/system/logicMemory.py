@@ -73,17 +73,12 @@ class ContinuousAssignment(LogicMemory):
         if(self.isBlockFree(aBlock)):
             self.freeBlocks.remove(aBlock)
     
-    """dado una size compacta la memoria logica y retorna el bloque de tamanho size ,en el caso que retorne none
-       quiere decir que no hay suficiente espacio para el pcb de tamanho size.
-       Tambien mueve todas las instrucciones de la memoria fisica
+    """dado una size compacta la memoria logica y retorna el bloque de tamanho size 
+       Tambien mueve todas las bloques de instrucciones de la memoria fisica
     """
     def compactTo(self,size):
-
-
-        sizeAll=0
-        for block in self.freeBlocks:
-            sizeAll+=block.size
-            
+        sizeAll=self.getFreeSpace()
+        
         newBlock=Block(sizeAll,0)
         self.moveBlocks(sizeAll)
         self.freeBlocks=[newBlock]
@@ -92,7 +87,6 @@ class ContinuousAssignment(LogicMemory):
                 return newBlock
             else:
                 return newBlock.breakBlock(size)
-        return None
     
     """
     dado una direccion inicial,mueve todos los bloques tomados los los pcb empezando por la
@@ -105,7 +99,7 @@ class ContinuousAssignment(LogicMemory):
         for block in taken:
             instructions=self.getInstructions(block)
             block.directionPhysical=dir
-            self.allocateInMemoryPhysical(instructions,block)
+            self.allocateInstructionInMemoryPhysical(instructions,block)
             dir+=block.size
     
     """
@@ -119,9 +113,12 @@ class ContinuousAssignment(LogicMemory):
             listIns.append(self.physicalMemory.getData(directionPhysical))
             directionPhysical+=1
         return listIns
+        
          
     def fetchInstruction(self,pcb):
-        return self.physicalMemory.getData(self.takenBlock[pcb].directionPhysical + pcb.pc)
+        instruction=self.physicalMemory.getData(self.takenBlock[pcb].directionPhysical + pcb.pc)
+        pcb.addPc()
+        return instruction
             
     
     """dado el tamanho de memoria fisica generia un block free""" 
@@ -177,7 +174,37 @@ class ContinuousAssignment(LogicMemory):
         del(self.takenBlock[pcb])
         self.freeBlocks.append(block)
         self.plp.notify(pcb.size)
- 
+        
+    def show(self):
+        pq=q.PriorityQueue()
+        for block in self.takenBlock.values():
+            pq.put((block.directionPhysical,block,))
+        for block in self.freeBlocks:
+            pq.put((block.directionPhysical,block,))
+        print 'ocupado :',len(self.takenBlock.values())
+        print 'free:',len(self.freeBlocks)
+        while not pq.empty():    
+            o=pq.get()
+            ini=o[0]
+            """"""
+            d=None
+            for k in self.takenBlock.keys():
+                if(self.takenBlock[k]==o[1]):
+                    d=k
+            mitad=o[1].size/2   
+                    
+            """"""
+            print '+------------------------+'
+            for i in range(o[1].size):
+                if(mitad == i):
+                    if(d is not None):
+                        print '/        ',d.pid,'             / ' ,ini
+                    else:
+                        print '/        free            / ' ,ini
+                else:
+                    print '/                        / ' ,ini
+                ini+=1
+        print '+------------------------+' 
  
  
 """Bloques de para asignacion continua y frames para paginacion""" 
@@ -215,6 +242,8 @@ class Block(ElementOfMemory):
         self.size-=size
         block=Block(size,self.size+self.directionPhysical)
         return block
+
+        
     
 class Frame(ElementOfMemory):
     

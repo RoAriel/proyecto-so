@@ -61,11 +61,11 @@ class c(t.Thread):
         for i in range(1050):
             time.sleep(1)
             k.executeProgram('Home/user/myProgram3')    
-"""
+
 a().run()
 b().run()
 c().run()
-"""
+
 
 k.executeProgram('Home/user/myProgram')
 time.sleep(2)
