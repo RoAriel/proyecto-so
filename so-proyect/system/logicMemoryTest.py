@@ -30,37 +30,45 @@ class TestContinuousAssignment(unittest.TestCase):
         self.setting=mock(FirstFit)
         
         """Config mocks"""
+        
+        """tamanho de memoria fisica 6"""
         when(self.physicalMemory).getSize().thenReturn(6)
         
+        """size de los pcb,sincronizados con los sizes de los diskBlocks"""
         when(self.pcbA).getSize().thenReturn(5)
         
         when(self.pcbB).getSize().thenReturn(2)
         
         when(self.pcbC).getSize().thenReturn(4)
         
+        """configuracion del disco para que retorne un diskBlock para cada pcb"""
         when(self.disk).getDiskBlock(self.pcbA).thenReturn(self.disckBlockA)
         
         when(self.disk).getDiskBlock(self.pcbB).thenReturn(self.disckBlockB)
         
         when(self.disk).getDiskBlock(self.pcbC).thenReturn(self.disckBlockC)
         
+        """Configuracion de los diskBlocks para que retornen instrucciones"""
         when(self.disckBlockA).getInstructions().thenReturn(self.instructionsA)
         
         when(self.disckBlockB).getInstructions().thenReturn(self.instructionsB)
         
         when(self.disckBlockC).getInstructions().thenReturn(self.instructionsC)
         
-    
-        
+        """Se crea asignacion continua"""
         self.memory=ContinuousAssignment(self.disk,self.physicalMemory,self.setting,self.plp)
 
 
     def testMemoryCreated(self):
+        """Se controla que la memoria logica se creo con un bloque free,del tamanho de la
+           memoria fisica y direccion inicial en 0
+        """
         self.assertEqual(len(self.memory.freeBlocks),1,'Se creo mas de un bloque o menos')
         self.assertEqual(self.memory.freeBlocks[0].size,6,'El tamanho no es 24')
         self.assertEqual(self.memory.freeBlocks[0].directionPhysical,0,'El bloque no cominza con la direccion fisica 0')
     
-    def testAllocateMemoryWithFirstFit(self):  
+    def testAllocateMemory(self):
+        """Se guarda en memoria un proceso y se controla que la memoria free esta reducida"""  
         when(self.setting).getFreeBlockTo(5,self.memory.freeBlocks).thenReturn(self.memory.freeBlocks[0])
         self.memory.allocateMemory(self.pcbA)
         self.assertEqual(self.memory.freeBlocks[0].size,1,'El tamanho no es 1')
@@ -107,5 +115,4 @@ class TestContinuousAssignment(unittest.TestCase):
         
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
