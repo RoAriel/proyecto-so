@@ -10,19 +10,23 @@ Created on 17/06/2013
 
 class PLP():
     
-    def __init__(self,memory,scheduler):
+    def __init__(self,memory,scheduler,cpu):
         self.memory=memory
         self.queueWait=scheduler.getQueue()
         self.scheduler=scheduler
         memory.plp=self
+        self.cpu=cpu
         
     def allocateMemory(self,pcb):
-        if(self.memory.getFreeSpace() >= pcb.size):
+        if(self.memory.freeSpaceInMemory(pcb.size) & self.memory.freeSpaceInDisk(pcb.size)):
             self.memory.allocateMemory(pcb)
-            self.scheduler.add(pcb)
+            self.scheduler.add(pcb,self.cpu)
         else:
             self.queueWait.add(pcb)
-            
+    
+    """Este metodo se uliliza para cuando la memori logica mata un proceso,
+       y notifica llamando a este metodo
+    """        
     def notify(self,size):
         newQueue=self.scheduler.getQueue()
         flag=True

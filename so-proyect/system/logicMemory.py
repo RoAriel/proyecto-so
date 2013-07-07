@@ -152,6 +152,12 @@ class ContinuousAssignment():
         for block in self.freeBlocks:
             size+=block.size       
         return size
+    
+    def freeSpaceInMemory(self,size):
+        return self.getFreeSpace()>=size
+    
+    def freeSpaceInDisk(self,size):
+        return True
      
     """Libera la memoria usada por el pcb"""   
     def kill(self,pcb):
@@ -251,7 +257,8 @@ class Page():
 
 class Paging():
     
-    def __init__(self, disk, physicalMemory,replacementAlgorithms):
+    def __init__(self, disk, physicalMemory,replacementAlgorithms,plp=None):
+        self.plp=plp
         self.disk = disk
         self.physicalMemory = physicalMemory
         self.pagesOfPcb={}
@@ -354,6 +361,12 @@ class Paging():
             direction+=1
         return ins
     
+    def freeSpaceInMemory(self,size):
+        return True
+    
+    def freeSpaceInDisk(self,size):
+        return self.disk.getFreeSwapSpace() >= size
+    
     def kill(self,pcb):
         """libera los frames usados por el pcb,tambien las pages que mantiene el algoritmo de lemplazo
            
@@ -364,6 +377,7 @@ class Paging():
         del self.pagesOfPcb[pcb]
         for frame in usedFrame:
             self.takenFrame.remove(frame)
+        self.plp.notify(pcb)
             
       
 """Esta clase contiene una lista de paginas y una tabla de paginas"""   

@@ -28,7 +28,11 @@ class Scheduler():
         self.policy.addAsReady(process)
     
     def add(self,process,cpu):
-        self.policy.add(process,cpu)
+        if((cpu.pcb is None) & self.isEmpty()):
+            cpu.pcb=process
+        else:
+            self.policy.add(process,cpu)
+        
         
     def isEmpty(self):
         return self.policy.isEmpty()

@@ -58,6 +58,8 @@ class Disk():
         self.sizeBlock=sizeBlock
         self.programs={}
         self.swap={}
+        """Por bloque"""
+        self.freeSwap=1024 
 
         
     def addProgram(self,program):
@@ -129,11 +131,20 @@ class Disk():
     def programExists(self,pathProgram):
         return pathProgram in self.programs.keys()
     
+    """Dado un path de programa retorna su tamanho"""
     def getSizeProgram(self,pathProgram):
         size=0
         for block in self.programs[pathProgram]:
             size+=len(block.getInstructions())
         return size
+    
+    """Retorna el tamanho  libre en disco swap,simplemente suma la cantidad de bloques en swap y se lo resta a freeSwap"""
+    def getFreeSwapSpace(self):
+        blockSwap=self.swap.values()
+        totalBlockSwap=0
+        for listBlocks in blockSwap:
+            totalBlockSwap+=len(listBlocks)
+        return self.freeSwap - totalBlockSwap
     
 class DiskBlock():
     

@@ -9,6 +9,7 @@ import interruptions as i
 from hardware import PCB
 from hardware import PidGenerator
 import devices
+from plp import PLP
 
 class Kernel():
     
@@ -24,6 +25,8 @@ class Kernel():
         self.clock.cpu=self.cpu
         self.clock.timer=self.scheduler.getTimer()
         self.managerDevices=devices.ManagerDivices(self)
+        self.plp=PLP(memoryLogic,self.scheduler,cpu)
+        memoryLogic.plp=self.plp
         i.ManagerInterruptions.config(self.scheduler,self.mode,self.cpu,self.clock.timer,self,self.managerDevices)
     
         
@@ -43,10 +46,7 @@ class Kernel():
         
     def addPcb(self,pcb):
         self.mode.setModeKernel()
-        if((self.cpu.pcb is None) & self.scheduler.isEmpty()):
-            self.cpu.pcb=pcb
-        else:
-            self.scheduler.add(pcb,self.cpu)
+        self.plp.allocateMemory(pcb)
         self.mode.setModeUser()
         
     def swapIn(self,page,pcb):
@@ -67,7 +67,6 @@ class Kernel():
     def execute(self,pathProgram):
         pcb=PCB(pathProgram,PidGenerator.getPid(),self.disk.getSizeProgram(pathProgram))
         self.addPcb(pcb)
-        self.memoryLogic.allocateMemory(pcb)
         
     def kill(self,pcb):
         self.memoryLogic.kill(pcb)
