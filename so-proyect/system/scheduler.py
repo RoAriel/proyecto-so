@@ -48,15 +48,6 @@ class Policy():
     def __init__(self):
         self.processes=q.Queue()
     
-    def add(self,process,cpu):
-        pass
-    
-    def addAsReady(self):
-        pass
-    
-    def get(self):
-        pass
-    
     def isEmpty(self):
         return self.processes.empty()
     

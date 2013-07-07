@@ -20,9 +20,25 @@ import instructions as i
 import processAndProgram as p
 import random
 
-"""**********ASIGNACION CONTINUA***********"""
+
+"""**********Logic Memory***********"""
+"""Super clase de asignacion continua y paginacion"""
+class LogicMemory():
     
-class ContinuousAssignment():
+    def __init__(self,disk,physicalMemory):
+        self.disk=disk
+        self.physicalMemory=physicalMemory
+        
+    def allocateInstructionInMemoryPhysical(self,instruction,elementOfMemory):
+        direction=elementOfMemory.directionPhysical
+        for ins in instruction:
+            self.physicalMemory.setData(direction,ins)
+            direction+=1
+
+"""**********ASIGNACION CONTINUA***********"""
+
+    
+class ContinuousAssignment(LogicMemory):
     
     def __init__(self, disk, physicalMemory,setting,plp=None):
         self.plp=plp
@@ -42,10 +58,10 @@ class ContinuousAssignment():
         else:
             self.takenBlock[pcb]=block
             self.deleteBlockFree(block)
-        self.allocateInMemoryPhysical(instructions,self.takenBlock[pcb])    
+        self.allocateInstructionInMemoryPhysical(instructions,self.takenBlock[pcb])    
     
     
-    def isBLockFree(self,aBlock):
+    def isBlockFree(self,aBlock):
 
         for block in self.freeBlocks:
             if(block == aBlock):
@@ -54,7 +70,7 @@ class ContinuousAssignment():
     
     def deleteBlockFree(self,aBlock):
 
-        if(self.isBLockFree(aBlock)):
+        if(self.isBlockFree(aBlock)):
             self.freeBlocks.remove(aBlock)
     
     """dado una size compacta la memoria logica y retorna el bloque de tamanho size ,en el caso que retorne none
@@ -88,7 +104,7 @@ class ContinuousAssignment():
         taken=self.takenBlock.values()
         for block in taken:
             instructions=self.getInstructions(block)
-            block.direction=dir
+            block.directionPhysical=dir
             self.allocateInMemoryPhysical(instructions,block)
             dir+=block.size
     
@@ -97,15 +113,15 @@ class ContinuousAssignment():
     """  
     def getInstructions(self,block):
 
-        direction=block.direction
+        directionPhysical=block.directionPhysical
         listIns=[]
         for i in range(block.size):
-            listIns.append(self.physicalMemory.getData(direction))
-            direction+=1
+            listIns.append(self.physicalMemory.getData(directionPhysical))
+            directionPhysical+=1
         return listIns
          
     def fetchInstruction(self,pcb):
-        return self.physicalMemory.getData(self.takenBlock[pcb].direction + pcb.pc)
+        return self.physicalMemory.getData(self.takenBlock[pcb].directionPhysical + pcb.pc)
             
     
     """dado el tamanho de memoria fisica generia un block free""" 
@@ -126,26 +142,15 @@ class ContinuousAssignment():
         
         """si el bloque es none,se debe compactar,caso contrario ya se puede guardar en memoria"""
         if(block is None):
-            """si se compacta  y block sigue siendo none,quiere decir que no hay espacio,el pcb no puede ser
-               guardado en memoria en este momento
+            """si se compacta  y se guarda el pcb en el bloque compactado
             """
             block=self.compactTo(size)
-            if(block is not  None):
-
-                self.allocate(pcb, block,dblock.getInstructions(),size)
+            self.allocate(pcb, block,dblock.getInstructions(),size)
             
         else:
 
             self.allocate(pcb, block,dblock.getInstructions(),size)
       
-      
-    """carga en memoria fisica las instrucciones"""  
-    def allocateInMemoryPhysical(self,instructions,block):
-
-        dirIni=block.direction
-        for i in instructions:
-            self.physicalMemory.setData(dirIni,i)
-            dirIni+=1
       
     def getFreeSpace(self):
         size=0
@@ -172,18 +177,26 @@ class ContinuousAssignment():
         del(self.takenBlock[pcb])
         self.freeBlocks.append(block)
         self.plp.notify(pcb.size)
-   
-        
-class Block():
-    def __init__(self,size,direction):
-        self.size= size
+ 
+ 
+ 
+"""Bloques de para asignacion continua y frames para paginacion""" 
+
+class ElementOfMemory():
+    
+    def __init__(self,directionPhysical):
         """esta direccion hace referencia a una direccion de memoria fisica"""
-        self.direction = direction
+        self.directionPhysical=directionPhysical
+        
+class Block(ElementOfMemory):
+    def __init__(self,size,directionPhysical):
+        self.size= size
+        ElementOfMemory.__init__(self,directionPhysical)
     
     """dado otro block retorna uno nuevo compactado"""
     def compact(self,otherBlock):
 
-        return Block(self.size+otherBlock.size,self.direction)
+        return Block(self.size+otherBlock.size,self.directionPhysical)
    
 
     def entersBlock(self,size):
@@ -200,8 +213,18 @@ class Block():
     
     def breakBlock(self,size):
         self.size-=size
-        block=Block(size,self.size+self.direction)
+        block=Block(size,self.size+self.directionPhysical)
         return block
+    
+class Frame(ElementOfMemory):
+    
+    def __init__(self,directionLogic,directionPhysical):
+        self.directionLogic=directionLogic
+        ElementOfMemory.__init__(self,directionPhysical)
+
+    def getInstruction(self,pcb,physicalMemory,resto):
+        pcb.addPc()
+        return physicalMemory.getData(self.directionPhysical+resto)
   
   
 """ALGORITMOS DE BUSQUEDA DE BLOCKES"""  
@@ -209,8 +232,7 @@ class Block():
 class Setting():
     
     def getFreeBlockTo(self,size,freeBloc):
-
-        pass # busca el bloque que me soporta uede retornar null si no lo encuentra
+        pass
 
 class FirstFit(Setting):
     
@@ -255,7 +277,7 @@ class Page():
         
 
 
-class Paging():
+class Paging(LogicMemory):
     
     def __init__(self, disk, physicalMemory,replacementAlgorithms,plp=None):
         self.plp=plp
@@ -333,24 +355,13 @@ class Paging():
             if(not frame in self.takenFrame):
                 return frame
        
-    """dado un pcb carga en memoria las instrucciones""" 
-    def allocateInMemoryPhysical(self,pcb,frame): 
-        iss=self.disk.getInstructions(pcb)
-        dir=frame.directionPhysical
-        for i in iss:
-            self.physicalMemory.setData(dir,i)
-            dir+=1
+
             
     """Actualiza la tabla de pagina de pcb"""
     def updateTablePageOf(self,pcb,page,frame):
         self.pagesOfPcb[pcb].updateTablePage(page,frame)
 
     
-    def allocateInstructionInMemoryPhysical(self,instruction,frame):
-        direction=frame.directionPhysical
-        for ins in instruction:
-            self.physicalMemory.setData(direction,ins)
-            direction+=1
     
     """obtiene y retorna todas las instrucciones del frame"""
     def getDataOfPhysical(self,frame):
@@ -396,12 +407,7 @@ class PageData():
             ii.ManagerInterruptions.throwInterruption(ii.Interruption.pageFault,PageFaultContext(pcb,page))
     
     
-    def allocateInMemoryPhysical(self,pcb,frame): 
-        iss=self.disk.getInstructions(pcb)
-        dir=frame.direction
-        for i in iss:
-            self.physicalMemory.setData(dir,i)
-            dir+=1
+
        
     def updateTablePage(self,page,frame):
         self.tablePages[page.direction]=frame.directionLogic 
@@ -417,17 +423,7 @@ class PageData():
         return fs
     
     
-    
 
-class Frame():
-    
-    def __init__(self,directionLogic,directionPhysical):
-        self.directionLogic=directionLogic
-        self.directionPhysical=directionPhysical
-
-    def getInstruction(self,pcb,physicalMemory,resto):
-        pcb.addPc()
-        return physicalMemory.getData(self.directionPhysical+resto)
 
 
 """algoritmos de remplazos de paginas"""
@@ -442,6 +438,16 @@ class ReplacementAlgorithms():
     def removePages(self,pages):
         for page in pages:
             del(self.takenPage[page])
+            
+    def getFrame(self,page,pagesOfPcb,kernel):
+        pcb=self.takenPage[page]
+        pageData=pagesOfPcb[pcb]
+        page.isMemory=False
+        nframe=pageData.getFrameOf(page)
+        frame=self.paging.frames[nframe]
+        kernel.swapOut(page,pcb,frame)
+        return frame
+        
         
     
    
@@ -458,13 +464,7 @@ class FIFO(ReplacementAlgorithms):
         
     def getFrame(self,pagesOfPcb,kernel):
         page=self.queue.get()
-        pcb=self.takenPage[page]
-        pageData=pagesOfPcb[pcb]
-        page.isMemory=False
-        nframe=pageData.getFrameOf(page)
-        frame=self.paging.frames[nframe]
-        kernel.swapOut(page,pcb,frame)
-        return frame
+        return ReplacementAlgorithms.getFrame(self,page,pagesOfPcb,kernel)
 
     def removePages(self,pages):
         ReplacementAlgorithms.removePages(self, pages)
@@ -481,6 +481,9 @@ class NotRecentlyUsed():
     def __init__(self,paging=None):
         ReplacementAlgorithms.__init__(self,paging)
     
+    """Chekea todos los flags asociados a las paginas,si encuentra page con flag en true,retorna esa,
+       si no le cambia el flag a True y lo vuelve a meter en la cola 
+    """
     def getFrame(self,pagesOfPcb,kernel):
         tupla=self.queue.get()
         
@@ -491,14 +494,7 @@ class NotRecentlyUsed():
             
             
         page=tupla[0]
-        pcb=self.takenPage[page]
-        pageData=pagesOfPcb[pcb]
-        page.isMemory=False
-        page.isDisk=True
-        nframe=pageData.getFrameOf(page)
-        frame=self.paging.frames[nframe]
-        kernel.swapOut(page,pcb,frame)
-        return frame  
+        return ReplacementAlgorithms.getFrame(self,page,pagesOfPcb,kernel) 
         
     
     def register(self,page,pcb):  
