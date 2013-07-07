@@ -9,10 +9,10 @@ import random
 
 
 class ManagerDivices():
-    def __init__(self,kernel):
-        self.divices={TypeDevice.keyboard:DeviceIO(TypeDevice.keyboard,kernel),
-                       TypeDevice.monitor:DeviceIO(TypeDevice.monitor,kernel),
-                       TypeDevice.printer: DeviceIO(TypeDevice.printer,kernel)
+    def __init__(self,scheduler,cpu):
+        self.divices={TypeDevice.keyboard:DeviceIO(TypeDevice.keyboard,scheduler,cpu),
+                       TypeDevice.monitor:DeviceIO(TypeDevice.monitor,scheduler,cpu),
+                       TypeDevice.printer: DeviceIO(TypeDevice.printer,scheduler,cpu)
                        }
         
     def getDeviceIO(self,aDevice):
@@ -24,26 +24,28 @@ class ManagerDivices():
 
 class DeviceIO():
     
-    def __init__(self,type,kernel):
+    def __init__(self,type,scheduler,cpu):
         self.type=type
-        self.kernel=kernel
+        self.scheduler=scheduler
+        self.cpu=cpu
         
     def add(self,pcb):
-        Controller(pcb,self.kernel).start()
+        Controller(pcb,self.scheduler,self.cpu).start()
           
         
         
 """Se encarga de simular que tiempo de IO que tarda la instruccion""" 
 class Controller(t.Thread):
     
-    def __init__(self,pcb,kernel):
+    def __init__(self,pcb,scheduler,cpu):
         t.Thread.__init__(self)
         self.pcb=pcb
-        self.kernel=kernel
+        self.scheduler=scheduler
+        self.cpu=cpu
         
     def run(self):
         time.sleep(random.randrange(1,15))
-        self.kernel.addPcb(self.pcb)
+        self.scheduler.add(self.pcb,self.cpu)
     
 
 

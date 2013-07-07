@@ -24,7 +24,7 @@ class Kernel():
         self.clock=c.Clock(None)
         self.clock.cpu=self.cpu
         self.clock.timer=self.scheduler.getTimer()
-        self.managerDevices=devices.ManagerDivices(self)
+        self.managerDevices=devices.ManagerDivices(self.scheduler,cpu)
         self.plp=PLP(memoryLogic,self.scheduler,cpu)
         memoryLogic.plp=self.plp
         i.ManagerInterruptions.config(self.scheduler,self.mode,self.cpu,self.clock.timer,self,self.managerDevices)
@@ -51,7 +51,7 @@ class Kernel():
         
     def swapIn(self,page,pcb):
         diskBlock=self.disk.getBlock(page,pcb.pid,pcb.pathProgram)
-
+        
         frame=self.memoryLogic.getFrame()
 
         self.memoryLogic.allocateInstructionInMemoryPhysical(diskBlock.getInstructions(),frame)

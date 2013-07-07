@@ -21,7 +21,7 @@ physicalMemory=hardware.PhysicalMemory(1600)
 disk=hardware.Disk(8)
 paging=logicMemory.Paging(disk,physicalMemory,logicMemory.FIFO())
 cpu=CPU(paging,mode)
-scheduler=scheduler.SJF(True)
+scheduler=scheduler.FCFS()
 
 
 k=kernel.Kernel(cpu,physicalMemory,paging,scheduler,disk,mode)
@@ -61,10 +61,15 @@ class c(t.Thread):
         for i in range(1050):
             time.sleep(1)
             k.executeProgram('Home/user/myProgram3')    
-
+"""
 a().run()
 b().run()
 c().run()
+"""
+
+k.executeProgram('Home/user/myProgram')
+time.sleep(2)
+k.executeProgram('Home/user/myProgram')
 
 
 

@@ -59,6 +59,7 @@ class ManagerInterruptions():
         ManagerInterruptions.timer.resetQuantum()
         ManagerInterruptions.cpu.setProcess(ManagerInterruptions.scheduler.get())
         ManagerInterruptions.mode.setModeUser()
+        print 'interruptions IO'
     
     @classmethod     
     def pcbFinalize(self,context):
