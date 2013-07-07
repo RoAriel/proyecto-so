@@ -39,6 +39,9 @@ class PCB():
     def addPc(self):
         self.pc+=1
     
+    def getSize(self):
+        return self.size
+    
 """******ESTADOS DE PROCESO*******"""
 
 class State():

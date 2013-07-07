@@ -198,11 +198,11 @@ class ContinuousAssignment(LogicMemory):
             for i in range(o[1].size):
                 if(mitad == i):
                     if(d is not None):
-                        print '/        ',d.pid,'             / ' ,ini
+                        print '|        ',d.pid,'             | ' ,ini
                     else:
-                        print '/        free            / ' ,ini
+                        print '|        free            | ' ,ini
                 else:
-                    print '/                        / ' ,ini
+                    print '|                        | ' ,ini
                 ini+=1
         print '+------------------------+' 
  
