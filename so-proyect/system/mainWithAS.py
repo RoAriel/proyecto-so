@@ -45,8 +45,8 @@ import processAndProgram
 
 pcb=processAndProgram.PCB('Home/user/myProgram',0,11)
 k.plp.allocateMemory(pcb)
-pcb=processAndProgram.PCB('Home/user/myProgram2',1,6)
-k.plp.allocateMemory(pcb)
+pcb6=processAndProgram.PCB('Home/user/myProgram2',1,6)
+k.plp.allocateMemory(pcb6)
 pcb3=processAndProgram.PCB('Home/user/myProgram3',2,3)
 k.plp.allocateMemory(pcb3)
 pcb=processAndProgram.PCB('Home/user/myProgram',4,11)
@@ -54,7 +54,11 @@ k.plp.allocateMemory(pcb)
 pcb=processAndProgram.PCB('Home/user/myProgram',5,11)
 k.plp.allocateMemory(pcb)
 acont.kill(pcb3)
-
+pcb=processAndProgram.PCB('Home/user/myProgram',6,11)
+k.plp.allocateMemory(pcb)
+pcb=processAndProgram.PCB('Home/user/myProgram',7,11)
+k.plp.allocateMemory(pcb)
+acont.kill(pcb6)
 acont.show()
 
 """

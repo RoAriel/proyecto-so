@@ -392,7 +392,7 @@ class Paging(LogicMemory):
 
     
     
-    """obtiene y retorna todas las instrucciones del frame"""
+    """obtiene y retorna todas las instrucciones del frame almacenadas en memotia fisica"""
     def getDataOfPhysical(self,frame):
         ins=[]
         direction=frame.directionPhysical
