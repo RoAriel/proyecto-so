@@ -22,7 +22,7 @@ class PLP():
             self.memory.allocateMemory(pcb)
             self.scheduler.add(pcb,self.cpu)
         else:
-            self.queueWait.add(pcb)
+            self.queueWait.put(pcb)
     
     """Este metodo se uliliza para cuando la memori logica mata un proceso,
        y notifica llamando a este metodo
