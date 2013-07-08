@@ -58,7 +58,12 @@ class Kernel():
 
         self.memoryLogic.allocateInstructionInMemoryPhysical(diskBlock.getInstructions(),frame)
         page.inMemory=True
+        
+        """Se debe registrar el el algoritmo de remplazo la pagina 
+           que fue cargada a memoria
+        """
         self.memoryLogic.replacementAlgorithms.register(page,pcb)
+        """se debe actualizar la pagina con el frame en la tabla de paginas"""
         self.memoryLogic.updateTablePageOf(pcb,page,frame)
         
     def swapOut(self,page,pcb,frame):
