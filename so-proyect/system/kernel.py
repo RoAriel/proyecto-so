@@ -10,6 +10,7 @@ from hardware import PCB
 from hardware import PidGenerator
 import devices
 from plp import PLP
+from processAndProgram import State
 
 class Kernel():
     
@@ -69,6 +70,8 @@ class Kernel():
     def kill(self,pcb):
         self.memoryLogic.kill(pcb)
         self.scheduler.kill(pcb)
+        pcb.state=State.finished
+        
 class Mode():
     
     def __init__(self):

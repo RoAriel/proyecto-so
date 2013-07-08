@@ -7,6 +7,7 @@ Created on 17/06/2013
 """Muy simple version de planificador de largo plazo,solo controla si hay memoria 
    disponible
 """
+from processAndProgram import State
 
 class PLP():
     
@@ -21,7 +22,9 @@ class PLP():
         if(self.memory.freeSpaceInMemory(pcb.getSize()) & self.memory.freeSpaceInDisk(pcb.getSize())):
             self.memory.allocateMemory(pcb)
             self.scheduler.add(pcb,self.cpu)
+            pcb.state=State.ready
         else:
+            pcb.state=State.wait
             self.queueWait.put(pcb)
     
     """Este metodo se uliliza para cuando la memori logica mata un proceso,

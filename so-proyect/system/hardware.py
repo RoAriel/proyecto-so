@@ -61,7 +61,7 @@ class Disk():
         """Por bloque"""
         self.freeSwap=1024 
 
-        
+    """Dado un programa lo parte en bloques y lo guarda"""   
     def addProgram(self,program):
         size=program.size()
         instructions=program.getInstructions()
@@ -159,6 +159,7 @@ class DiskBlock():
         return len(self.instructions)
     
 
+"""Generador de pids"""
 class PidGenerator():
     
     inital=0

@@ -6,7 +6,7 @@ Created on 09/06/2013
 import threading  as t
 import time
 import random
-
+from processAndProgram import State
 
 class ManagerDivices():
     def __init__(self,scheduler,cpu):
@@ -34,7 +34,7 @@ class DeviceIO():
           
         
         
-"""Se encarga de simular que tiempo de IO que tarda la instruccion""" 
+"""Se encarga de simular que tiempo de IO  tarda """ 
 class Controller(t.Thread):
     
     def __init__(self,pcb,scheduler,cpu):
