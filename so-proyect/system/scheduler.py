@@ -138,10 +138,10 @@ class SJF(Policy):
 
 class RoundRobin(Policy):
     
-    def __init__(self,isPriority):
+    def __init__(self,isPriority,quantum):
         Policy.__init__(self)
         self.isPriority=isPriority
-        self.quamtum=random.randrange(1, 5)
+        self.quamtum=quantum
         if(isPriority):
             self.processes=qp.PQueueToPcb()
     

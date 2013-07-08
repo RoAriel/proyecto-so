@@ -20,7 +20,7 @@ from system.devices import TypeDevice
 Se crea un kernel con policy FCFS,sistema de asignacion continua(usando el algoritmo BestFit)
 
 """
-
+"""Estas variables de pueden configurar a gusto,ejemplo: se puede elegir otro scheduler"""
 mode=kernel.Mode()
 physicalMemory=hardware.PhysicalMemory(16)
 disk=hardware.Disk(8)
@@ -45,6 +45,7 @@ k.addProgram(myProgram1)
 k.addProgram(myProgram2)
 k.addProgram(myProgram3)
 
+acont.show()
 
 """se ejecutan los programas y se muestra la memoria"""
 k.executeProgram('Home/user/myProgram2')
@@ -55,7 +56,7 @@ k.executeProgram('Home/user/myProgram3')
 """mustra la memoria despues de guardar los procesos ejecutados,
    se puede ver solo hay un bloque libre
 """
-k.memoryLogic.show()
+acont.show()
 
 
 """se espera a que finalizen todos los procesos,se ejecuta nuevamente un programa

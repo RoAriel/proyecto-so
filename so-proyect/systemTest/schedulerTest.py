@@ -43,13 +43,13 @@ class TestRoundRobin(TestFIFO):
     
     def setUp(self):
         TestFIFO.setUp(self)
-        self.policy=RoundRobin(False)
+        self.policy=RoundRobin(False,2)
         
     def testGetTimer(self):
         self.assertEqual(self.policy.getTimer().__class__,TimerQuantum,"""La instancia retornada no es de TimerQuantum""")
 
     def testAddPcbWithPriority(self):
-        self.policy=RoundRobin(True)
+        self.policy=RoundRobin(True,2)
         
 
 

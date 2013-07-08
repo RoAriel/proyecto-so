@@ -32,9 +32,9 @@ class PLP():
         flag=True
         while not self.queueWait.empty():
             pcb=self.queueWait.get()
-            if(pcb.getSize()<=size & flag):
+            if(pcb.getSize()<=size and flag):
                 self.memory.allocateMemory(pcb)
-                self.scheduler.add(pcb)
+                self.scheduler.add(pcb,self.cpu)
                 flag=False
             else:
                 newQueue.put(pcb)

@@ -49,7 +49,7 @@ class ManagerInterruptions():
             ManagerInterruptions.scheduler.add(ManagerInterruptions.cpu.pcb,ManagerInterruptions.cpu)   
         ManagerInterruptions.cpu.setProcess(ManagerInterruptions.scheduler.get())
         ManagerInterruptions.mode.setModeUser()
-        print 'interruptins timeOut'
+        print 'interruptions timeOut'
     
     @classmethod     
     def IO(self,context):
@@ -69,7 +69,7 @@ class ManagerInterruptions():
         ManagerInterruptions.kernel.kill(context.pcb)
         ManagerInterruptions.timer.resetQuantum()
         ManagerInterruptions.mode.setModeUser()
-        print 'interruptins finished'
+        print 'interruptions finished'
     
     @classmethod      
     def expropiation(self,context):
@@ -79,14 +79,14 @@ class ManagerInterruptions():
         ManagerInterruptions.cpu.pcb=context.pcb
         ManagerInterruptions.timer.resetQuantum()
         ManagerInterruptions.mode.setModeUser()
-        print 'interruptins expropiation'
+        print 'interruptions expropiation'
     
     @classmethod      
     def pageFault(self,context):
         ManagerInterruptions.mode.setModeKernel()
         self.kernel.swapIn(context.page,context.pcb)
         ManagerInterruptions.mode.setModeUser()
-        print 'interruptins pageFault'
+        print 'interruptions pageFault'
         print 'process id: ',context.pcb.pid ,' page: ',context.page.direction
 
 

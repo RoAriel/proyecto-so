@@ -173,16 +173,10 @@ class ContinuousAssignment(LogicMemory):
     """Libera la memoria usada por el pcb"""   
     def kill(self,pcb):
         i=self.takenBlock.keys()
-        res=False
-        for n in i:
-            if(n == pcb):
-                res=True
-        if(not res):
-            return
         block=self.takenBlock[pcb]
         del(self.takenBlock[pcb])
         self.freeBlocks.append(block)
-        self.plp.notify(pcb.getSize())
+        self.plp.notify(self.getFreeSpace())
     
     """
     Este solo mustra la memoria por consola.
@@ -443,7 +437,7 @@ class Paging(LogicMemory):
         del self.pagesOfPcb[pcb]
         for frame in usedFrame:
             self.takenFrame.remove(frame)
-        self.plp.notify(pcb)
+        self.plp.notify(self.disk.getFreeSwapSpace())
             
       
 """Esta clase contiene una lista de paginas y una tabla de paginas"""   
