@@ -87,6 +87,7 @@ class ManagerInterruptions():
         self.kernel.swapIn(context.page,context.pcb)
         ManagerInterruptions.mode.setModeUser()
         print 'interruptins pageFault'
+        print 'process id: ',context.pcb.pid ,' page: ',context.page.direction
 
 
 

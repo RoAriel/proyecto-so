@@ -16,6 +16,12 @@ import system.logicMemory as logicMemory
 import time
 from system.devices import TypeDevice 
 
+
+"""
+Se crea un kernel con policy FCFS,sistema de paginacion de memoria
+
+"""
+
 mode=kernel.Mode()
 physicalMemory=hardware.PhysicalMemory(1600)
 disk=hardware.Disk(8)
@@ -34,51 +40,18 @@ myProgram2=processAndProgram.Program('Home/user/myProgram2',[i.Cpu(),i.Cpu(),i.C
 myProgram3=processAndProgram.Program('Home/user/myProgram3',[i.Cpu(),i.Cpu(),i.Finalize()])
 
 
+"""se agregan los programas"""
 k.addProgram(myProgram)
 k.addProgram(myProgram1)
 k.addProgram(myProgram2)
 k.addProgram(myProgram3)
 
-import threading  as t
-
-class a(t.Thread):
-    
-    def run(self):
-        for i in range(500):
-            time.sleep(1)
-            k.executeProgram('Home/user/myProgram')
-
-class b(t.Thread):
-    
-    def run(self):
-        for i in range(377):
-            time.sleep(1)
-            k.executeProgram('Home/user/myProgram1')
-
-class c(t.Thread):
-    
-    def run(self):
-        for i in range(1050):
-            time.sleep(1)
-            k.executeProgram('Home/user/myProgram3')    
-
-a().run()
-b().run()
-c().run()
 
 
+"""y se ejecutan"""
 k.executeProgram('Home/user/myProgram')
-time.sleep(2)
-k.executeProgram('Home/user/myProgram')
+k.executeProgram('Home/user/myProgram1')
+k.executeProgram('Home/user/myProgram2')
+k.executeProgram('Home/user/myProgram3')
 
 
-
-"""
-time.sleep(65)
-
-print k.disk.swap
-print k.memoryLogic.pagesOfPcb
-print k.memoryLogic.takenFrame
-print k.memoryLogic. replacementAlgorithms.queue.empty()
-print k.memoryLogic. replacementAlgorithms.takenPage
-"""
