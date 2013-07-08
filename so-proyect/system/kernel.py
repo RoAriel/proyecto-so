@@ -32,7 +32,8 @@ class Kernel():
         
     def executeProgram(self,pathProgram):
         if(self.disk.programExists(pathProgram)):
-            self.execute(pathProgram)
+            pcb=PCB(pathProgram,PidGenerator.getPid(),self.disk.getSizeProgram(pathProgram))
+            self.addPcb(pcb)
     
     
     def addProgram(self,program):
@@ -55,18 +56,15 @@ class Kernel():
         frame=self.memoryLogic.getFrame()
 
         self.memoryLogic.allocateInstructionInMemoryPhysical(diskBlock.getInstructions(),frame)
-        page.isMemory=True
+        page.inMemory=True
         self.memoryLogic.replacementAlgorithms.register(page,pcb)
         self.memoryLogic.updateTablePageOf(pcb,page,frame)
         
     def swapOut(self,page,pcb,frame):
         instructions=self.memoryLogic.getDataOfPhysical(frame)
         self.disk.save(pcb,page,instructions)
-        page.isMemory=False
+        page.inMemory=False
         
-    def execute(self,pathProgram):
-        pcb=PCB(pathProgram,PidGenerator.getPid(),self.disk.getSizeProgram(pathProgram))
-        self.addPcb(pcb)
         
     def kill(self,pcb):
         self.memoryLogic.kill(pcb)

@@ -301,8 +301,7 @@ class Page():
     
     def __init__(self,direction):
         self.direction=direction
-        self.isDisk=False
-        self.isMemory=False
+        self.inMemory=False
         
 
 
@@ -429,7 +428,7 @@ class PageData():
         
     def getInstruction(self,pcb,npage,physicalMemory,paging):
         page=self.pages[npage]  
-        if(page.isMemory):
+        if(page.inMemory):
             nframe=self.tablePages[page.direction]
             return paging.getInstruction(nframe,pcb)
         else:
@@ -471,7 +470,7 @@ class ReplacementAlgorithms():
     def getFrame(self,page,pagesOfPcb,kernel):
         pcb=self.takenPage[page]
         pageData=pagesOfPcb[pcb]
-        page.isMemory=False
+        page.inMemory=False
         nframe=pageData.getFrameOf(page)
         frame=self.paging.frames[nframe]
         kernel.swapOut(page,pcb,frame)

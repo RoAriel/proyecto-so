@@ -18,7 +18,7 @@ class PLP():
         self.cpu=cpu
         
     def allocateMemory(self,pcb):
-        if(self.memory.freeSpaceInMemory(pcb.size) & self.memory.freeSpaceInDisk(pcb.size)):
+        if(self.memory.freeSpaceInMemory(pcb.getSize()) & self.memory.freeSpaceInDisk(pcb.getSize())):
             self.memory.allocateMemory(pcb)
             self.scheduler.add(pcb,self.cpu)
         else:
@@ -32,7 +32,7 @@ class PLP():
         flag=True
         while not self.queueWait.empty():
             pcb=self.queueWait.get()
-            if(pcb.size<=size & flag):
+            if(pcb.getSize()<=size & flag):
                 self.memory.allocateMemory(pcb)
                 self.scheduler.add(pcb)
                 flag=False
