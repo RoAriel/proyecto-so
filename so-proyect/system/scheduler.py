@@ -132,8 +132,18 @@ class RoundRobin(Policy):
         self.processes.put(process)
     
     def get(self):
-        return self.processes.get()
-        
+        pcb=self.processes.get()
+        if(self.isPriority):
+            self.doOld()
+        return pcb
+            
+    def doOld(self):
+        processes=qp.PQueueToPcb()
+        while not self.isEmpty():
+            p=self.processes.get()
+            p.priority+=2
+            processes.put(p)
+        self.processes=processes  
     
     def getTimer(self):
         return clock.TimerQuantum(3)

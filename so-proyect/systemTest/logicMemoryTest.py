@@ -5,11 +5,11 @@ Created on 07/07/2013
 '''
 import unittest
 from mockito import *
-from logicMemory import *
-from hardware import *
-from plp import *
-from processAndProgram import *
-from instructions import *
+from system.logicMemory import *
+from system.hardware import *
+from system.plp import *
+from system.processAndProgram import *
+from system.instructions import *
 
 class TestContinuousAssignment(unittest.TestCase):
 
@@ -110,6 +110,9 @@ class TestContinuousAssignment(unittest.TestCase):
         self.assertEqual(self.memory.freeBlocks[1].size,5,'El tamanho de bloque no es 5')
         self.assertEqual(self.memory.freeBlocks[1].directionPhysical,1,'la direccion fisica no es 1')
         
+        
+class TestPaging(unittest.TestCase):
+    pass
 
         
         
