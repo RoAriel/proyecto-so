@@ -5,6 +5,7 @@ Created on 06/05/2013
 '''
 import Queue
 
+"""Cola con prioridad para procesos"""
 class PQueueToPcb(Queue.PriorityQueue):
     
     def put(self,pcb):

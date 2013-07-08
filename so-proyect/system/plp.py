@@ -5,7 +5,7 @@ Created on 17/06/2013
 '''
 
 """Muy simple version de planificador de largo plazo,solo controla si hay memoria 
-   disponible
+   disponible o disco(para caso de paginacion)
 """
 from processAndProgram import State
 

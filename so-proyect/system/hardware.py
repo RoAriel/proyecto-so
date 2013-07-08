@@ -68,7 +68,7 @@ class Disk():
         amountBlock=self.getAmountBlock(size)
         number=0
         blocks=[]
-        bool=False
+        end=False
         nblock=0
         for i in range(amountBlock):
             list=[]
@@ -79,11 +79,11 @@ class Disk():
                     number+=1
                 else:
                     self.programs[program.path]=blocks
-                    bool=True
+                    end=True
                     break
             blocks.append(DiskBlock(list,nblock))
             nblock+=1
-            if bool:
+            if end:
                 break
         self.programs[program.path]=blocks
                 

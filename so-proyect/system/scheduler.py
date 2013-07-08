@@ -24,14 +24,14 @@ class Scheduler():
         return self.policy.get()
     
 # agrega al proceso directamente como listo    
-    def addAsReady(self,process):
-        self.policy.addAsReady(process)
+    def addAsReady(self,pcb):
+        self.policy.addAsReady(pcb)
     
-    def add(self,process,cpu):
+    def add(self,pcb,cpu):
         if((cpu.pcb is None) & self.isEmpty()):
-            cpu.pcb=process
+            cpu.pcb=pcb
         else:
-            self.policy.add(process,cpu)
+            self.policy.add(pcb,cpu)
         
         
     def isEmpty(self):
@@ -75,8 +75,8 @@ class FCFS(Policy):
         Policy.__init__(self)
     
     
-    def add(self,process,cpu):
-        self.processes.put(process)
+    def add(self,pcb,cpu):
+        self.processes.put(pcb)
         
     def get(self):
         return self.processes.get()
@@ -90,21 +90,21 @@ class SJF(Policy):
         self.isExpropriation=isExpropriation
         self.processes=qp.PQueueToPcb()
     
-    def add(self,process,cpu):
+    def add(self,pcb,cpu):
         #si no es expropiativo simplemente lo agrega a la cola de espera
         #caso contrario le indica a la managerInterruption cual es el proceso
         #que va a expropiar y lanza la interrupcino de expropiacion
         
         #Agrega la variable priority al pcb en tiempo de ejecucion
-        process.priority=random.randrange(1,150)
+        pcb.priority=random.randrange(1,150)
         
         if(self.isExpropriation):
-            if(cpu.pcb.priority > process.priority):
-                self.processes.put(process)
+            if(cpu.pcb.priority > pcb.priority):
+                self.processes.put(pcb)
             else:
-                i.ManagerInterruptions.throwInterruption(Interruption.expropiation,GloabalContext(process))
+                i.ManagerInterruptions.throwInterruption(Interruption.expropiation,GloabalContext(pcb))
         else:
-            self.processes.put(process)
+            self.processes.put(pcb)
     
     def addAsReady(self,process):
         self.processes.put(process)      
