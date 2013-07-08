@@ -16,6 +16,11 @@ import system.logicMemory as logicMemory
 import time
 from system.devices import TypeDevice 
 
+"""
+Se crea un kernel con policy FCFS,sistema de asignacion continua(usando el algoritmo BestFit)
+
+"""
+
 mode=kernel.Mode()
 physicalMemory=hardware.PhysicalMemory(50)
 disk=hardware.Disk(8)
@@ -48,6 +53,10 @@ k.executeProgram('Home/user/myProgram2')
 k.executeProgram('Home/user/myProgram3')
 k.executeProgram('Home/user/myProgram')
 k.executeProgram('Home/user/myProgram')
+
+"""mustra la memoria despues de guardar los procesos ejecutados,
+   se puede ver que solo hay  un bloque libre 
+"""
 k.memoryLogic.show()
 
 
@@ -56,5 +65,7 @@ k.memoryLogic.show()
 """
 time.sleep(55)
 k.executeProgram('Home/user/myProgram')
+
+"""Ahora mostraria la memoria compactada y con el proceso del programa ejecutado arriba"""
 k.memoryLogic.show()
 

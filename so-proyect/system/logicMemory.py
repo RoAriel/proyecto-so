@@ -183,31 +183,37 @@ class ContinuousAssignment(LogicMemory):
         del(self.takenBlock[pcb])
         self.freeBlocks.append(block)
         self.plp.notify(pcb.getSize())
-        
+    
+    """
+    Este solo mustra la memoria por consola.
+    El codigo es bastante feo,se recomienda no mirarlo!
+    """   
     def show(self):
         pq=q.PriorityQueue()
         for block in self.takenBlock.values():
             pq.put((block.directionPhysical,block,))
+            
         for block in self.freeBlocks:
             pq.put((block.directionPhysical,block,))
-        print 'ocupado :',len(self.takenBlock.values())
-        print 'free:',len(self.freeBlocks)
+            
+        print 'occupied :',len(self.takenBlock.values())
+        print 'free :',len(self.freeBlocks)
         while not pq.empty():    
             o=pq.get()
             ini=o[0]
-            """"""
+            
             d=None
             for k in self.takenBlock.keys():
                 if(self.takenBlock[k]==o[1]):
                     d=k
             mitad=o[1].size/2   
                     
-            """"""
+           
             print '+------------------------+'
             for i in range(o[1].size):
                 if(mitad == i):
                     if(d is not None):
-                        print '|        ',d.pid,'             | ' ,ini
+                        print '|        pcb ',d.pid,'         | ' ,ini
                     else:
                         print '|        free            | ' ,ini
                 else:
