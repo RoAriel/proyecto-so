@@ -19,8 +19,10 @@ class Clock(t.Thread):
     def run(self):
         while(True):
             time.sleep(1)
+            print '****************************'
+            print '       TIEMPO DE CPU        '
             self.timer.click(self.cpu)
-            print 'tiempo de cpu'
+            print '****************************'
  
 class Timer():
         

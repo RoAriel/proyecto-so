@@ -273,11 +273,14 @@ class FirstFit(Setting):
     
 class BestFit(Setting):
     
-    def getFreeBlockTo(self, size, freeBloc):
-        for block in freeBloc:
-            if(block.entersJustBlock(block)):
-                return block
-        return None
+    def getFreeBlockTo(self, size, freeBlock):
+        if len(freeBlock)==0:
+            return None
+        blockMin=freeBlock[0]
+        for block in freeBlock:
+            if(blockMin.size > block.size & block.size >= size):
+                blockMin=block
+        return blockMin
     
 class WorstFit(Setting):
     
