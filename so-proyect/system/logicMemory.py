@@ -273,15 +273,19 @@ class Setting():
         pass
 
 class FirstFit(Setting):
-    
+    """
+    Busca el primer  bloque libre para tamanho size
+    """  
     def getFreeBlockTo(self, size, freeBloc):
         for block in freeBloc:
             if(block.entersBlock(size)):
                 return block
         return None
-    
+  
 class BestFit(Setting):
-    
+    """
+    Busca el bloque libre mas chico para tamanho size
+    """  
     def getFreeBlockTo(self, size, freeBlock):
         if len(freeBlock)==0:
             return None
@@ -289,10 +293,14 @@ class BestFit(Setting):
         for block in freeBlock:
             if(blockMin.size > block.size & block.size >= size):
                 blockMin=block
+        if(not blockMin.entersBlock(size)):
+            return None
         return blockMin
     
 class WorstFit(Setting):
-    
+    """
+    Busca el bloque libre mas grande para tamanho size
+    """  
     def getFreeBlockTo(self, size, freeBlock):
         if len(freeBlock)==0:
             return None
@@ -412,6 +420,7 @@ class Paging(LogicMemory):
             direction+=1
         return ins
     
+
     def freeSpaceInMemory(self,size):
         return True
     
@@ -437,7 +446,10 @@ class PageData():
     def __init__(self,pages):
         self.pages=pages
         self.tablePages= {}   
-        
+    
+    """Si la pagina esta en memoria la busca,
+       de lo contrario lanza una interrupcinon de fallo de pagina
+    """    
     def getInstruction(self,pcb,npage,physicalMemory,paging):
         page=self.pages[npage]  
         if(page.inMemory):
@@ -448,7 +460,7 @@ class PageData():
     
     
 
-       
+    """actualiza la tabla de pagina"""
     def updateTablePage(self,page,frame):
         self.tablePages[page.direction]=frame.directionLogic 
         

@@ -69,7 +69,7 @@ class ManagerInterruptions():
         ManagerInterruptions.kernel.kill(context.pcb)
         ManagerInterruptions.timer.resetQuantum()
         ManagerInterruptions.mode.setModeUser()
-        print 'interruptins finalize'
+        print 'interruptins finished'
     
     @classmethod      
     def expropiation(self,context):

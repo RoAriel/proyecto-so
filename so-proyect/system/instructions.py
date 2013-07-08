@@ -26,7 +26,8 @@ class IO(Instruction):
     def execute(self,pcb):
         pcb.sate=State.wait
         i.ManagerInterruptions.throwInterruption(Interruption.IO,IOContext(pcb,self.device))
-#
+        print 'process id:',pcb.pid ,'IO'
+        print 'program ',pcb.pathProgram     
         
         
         
@@ -35,12 +36,14 @@ class Finalize(Instruction):
     def execute(self,pcb):
         pcb.sate=State.finished
         i.ManagerInterruptions.throwInterruption(Interruption.pcbFinalize,GloabalContext(pcb))
-        print 'process id:',pcb.pid ,'finlize'
+        print 'process id:',pcb.pid ,'finished'
+        print 'program ',pcb.pathProgram
         
         
 class Cpu(Instruction):
 
     def execute(self,pcb):
         print 'process id:',pcb.pid ,'execute'
+        print 'program ',pcb.pathProgram
 
   

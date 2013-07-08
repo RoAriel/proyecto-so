@@ -34,18 +34,27 @@ myProgram2=processAndProgram.Program('Home/user/myProgram2',[i.Cpu(),i.Cpu(),i.C
 myProgram3=processAndProgram.Program('Home/user/myProgram3',[i.Cpu(),i.Cpu(),i.Finalize()])
 
 
-
+"""se agregan los programas"""
 k.addProgram(myProgram)
 k.addProgram(myProgram1)
 k.addProgram(myProgram2)
 k.addProgram(myProgram3)
 
 
-
+"""se ejecutan los programas y se muestra la memoria"""
 k.executeProgram('Home/user/myProgram')
 k.executeProgram('Home/user/myProgram1')
 k.executeProgram('Home/user/myProgram2')
 k.executeProgram('Home/user/myProgram3')
-
+k.executeProgram('Home/user/myProgram')
+k.executeProgram('Home/user/myProgram')
 k.memoryLogic.show()
-print k.PhysicalMemory.rows
+
+
+"""se espera a que finalizen todos los procesos,se ejecuta nuevamente un programa
+   como no hay bloques de su tamaho se debe compactar la memoria
+"""
+time.sleep(55)
+k.executeProgram('Home/user/myProgram')
+k.memoryLogic.show()
+
