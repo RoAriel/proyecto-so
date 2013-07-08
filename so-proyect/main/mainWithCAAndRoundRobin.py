@@ -68,6 +68,8 @@ time.sleep(15)
 k.memoryLogic.show()
 k.executeProgram('Home/user/myProgram')
 
-"""Ahora mostraria la memoria compactada y con el proceso del programa ejecutado arriba"""
+"""La memoria sigue igual,por que el proceso no pudo ser guardado,debido a que no hay suficiente
+   tamanho en memoria
+"""
 k.memoryLogic.show()
 
