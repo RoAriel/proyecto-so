@@ -4,17 +4,17 @@ Created on 24/05/2013
 @author: Di Meglio
 '''
 import threading  as t
-import kernel
-from hardware import CPU
-import scheduler
-import hardware
-import processAndProgram
-import instructions as i 
+import system.kernel as kernel
+from system.hardware import CPU
+import system.scheduler as scheduler
+import system.hardware as hardware
+import system.processAndProgram as processAndProgram
+import system.instructions as i 
 import time
 import random
-import logicMemory
+import system.logicMemory as logicMemory
 import time
-from devices import TypeDevice
+from system.devices import TypeDevice 
 
 mode=kernel.Mode()
 physicalMemory=hardware.PhysicalMemory(50)
@@ -41,7 +41,6 @@ k.addProgram(myProgram1)
 k.addProgram(myProgram2)
 k.addProgram(myProgram3)
 
-import processAndProgram 
 
 pcb=processAndProgram.PCB('Home/user/myProgram',0,11)
 k.plp.allocateMemory(pcb)
