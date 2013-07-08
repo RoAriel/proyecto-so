@@ -46,3 +46,6 @@ k.executeProgram('Home/user/myProgram')
 k.executeProgram('Home/user/myProgram1')
 k.executeProgram('Home/user/myProgram2')
 k.executeProgram('Home/user/myProgram3')
+
+k.memoryLogic.show()
+print k.PhysicalMemory.rows
