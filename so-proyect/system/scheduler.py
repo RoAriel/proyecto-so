@@ -56,7 +56,8 @@ class Policy():
     
     def getTimer(self):
         return clock.Timer()
-        
+    
+    """Si el proceso esta en la cola de lista lo saca"""    
     def kill(self,pcb):
         newQueue=q.Queue()
         while not self.processes.empty():
@@ -125,7 +126,7 @@ class SJF(Policy):
         running=self.processes.get()
         self.doOld()
         return running
-        
+    """Si el proceso esta en la cola de lista lo saca"""   
     def kill(self,pcb):
         newQueue=qp.PQueueToPcb()
         while self.processes.empty():
@@ -155,7 +156,8 @@ class RoundRobin(Policy):
         if(self.isPriority):
             self.doOld()
         return pcb
-            
+    
+    """Envejecimiento de procesos"""       
     def doOld(self):
         processes=qp.PQueueToPcb()
         while not self.isEmpty():
@@ -173,6 +175,7 @@ class RoundRobin(Policy):
         else:
             return Policy.getQueue(self)
 
+    """Si el proceso esta en la cola de lista lo saca"""
     def kill(self,pcb):
         if(self.isPriority):
             newQueue=qp.PQueueToPcb()
