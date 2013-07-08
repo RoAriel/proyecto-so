@@ -68,7 +68,7 @@ class Kernel():
         
     def kill(self,pcb):
         self.memoryLogic.kill(pcb)
-
+        self.scheduler.kill(pcb)
 class Mode():
     
     def __init__(self):

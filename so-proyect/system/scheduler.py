@@ -42,6 +42,9 @@ class Scheduler():
 
     def getQueue(self):
         return self.policy.getQueue()
+    
+    def kill(self,pcb):
+        self.policy.kill(pcb)
 
 class Policy():
     
@@ -53,6 +56,15 @@ class Policy():
     
     def getTimer(self):
         return clock.Timer()
+        
+    def kill(self,pcb):
+        newQueue=q.Queue()
+        while not self.processes.empty():
+            x=self.processes.get()
+            if(not x == pcb):
+                newQueue.put(x)
+        self.processes=newQueue
+
 
     def getQueue(self):
         return q.Queue()
@@ -113,7 +125,14 @@ class SJF(Policy):
         running=self.processes.get()
         self.doOld()
         return running
-            
+        
+    def kill(self,pcb):
+        newQueue=qp.PQueueToPcb()
+        while self.processes.empty():
+            x=self.processes.get()
+            if(not x == pcb):
+                newQueue.put(x)
+        self.processes=newQueue
     
 
 
@@ -154,7 +173,16 @@ class RoundRobin(Policy):
         else:
             return Policy.getQueue(self)
 
-
+    def kill(self,pcb):
+        if(self.isPriority):
+            newQueue=qp.PQueueToPcb()
+            while self.processes.empty():
+                x=self.processes.get()
+                if(not x == pcb):
+                    newQueue.put(x)
+            self.processes=newQueue
+        else:
+            Policy.kill(self, pcb)
 
 
     

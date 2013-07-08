@@ -96,11 +96,20 @@ class ContinuousAssignment(LogicMemory):
 
         dir=directinoIni
         taken=self.takenBlock.values()
+        
+        list=[]    
         for block in taken:
-            instructions=self.getInstructions(block)
+            list.append(self.getInstructions(block))
+        """se le asigna una nueva direccion al bloque y se mueve todas
+           sus instrucciones en memoria fisica
+           nota:en list[i] estan las instrucciones del bloque taken[i]
+        """
+        index=0
+        while(index < len(list)):
             block.directionPhysical=dir
-            self.allocateInstructionInMemoryPhysical(instructions,block)
+            self.allocateInstructionInMemoryPhysical(list[index],taken[index])
             dir+=block.size
+            index+=1
     
     """
     Dado un bloque retorna todas las instrucciones almacenadas en memoria fisica
