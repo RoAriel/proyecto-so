@@ -22,7 +22,7 @@ Se crea un kernel con policy FCFS,sistema de asignacion continua(usando el algor
 """
 
 mode=kernel.Mode()
-physicalMemory=hardware.PhysicalMemory(50)
+physicalMemory=hardware.PhysicalMemory(16)
 disk=hardware.Disk(8)
 acont=logicMemory.ContinuousAssignment(disk, physicalMemory,logicMemory.BestFit())
 cpu=CPU(acont,mode)
@@ -47,15 +47,13 @@ k.addProgram(myProgram3)
 
 
 """se ejecutan los programas y se muestra la memoria"""
-k.executeProgram('Home/user/myProgram')
-k.executeProgram('Home/user/myProgram1')
+k.executeProgram('Home/user/myProgram2')
 k.executeProgram('Home/user/myProgram2')
 k.executeProgram('Home/user/myProgram3')
-k.executeProgram('Home/user/myProgram')
-k.executeProgram('Home/user/myProgram')
+
 
 """mustra la memoria despues de guardar los procesos ejecutados,
-   se puede ver que solo hay  un bloque libre 
+   se puede ver solo hay un bloque libre
 """
 k.memoryLogic.show()
 
@@ -63,7 +61,8 @@ k.memoryLogic.show()
 """se espera a que finalizen todos los procesos,se ejecuta nuevamente un programa
    como no hay bloques de su tamaho se debe compactar la memoria
 """
-time.sleep(55)
+time.sleep(15)
+k.memoryLogic.show()
 k.executeProgram('Home/user/myProgram')
 
 """Ahora mostraria la memoria compactada y con el proceso del programa ejecutado arriba"""

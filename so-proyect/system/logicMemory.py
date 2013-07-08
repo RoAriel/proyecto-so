@@ -293,15 +293,15 @@ class BestFit(Setting):
     Busca el bloque libre mas chico para tamanho size
     """  
     def getFreeBlockTo(self, size, freeBlock):
-        if len(freeBlock)==0:
-            return None
-        blockMin=freeBlock[0]
+        pq=q.PriorityQueue()
         for block in freeBlock:
-            if(blockMin.size > block.size & block.size >= size):
-                blockMin=block
-        if(not blockMin.entersBlock(size)):
-            return None
-        return blockMin
+            pq.put((block.size,block))
+        while not pq.empty():
+            block=pq.get()[1]
+            if(block.entersBlock(size)):
+                return block
+        return None
+    
     
 class WorstFit(Setting):
     """
