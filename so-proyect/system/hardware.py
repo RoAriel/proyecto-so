@@ -47,7 +47,9 @@ class CPU():
             if instruction is not None:
                 instruction.execute(self.pcb)
                 
-
+    def kill(self,pcb):
+        if(self.pcb == pcb):
+            self.pcb=None
             
 """**********DISCO**************"""   
 

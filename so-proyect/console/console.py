@@ -21,7 +21,7 @@ from system.devices import TypeDevice
 class Console():
     
     def __init__(self):
-        self.commands={Command.ps:self.ps,Command.execute:self.executeProgram,Command.exit:
+        self.commands={Command.kill: self.kill,Command.ps:self.ps,Command.execute:self.executeProgram,Command.exit:
                        self.exit,Command.start:self.startKernel,Command.stop:self.stopKernel}
         self.kernel=None
         self.running=True
@@ -86,7 +86,7 @@ class Console():
         myProgram1=processAndProgram.Program('Home/user/myProgram1',[i.Cpu(),i.Cpu(),i.Finalize()])
         myProgram2=processAndProgram.Program('Home/user/myProgram2',[i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Cpu(),i.Finalize()])
         myProgram3=processAndProgram.Program('Home/user/myProgram3',[i.Cpu(),i.Cpu(),i.Finalize()])
-
+        
         self.kernel=kernel.Kernel(cpu,physicalMemory,acont,schedr,disk,mode)
 
         """se agregan los programas"""
@@ -95,6 +95,9 @@ class Console():
         self.kernel.addProgram(myProgram2)
         self.kernel.addProgram(myProgram3)
         
+    def kill(self,input):
+        self.validateNumberParam(len(input)-1, 1)
+        self.kernel.killPcb(int(input[1]))
 
 class Command():
     
@@ -103,6 +106,7 @@ class Command():
     execute='execute'
     exit='exit'
     ps='ps'
+    kill='kill'
     
 console=Console()
 console.start()

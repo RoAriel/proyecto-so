@@ -45,7 +45,8 @@ class Controller(t.Thread):
         
     def run(self):
         time.sleep(random.randrange(1,15))
-        self.scheduler.add(self.pcb,self.cpu)
+        if(self.pcb.state != State.finished):
+            self.scheduler.add(self.pcb,self.cpu)
     
 
 

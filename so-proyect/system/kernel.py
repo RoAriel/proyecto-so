@@ -82,6 +82,14 @@ class Kernel():
         self.scheduler.kill(pcb)
         pcb.state=State.finished
         self.gloablPcb.remove(pcb)
+        self.cpu.kill(pcb)
+        
+    def killPcb(self,pid):
+        for pcb in self.gloablPcb:
+            if(pcb.pid==pid):
+                toDelete=pcb
+                break
+        self.kill(toDelete)
         
     def showProcess(self):
         print 'pid  program'
