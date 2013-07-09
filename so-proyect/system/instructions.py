@@ -11,6 +11,7 @@ import time
 from processAndProgram import State
 from interruptions import GloabalContext
 from interruptions import IOContext
+import logging
 
 class Instruction():
     
@@ -26,8 +27,8 @@ class IO(Instruction):
     def execute(self,pcb):
         pcb.sate=State.wait
         i.ManagerInterruptions.throwInterruption(Interruption.IO,IOContext(pcb,self.device))
-        print 'process id:',pcb.pid ,'IO'
-        print 'program ',pcb.pathProgram     
+        """logging.info('process id:',pcb.pid ,'IO')
+        logging.info('program ',pcb.pathProgram ) """ 
         
         
         
@@ -36,14 +37,14 @@ class Finalize(Instruction):
     def execute(self,pcb):
         pcb.sate=State.finished
         i.ManagerInterruptions.throwInterruption(Interruption.pcbFinalize,GloabalContext(pcb))
-        print 'process id:',pcb.pid ,'finished'
-        print 'program ',pcb.pathProgram
+        logging.info(('process id:',pcb.pid ,'finished'))
+        logging.info(('program ',pcb.pathProgram ) ) 
+        
         
         
 class Cpu(Instruction):
 
     def execute(self,pcb):
-        print 'process id:',pcb.pid ,'execute'
-        print 'program ',pcb.pathProgram
+        logging.info(('process id:',pcb.pid ,'execute'))
+        logging.info(('program ',pcb.pathProgram )) 
 
-  

@@ -5,6 +5,7 @@ Created on 15/05/2013
 @author: Di Meglio
 '''
 from processAndProgram import State
+import logging
 
 #la intencion de que esta clase sea estatica  es porque en muchas partes
 #del sistema se requiere
@@ -49,7 +50,7 @@ class ManagerInterruptions():
             ManagerInterruptions.scheduler.add(ManagerInterruptions.cpu.pcb,ManagerInterruptions.cpu)   
         ManagerInterruptions.cpu.setProcess(ManagerInterruptions.scheduler.get())
         ManagerInterruptions.mode.setModeUser()
-        print 'interruptions timeOut'
+        logging.info('interruptions timeOut')
     
     @classmethod     
     def IO(self,context):
@@ -59,7 +60,7 @@ class ManagerInterruptions():
         ManagerInterruptions.timer.resetQuantum()
         ManagerInterruptions.cpu.setProcess(ManagerInterruptions.scheduler.get())
         ManagerInterruptions.mode.setModeUser()
-        print 'interruptions IO'
+        logging.info('interruptions IO')
     
     @classmethod     
     def pcbFinalize(self,context):
@@ -69,7 +70,7 @@ class ManagerInterruptions():
         ManagerInterruptions.kernel.kill(context.pcb)
         ManagerInterruptions.timer.resetQuantum()
         ManagerInterruptions.mode.setModeUser()
-        print 'interruptions finished'
+        logging.info('interruptions finished')
     
     @classmethod      
     def expropiation(self,context):
@@ -79,15 +80,15 @@ class ManagerInterruptions():
         ManagerInterruptions.cpu.pcb=context.pcb
         ManagerInterruptions.timer.resetQuantum()
         ManagerInterruptions.mode.setModeUser()
-        print 'interruptions expropiation'
+        logging.info('interruptions expropiation')
     
     @classmethod      
     def pageFault(self,context):
         ManagerInterruptions.mode.setModeKernel()
         self.kernel.swapIn(context.page,context.pcb)
         ManagerInterruptions.mode.setModeUser()
-        print 'interruptions pageFault'
-        print 'process id: ',context.pcb.pid ,' page: ',context.page.direction
+        logging.info('interruptions pageFault')
+        logging.info(('process id: ',context.pcb.pid ,' page: ',context.page.direction))
 
 
 

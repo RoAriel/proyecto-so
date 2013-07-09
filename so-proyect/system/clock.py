@@ -7,7 +7,7 @@ import threading  as t
 import time
 from interruptions  import Interruption 
 import interruptions as i
-
+import logging
 
 class Clock(t.Thread):
     
@@ -20,10 +20,10 @@ class Clock(t.Thread):
     def run(self):
         while(self.running):
             time.sleep(1)
-            print '****************************'
-            print '       TIEMPO DE CPU        '
+            logging.info('****************************')
+            logging.info('       TIEMPO DE CPU        ')
             self.timer.click(self.cpu)
-            print '****************************'
+            logging.info('****************************')
             
     def stop(self):
         self.running=False

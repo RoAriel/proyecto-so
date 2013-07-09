@@ -11,6 +11,8 @@ from hardware import PidGenerator
 import devices
 from plp import PLP
 from processAndProgram import State
+import logging
+logging.basicConfig(filename='C:\Users\CABJ\Desktop\mockito-python\info.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s \n')
 
 class Kernel():
     
