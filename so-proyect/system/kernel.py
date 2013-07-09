@@ -22,9 +22,7 @@ class Kernel():
         self.scheduler=s.Scheduler(policy)
         self.disk=disk
         self.mode=mode
-        self.clock=c.Clock(None)
-        self.clock.cpu=self.cpu
-        self.clock.timer=self.scheduler.getTimer()
+        self.clock=c.Clock(self.cpu,self.scheduler.getTimer())
         self.managerDevices=devices.ManagerDivices(self.scheduler,cpu)
         self.plp=PLP(memoryLogic,self.scheduler,cpu)
         memoryLogic.plp=self.plp
@@ -41,7 +39,7 @@ class Kernel():
         self.disk.addProgram(program)       
     
     def stop(self):
-        pass
+        self.clock.stop()
     
     def start(self):
         self.clock.start()
@@ -94,4 +92,4 @@ class Mode():
         return self.mode
     
 
-    
+

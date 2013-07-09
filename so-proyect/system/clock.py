@@ -11,26 +11,29 @@ import interruptions as i
 
 class Clock(t.Thread):
     
-    def _init_(self,cpu,timer):
+    def __init__(self,cpu,timer):
         t.Thread.__init__(self)
         self.cpu=cpu;
         self.timer=timer
+        self.running=True
     
     def run(self):
-        while(True):
+        while(self.running):
             time.sleep(1)
             print '****************************'
             print '       TIEMPO DE CPU        '
             self.timer.click(self.cpu)
             print '****************************'
+            
+    def stop(self):
+        self.running=False
  
 class Timer():
         
     def click(self,cpu):
         cpu.click()  
-        
     def resetQuantum(self):
-        pass        
+        pass         
             
 class TimerQuantum(Timer):
     

@@ -62,10 +62,12 @@ acont.show()
 """se espera a que finalizen todos los procesos,se ejecuta nuevamente un programa
    como no hay bloques de su tamaho se debe compactar la memoria
 """
-time.sleep(15)
+time.sleep(21)
 k.memoryLogic.show()
 k.executeProgram('Home/user/myProgram')
 
 """Ahora mostraria la memoria compactada y con el proceso del programa ejecutado arriba"""
 k.memoryLogic.show()
 
+time.sleep(12)
+k.stop()
