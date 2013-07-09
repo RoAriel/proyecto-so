@@ -35,9 +35,13 @@ class Kernel():
         if(self.disk.programExists(pathProgram)):
             pcb=PCB(pathProgram,PidGenerator.getPid(),self.disk.getSizeProgram(pathProgram))
             self.addPcb(pcb)
+        else:
+            raise Exception('El programa no existe')
     
     
     def addProgram(self,program):
+        if(self.disk.programExists(program.path)):
+            raise Exception('El programa ya existe')
         self.disk.addProgram(program)       
     
     def stop(self):
@@ -76,6 +80,9 @@ class Kernel():
         self.memoryLogic.kill(pcb)
         self.scheduler.kill(pcb)
         pcb.state=State.finished
+        
+    def showReedyProcess(self):
+        self.scheduler.showReedyProcess()
         
 class Mode():
     

@@ -52,7 +52,7 @@ k.executeProgram('Home/user/myProgram2')
 k.executeProgram('Home/user/myProgram2')
 k.executeProgram('Home/user/myProgram3')
 
-
+k.showReedyProcess()
 """mustra la memoria despues de guardar los procesos ejecutados,
    se puede ver solo hay un bloque libre
 """
