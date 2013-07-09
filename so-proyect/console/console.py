@@ -66,7 +66,7 @@ class Console():
         
     def ps(self,input):
         self.validateNumberParam(len(input)-1, 0)
-        self.kernel.showReedyProcess()
+        self.kernel.showProcess()
     
     def exit(self,input):
         self.validateNumberParam(len(input)-1, 0)

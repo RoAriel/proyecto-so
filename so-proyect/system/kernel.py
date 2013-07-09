@@ -29,7 +29,7 @@ class Kernel():
         self.plp=PLP(memoryLogic,self.scheduler,cpu)
         memoryLogic.plp=self.plp
         i.ManagerInterruptions.config(self.scheduler,self.mode,self.cpu,self.clock.timer,self,self.managerDevices)
-    
+        self.gloablPcb=[]
         
     def executeProgram(self,pathProgram):
         if(self.disk.programExists(pathProgram)):
@@ -53,6 +53,7 @@ class Kernel():
     def addPcb(self,pcb):
         self.mode.setModeKernel()
         self.plp.allocateMemory(pcb)
+        self.gloablPcb.append(pcb)
         self.mode.setModeUser()
         
     def swapIn(self,page,pcb):
@@ -80,9 +81,12 @@ class Kernel():
         self.memoryLogic.kill(pcb)
         self.scheduler.kill(pcb)
         pcb.state=State.finished
+        self.gloablPcb.remove(pcb)
         
-    def showReedyProcess(self):
-        self.scheduler.showReedyProcess()
+    def showProcess(self):
+        print 'pid  program'
+        for pcb in self.gloablPcb:
+            print pcb.pid,'  ',pcb.pathProgram
         
 class Mode():
     

@@ -73,13 +73,7 @@ class Policy():
     def getQueue(self):
         return q.Queue()
     
-    def showReedyProcess(self):
-        newQueue=q.Queue()
-        while not self.processes.empty():
-            x=self.processes.get()
-            print x.pid
-            newQueue.put(x)
-        self.processes=newQueue
+
 
 class FCFS(Policy):
     
@@ -146,13 +140,7 @@ class SJF(Policy):
                 newQueue.put(x)
         self.processes=newQueue
     
-    def showReedyProcess(self):
-        newQueue=qp.PQueueToPcb()
-        while self.processes.empty():
-            x=self.processes.get()
-            print x.pid
-            newQueue.put(x)
-        self.processes=newQueue
+
         
 
 class RoundRobin(Policy):
@@ -205,15 +193,6 @@ class RoundRobin(Policy):
         else:
             Policy.kill(self, pcb)
 
-    def showReedyProcess(self):
-        if(self.isPriority):
-            newQueue=qp.PQueueToPcb()
-            while self.processes.empty():
-                x=self.processes.get()
-                print x.pid
-                newQueue.put(x)
-            self.processes=newQueue
-        else:
-            Policy.showReedyProcess(self)
+ 
     
 
