@@ -19,7 +19,7 @@ from system.devices import TypeDevice
 """
 Comandos:
 NOMBRE       DESCRIPCION
-start       comienza el cliclo de ejecucion del kernel
+
 stop        para el ciclo de ejecucion del kernel
 exit        sale de la shell
 ps          lista los procesos 
@@ -31,7 +31,7 @@ class Console():
     def __init__(self):
         """Map de comandos y comportamiento"""
         self.commands={Command.kill: self.kill,Command.ps:self.ps,Command.execute:self.executeProgram,Command.exit:
-                       self.exit,Command.start:self.startKernel,Command.stop:self.stopKernel}
+                       self.exit,Command.stop:self.stopKernel}
         self.kernel=None
         self.running=True
         
@@ -60,10 +60,6 @@ class Console():
         if(n1 != n2):
             raise Exception('Cantidad de argumentos invalido ')
         
-        
-    def startKernel(self,input):
-        self.validateNumberParam(len(input)-1, 0)
-        self.kernel.start()
         
     def stopKernel(self,input):
         self.validateNumberParam(len(input)-1, 0)
@@ -110,8 +106,7 @@ class Console():
 
 """Comandos"""
 class Command():
-    
-    start='start'
+
     stop='stop'
     execute='execute'
     exit='exit'
