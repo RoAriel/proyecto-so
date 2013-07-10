@@ -3,6 +3,9 @@ Created on 07/07/2013
 
 @author: j di meglio
 '''
+
+"""Los test se corren con Mockito"""
+
 import unittest
 from mockito import *
 from system.logicMemory import *

@@ -45,18 +45,23 @@ k.addProgram(myProgram1)
 k.addProgram(myProgram2)
 k.addProgram(myProgram3)
 
+"""Se mustra la memoria lopgica,se puede ver un bloque libre de 16 espacios"""
 acont.show()
 
 k.executeProgram('Home/user/myProgram2')
 k.executeProgram('Home/user/myProgram1')
 k.executeProgram('Home/user/myProgram3')
 
+"""ahora se puede ver 4 bloques,3 de ellos ocupados"""
 acont.show()
 
 time.sleep(15)
 
-
+""""en este caso los procesos anteriores terminaron,se muestran los 4 bloques libres"""
 acont.show()
 k.executeProgram('Home/user/myProgram')
 
+"""al ejecutar el ultimo programa de 11 instrucciones no hay bloque para ese tamanho,
+   por lo tanto se debe compactar y guardar el proceso
+"""
 acont.show()
