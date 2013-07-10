@@ -13,7 +13,7 @@ import devices
 from plp import PLP
 from processAndProgram import State
 import logging
-logging.basicConfig(filename='C:\Users\CABJ\Desktop\mockito-python\info.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s \n')
+logging.basicConfig(filename='info.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s \n')
 
 class Kernel():
     
@@ -79,21 +79,20 @@ class Kernel():
         
         
     def kill(self,pcb):
+        self.mode.setModeKernel()
         self.memoryLogic.kill(pcb)
         self.scheduler.kill(pcb)
         pcb.state=State.finished
         if pcb in self.gloablPcb:
             self.gloablPcb.remove(pcb)
-        print len(self.gloablPcb)
         self.cpu.kill(pcb)
-
+        self.mode.setModeUser()
         
     def killPcb(self,pid):
 
         for pcb in self.gloablPcb:
             if(pcb.pid==pid):
                 self.kill(pcb)
-        int.ManagerInterruptions.throwInterruption(int.Interruption.timeOut,None)
 
         
     def showProcess(self):

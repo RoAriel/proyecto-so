@@ -8,7 +8,6 @@ Created on 17/06/2013
    disponible o disco(para caso de paginacion)
 """
 from processAndProgram import State
-
 class PLP():
     
     def __init__(self,memory,scheduler,cpu):
@@ -35,12 +34,13 @@ class PLP():
         flag=True
         while not self.queueWait.empty():
             pcb=self.queueWait.get()
-            if(pcb.getSize()<=size and flag):
+            if(pcb.getSize()<=size and flag and pcb.state != State.finished):
                 self.memory.allocateMemory(pcb)
                 self.scheduler.add(pcb,self.cpu)
                 flag=False
             else:
-                newQueue.put(pcb)
+                if(pcb.state != State.finished):
+                    newQueue.put(pcb)
         self.queueWait=newQueue
             
             

@@ -172,10 +172,11 @@ class ContinuousAssignment(LogicMemory):
      
     """Libera la memoria usada por el pcb"""   
     def kill(self,pcb):
-        block=self.takenBlock[pcb]
-        del(self.takenBlock[pcb])
-        self.freeBlocks.append(block)
-        self.plp.notify(self.getFreeSpace())
+        if( pcb  in self.takenBlock.keys()):
+            block=self.takenBlock[pcb]
+            del(self.takenBlock[pcb])
+            self.freeBlocks.append(block)
+            self.plp.notify(self.getFreeSpace())
     
     """
     Este solo mustra la memoria por consola.
@@ -430,13 +431,14 @@ class Paging(LogicMemory):
         """libera los frames usados por el pcb,tambien las pages que mantiene el algoritmo de lemplazo
            
         """
-        self.disk.removePcbInSwap(pcb.pid)
-        usedFrame=self.pagesOfPcb[pcb].getUsedFrames(self.frames)
-        self.replacementAlgorithms.removePages(self.pagesOfPcb[pcb].pages)
-        del self.pagesOfPcb[pcb]
-        for frame in usedFrame:
-            self.takenFrame.remove(frame)
-        self.plp.notify(self.disk.getFreeSwapSpace())
+        if(pcb  in self.pagesOfPcb.keys()):
+            self.disk.removePcbInSwap(pcb.pid)
+            usedFrame=self.pagesOfPcb[pcb].getUsedFrames(self.frames)
+            self.replacementAlgorithms.removePages(self.pagesOfPcb[pcb].pages)
+            del self.pagesOfPcb[pcb]
+            for frame in usedFrame:
+                self.takenFrame.remove(frame)
+            self.plp.notify(self.disk.getFreeSwapSpace())
             
       
 """Esta clase contiene una lista de paginas y una tabla de paginas"""   

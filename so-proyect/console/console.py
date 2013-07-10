@@ -21,6 +21,7 @@ from system.devices import TypeDevice
 class Console():
     
     def __init__(self):
+        """Map de comandos y comportamiento"""
         self.commands={Command.kill: self.kill,Command.ps:self.ps,Command.execute:self.executeProgram,Command.exit:
                        self.exit,Command.start:self.startKernel,Command.stop:self.stopKernel}
         self.kernel=None
@@ -46,7 +47,7 @@ class Console():
         except Exception ,e:
             raise Exception('El comando no existe')
         behavior(input)
-        
+    """Validacion que chequea que la cantidad de parametros dea las esperada"""    
     def validateNumberParam(self,n1,n2):
         if(n1 != n2):
             raise Exception('Cantidad de argumentos invalido')
@@ -75,7 +76,7 @@ class Console():
     
     def generateKernel(self):
         mode=kernel.Mode()
-        physicalMemory=hardware.PhysicalMemory(16)
+        physicalMemory=hardware.PhysicalMemory(256)
         disk=hardware.Disk(8)
         acont=logicMemory.ContinuousAssignment(disk, physicalMemory,logicMemory.BestFit())
         cpu=CPU(acont,mode)

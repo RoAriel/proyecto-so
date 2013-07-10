@@ -45,29 +45,14 @@ k.addProgram(myProgram1)
 k.addProgram(myProgram2)
 k.addProgram(myProgram3)
 
-acont.show()
-
-"""se ejecutan los programas y se muestra la memoria"""
-k.executeProgram('Home/user/myProgram2')
-k.executeProgram('Home/user/myProgram2')
-k.executeProgram('Home/user/myProgram3')
-
-k.showReedyProcess()
-"""mustra la memoria despues de guardar los procesos ejecutados,
-   se puede ver solo hay un bloque libre
-"""
-acont.show()
-
-
-"""se espera a que finalizen todos los procesos,se ejecuta nuevamente un programa
-   como no hay bloques de su tamaho se debe compactar la memoria
-"""
-time.sleep(21)
-k.memoryLogic.show()
 k.executeProgram('Home/user/myProgram')
-
-"""Ahora mostraria la memoria compactada y con el proceso del programa ejecutado arriba"""
-k.memoryLogic.show()
-
-time.sleep(12)
-k.stop()
+k.executeProgram('Home/user/myProgram')
+k.executeProgram('Home/user/myProgram')
+k.executeProgram('Home/user/myProgram')
+k.executeProgram('Home/user/myProgram')
+k.executeProgram('Home/user/myProgram')
+k.executeProgram('Home/user/myProgram')
+k.executeProgram('Home/user/myProgram')
+k.executeProgram('Home/user/myProgram')
+k.executeProgram('Home/user/myProgram')
+k.executeProgram('Home/user/myProgram')
