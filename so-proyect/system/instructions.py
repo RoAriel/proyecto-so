@@ -32,7 +32,7 @@ class IO(Instruction):
 
         
         
-        
+"""Todos los programas deben terminar con esta instruccion"""       
 class Finalize(Instruction):
 
     def execute(self,pcb):

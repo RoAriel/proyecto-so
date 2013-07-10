@@ -16,7 +16,15 @@ import system.logicMemory as logicMemory
 import time
 from system.devices import TypeDevice 
 
-
+"""
+Comandos:
+NOMBRE       DESCRIPCION
+start       comienza el cliclo de ejecucion del kernel
+stop        para el ciclo de ejecucion del kernel
+exit        sale de la shell
+ps          lista los procesos 
+kill <pid>  mata un  porceso 
+"""
 
 class Console():
     
