@@ -73,7 +73,7 @@ class Kernel():
         self.memoryLogic.updateTablePageOf(pcb,page,frame)
         
     def swapOut(self,page,pcb,frame):
-        instructions=self.memoryLogic.getDataOfPhysical(frame)
+        instructions=self.memoryLogic.getInstructions(frame)
         self.disk.save(pcb,page,instructions)
         page.inMemory=False
         

@@ -69,7 +69,7 @@ class Disk():
         """Por bloque"""
         self.freeSwap=1024 
 
-    """Dado un programa lo parte en bloques y lo guarda"""   
+    """Dado un programa lo parte en bloques y lo guarda junto al path del programa"""   
     def addProgram(self,program):
         size=program.size()
         instructions=program.getInstructions()
@@ -118,13 +118,16 @@ class Disk():
         return DiskBlock(listInstructions)
             
     
-      
+    """Retorna la cantidad de bloques que se necesitan para un programa de
+       tamanho size
+    """  
     def getAmountBlock(self,size):
         if(size % self.sizeBlock == 0):
             return size/self.sizeBlock
         else:
             return size/self.sizeBlock+1
-     
+    
+    """guarda en disco swap las instrucciones del pcb""" 
     def save(self,pcb,page,instructions):  
         block=DiskBlock(instructions,page.direction) 
         if(pcb.pid not in self.swap.keys()):

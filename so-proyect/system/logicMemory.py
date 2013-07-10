@@ -34,6 +34,18 @@ class LogicMemory():
         for ins in instruction:
             self.physicalMemory.setData(direction,ins)
             direction+=1
+            
+    """
+    Dado un bloque retorna todas las instrucciones almacenadas en memoria fisica
+    """  
+    def getInstructions(self,elementOfMemory):
+
+        directionPhysical=elementOfMemory.directionPhysical
+        listIns=[]
+        for i in range(elementOfMemory.size):
+            listIns.append(self.physicalMemory.getData(directionPhysical))
+            directionPhysical+=1
+        return listIns
 
 """**********ASIGNACION CONTINUA***********"""
 
@@ -111,17 +123,6 @@ class ContinuousAssignment(LogicMemory):
             dir+=block.size
             index+=1
     
-    """
-    Dado un bloque retorna todas las instrucciones almacenadas en memoria fisica
-    """  
-    def getInstructions(self,block):
-
-        directionPhysical=block.directionPhysical
-        listIns=[]
-        for i in range(block.size):
-            listIns.append(self.physicalMemory.getData(directionPhysical))
-            directionPhysical+=1
-        return listIns
         
          
     def fetchInstruction(self,pcb):
@@ -409,16 +410,6 @@ class Paging(LogicMemory):
     def updateTablePageOf(self,pcb,page,frame):
         self.pagesOfPcb[pcb].updateTablePage(page,frame)
 
-    
-    
-    """obtiene y retorna todas las instrucciones del frame almacenadas en memotia fisica"""
-    def getDataOfPhysical(self,frame):
-        ins=[]
-        direction=frame.directionPhysical
-        for dir in range(self.sizePage):
-            ins.append(self.physicalMemory.getData(direction))
-            direction+=1
-        return ins
     
 
     def freeSpaceInMemory(self,size):
