@@ -13,7 +13,7 @@ import devices
 from plp import PLP
 from processAndProgram import State
 import logging
-logging.basicConfig(filename='info.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s \n')
+logging.basicConfig(filename='info.log')
 
 class Kernel():
     

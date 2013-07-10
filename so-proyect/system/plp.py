@@ -27,7 +27,7 @@ class PLP():
             self.queueWait.put(pcb)
     
     """Este metodo se uliliza para cuando la memori logica mata un proceso,
-       y notifica llamando a este metodo
+       y notifica llamando a este metodo.Tambien controla que el pcb no halla finalizado
     """        
     def notify(self,size):
         newQueue=self.scheduler.getQueue()

@@ -27,8 +27,9 @@ class IO(Instruction):
     def execute(self,pcb):
         pcb.sate=State.wait
         i.ManagerInterruptions.throwInterruption(Interruption.IO,IOContext(pcb,self.device))
-        """logging.info('process id:',pcb.pid ,'IO')
-        logging.info('program ',pcb.pathProgram ) """ 
+        logging.info(('process id:',pcb.pid ,'IO'))
+        logging.info(('program ',pcb.pathProgram ))
+
         
         
         
