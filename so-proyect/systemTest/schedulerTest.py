@@ -1,7 +1,7 @@
 '''
 Created on 07/07/2013
 
-@author: CABJ
+@author: j di meglio
 '''
 import unittest
 from mockito import *

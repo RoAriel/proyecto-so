@@ -1,7 +1,7 @@
 '''
 Created on 07/06/2013
 
-@author: Jose
+@author: j di meglio
 '''
 
 from hardware import PhysicalMemory
@@ -270,7 +270,7 @@ class Frame(ElementOfMemory):
 class Setting():
     
     def getFreeBlockTo(self,size,freeBloc):
-        pass
+        raise Exception('Metodo no implementado')
 
 class FirstFit(Setting):
     """

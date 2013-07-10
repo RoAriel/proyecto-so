@@ -1,7 +1,7 @@
 '''
 Created on 17/06/2013
 
-@author: usuario
+@author: j di meglio
 '''
 
 """Muy simple version de planificador de largo plazo,solo controla si hay memoria 

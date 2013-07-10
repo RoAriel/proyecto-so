@@ -1,7 +1,7 @@
 '''
 Created on 13/05/2013
 
-@author: rodrigo
+@author: j di meglio
 '''
 
 """********PROGRAMA***********"""

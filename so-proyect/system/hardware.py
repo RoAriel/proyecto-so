@@ -1,3 +1,9 @@
+'''
+Created on 19/04/2013
+
+@author: j di meglio
+'''
+
 import scheduler
 from interruptions  import Interruption 
 from processAndProgram import State

@@ -1,7 +1,7 @@
 '''
 Created on 06/05/2013
 
-@author: usuario
+@author: j di meglio
 '''
 import Queue
 

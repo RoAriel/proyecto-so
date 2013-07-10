@@ -1,7 +1,7 @@
 '''
 Created on 13/05/2013
 
-@author: usuario
+@author: j di meglio
 '''
 import interruptions as int
 import scheduler as s

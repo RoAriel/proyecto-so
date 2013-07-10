@@ -1,7 +1,7 @@
 '''
 Created on 24/05/2013
 
-@author: Di Meglio
+@author: j di meglio
 '''
 import threading  as t
 import system.kernel as kernel

@@ -1,7 +1,7 @@
 '''
 Created on 19/05/2013
 
-@author: CABJ
+@author: j di meglio
 '''
 import threading  as t
 from interruptions  import Interruption 

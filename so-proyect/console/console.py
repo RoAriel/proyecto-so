@@ -1,7 +1,7 @@
 '''
 Created on 09/07/2013
 
-@author: CABJ
+@author: j di meglio
 '''
 import threading  as t
 import system.kernel as kernel
@@ -50,7 +50,7 @@ class Console():
     """Validacion que chequea que la cantidad de parametros dea las esperada"""    
     def validateNumberParam(self,n1,n2):
         if(n1 != n2):
-            raise Exception('Cantidad de argumentos invalido')
+            raise Exception('Cantidad de argumentos invalido ')
         
         
     def startKernel(self,input):
@@ -100,6 +100,7 @@ class Console():
         self.validateNumberParam(len(input)-1, 1)
         self.kernel.killPcb(int(input[1]))
 
+"""Comandos"""
 class Command():
     
     start='start'
@@ -109,6 +110,6 @@ class Command():
     ps='ps'
     kill='kill'
     
-    
+"""Ejecucion de la consola"""  
 console=Console()
 console.start()

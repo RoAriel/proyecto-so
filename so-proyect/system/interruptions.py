@@ -2,7 +2,7 @@
 
 Created on 15/05/2013
 
-@author: Di Meglio
+@author: j di meglio
 '''
 from processAndProgram import State
 import logging

@@ -1,7 +1,7 @@
 '''
 Created on 09/06/2013
 
-@author: CABJ
+@author: j di meglio
 '''
 import threading  as t
 import time
