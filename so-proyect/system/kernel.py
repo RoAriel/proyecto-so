@@ -3,6 +3,7 @@ Created on 13/05/2013
 
 @author: usuario
 '''
+import interruptions as int
 import scheduler as s
 import clock as c
 import interruptions as i
@@ -81,15 +82,19 @@ class Kernel():
         self.memoryLogic.kill(pcb)
         self.scheduler.kill(pcb)
         pcb.state=State.finished
-        self.gloablPcb.remove(pcb)
+        if pcb in self.gloablPcb:
+            self.gloablPcb.remove(pcb)
+        print len(self.gloablPcb)
         self.cpu.kill(pcb)
+
         
     def killPcb(self,pid):
+
         for pcb in self.gloablPcb:
             if(pcb.pid==pid):
-                toDelete=pcb
-                break
-        self.kill(toDelete)
+                self.kill(pcb)
+        int.ManagerInterruptions.throwInterruption(int.Interruption.timeOut,None)
+
         
     def showProcess(self):
         print 'pid  program'

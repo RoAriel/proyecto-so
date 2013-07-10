@@ -172,7 +172,6 @@ class ContinuousAssignment(LogicMemory):
      
     """Libera la memoria usada por el pcb"""   
     def kill(self,pcb):
-        i=self.takenBlock.keys()
         block=self.takenBlock[pcb]
         del(self.takenBlock[pcb])
         self.freeBlocks.append(block)
