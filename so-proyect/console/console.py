@@ -23,7 +23,7 @@ start       comienza el cliclo de ejecucion del kernel
 stop        para el ciclo de ejecucion del kernel
 exit        sale de la shell
 ps          lista los procesos 
-kill <pid>  mata un  porceso 
+kill <pid>  mata un  proceso 
 """
 
 class Console():
