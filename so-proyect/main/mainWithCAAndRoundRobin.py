@@ -48,19 +48,19 @@ k.addProgram(myProgram3)
 """Se puede ver el estado inicial de memoria,un bloque de tamanho de memoria fisica"""
 acont.show()
 
-"""se ejecutan los programas y se muestra la memoria"""
+"""se ejecutan los programas """
 k.executeProgram('Home/user/myProgram2')
 k.executeProgram('Home/user/myProgram2')
 k.executeProgram('Home/user/myProgram3')
 
 
 """mustra la memoria despues de guardar los procesos ejecutados,
-   se puede ver solo hay un bloque libre
+   se puede ver que solo hay un bloque libre
 """
 acont.show()
 
 
-"""se espera 15 segundos,solo un proceso termino,por lo tanto cunado se quiere ejecutar
+"""se espera 15 segundos,despues de los 15 segundos solo un proceso termino,por lo tanto cunado se quiere ejecutar
    el programa  no hay espacio,entonces el plp lo pone en cola de wait,hasta que algun proceso
    muera ,es ahi cuando se empiza a ejecutar
 """
