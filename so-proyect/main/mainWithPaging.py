@@ -54,4 +54,4 @@ k.executeProgram('Home/user/myProgram1')
 k.executeProgram('Home/user/myProgram2')
 k.executeProgram('Home/user/myProgram3')
 
-
+"""se puede ver el resultado de la ejecucion en el archivo info.log"""

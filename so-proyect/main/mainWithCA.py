@@ -65,3 +65,5 @@ k.executeProgram('Home/user/myProgram')
    por lo tanto se debe compactar y guardar el proceso
 """
 acont.show()
+
+"""se puede ver el resultado de la ejecucion en el archivo info.log"""

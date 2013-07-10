@@ -73,3 +73,5 @@ k.executeProgram('Home/user/myProgram')
 """
 k.memoryLogic.show()
 
+
+"""se puede ver el resultado de la ejecucion en el archivo info.log"""
