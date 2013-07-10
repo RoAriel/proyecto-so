@@ -21,7 +21,6 @@ class Kernel():
         self.memoryLogic=memoryLogic
         self.cpu=cpu
         self.PhysicalMemory=memoryPhysical
-        self.logicMemory=memoryLogic
         self.scheduler=s.Scheduler(policy)
         self.disk=disk
         self.mode=mode

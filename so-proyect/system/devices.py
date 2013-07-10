@@ -18,6 +18,7 @@ class ManagerDivices():
     def getDeviceIO(self,aDevice):
         return self.divices[aDevice]
 
+    """entrea el pcb al dispositivo indicado"""
     def add(self,pcb,aDevice):
         self.getDeviceIO(aDevice).add(pcb)
 
