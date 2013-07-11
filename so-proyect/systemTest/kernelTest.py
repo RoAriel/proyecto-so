@@ -60,7 +60,7 @@ class TestKernel(unittest.TestCase):
         frame=mock(Frame)
         self.kernel.swapOut(page, pcb, frame)
         
-        verify(self.memory).getDataOfPhysical(frame)
+        verify(self.memory).getInstructions(frame)
 
 
         

@@ -267,13 +267,8 @@ class Frame(ElementOfMemory):
   
   
 """ALGORITMOS DE BUSQUEDA DE BLOCKES"""  
-        
-class Setting():
-    
-    def getFreeBlockTo(self,size,freeBloc):
-        raise Exception('Metodo no implementado')
 
-class FirstFit(Setting):
+class FirstFit():
     """
     Busca el primer  bloque libre para tamanho size
     """  
@@ -283,7 +278,7 @@ class FirstFit(Setting):
                 return block
         return None
   
-class BestFit(Setting):
+class BestFit():
     """
     Busca el bloque libre mas chico para tamanho size
     """  
@@ -298,7 +293,7 @@ class BestFit(Setting):
         return None
     
     
-class WorstFit(Setting):
+class WorstFit():
     """
     Busca el bloque libre mas grande para tamanho size
     """  
