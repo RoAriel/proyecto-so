@@ -27,8 +27,8 @@ class IO(Instruction):
     def execute(self,pcb):
         pcb.sate=State.wait
         i.ManagerInterruptions.throwInterruption(Interruption.IO,IOContext(pcb,self.device))
-        logging.info(('process id:',pcb.pid ,'IO'))
-        logging.info(('program ',pcb.pathProgram ))
+        logging.info('process id: %s IO',pcb.pid)
+        logging.info('program %s',pcb.pathProgram )
 
         
         
@@ -38,14 +38,14 @@ class Finalize(Instruction):
     def execute(self,pcb):
         pcb.sate=State.finished
         i.ManagerInterruptions.throwInterruption(Interruption.pcbFinalize,GloabalContext(pcb))
-        logging.info(('process id:',pcb.pid ,'finished'))
-        logging.info(('program ',pcb.pathProgram ) ) 
+        logging.info('process id: %s finished',pcb.pid)
+        logging.info('program %s',pcb.pathProgram )
         
         
         
 class Cpu(Instruction):
 
     def execute(self,pcb):
-        logging.info(('process id:',pcb.pid ,'execute'))
-        logging.info(('program ',pcb.pathProgram )) 
+        logging.info('process id: %s execute',pcb.pid)
+        logging.info('program %s',pcb.pathProgram )
 
