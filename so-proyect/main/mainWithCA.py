@@ -67,3 +67,4 @@ k.executeProgram('Home/user/myProgram')
 acont.show()
 
 """se puede ver el resultado de la ejecucion en el archivo info.log"""
+"""Holaaaaa"""
